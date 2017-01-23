@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Steam Review Editor</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">        
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+        <link rel="stylesheet" href="https://cdn.quilljs.com/1.2.0/quill.snow.css">
+        <link rel="stylesheet" href="assets/style.min.css">
+        
+        <!--Bootstrap 4 inclusions-->
+        <!--<script defer src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>-->
+        <script defer src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+        <!--Font Awesome-->
+        <script defer src="https://use.fontawesome.com/8be862904e.js"></script>
+
+
+        <!--Text Editor Quill-->
+        <script defer src="https://cdn.quilljs.com/1.2.0/quill.min.js"></script>
+
+        <!--Local Scripts-->
+        <script defer src="assets/scripts.js"></script>
+    </head>
+    <body>
+        <!--Header section-->
+        <a href="https://github.com/dons20/Steam-Review-Editor"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
+        <div class="container-fluid">
+            <div class="jumbotron jumbotron-fluid">
+                <div class="container">
+                    <h1 class="display-4">Steam Review Editor</h1>
+                </div>
+            </div>
+        </div>
+
+        <!--Introductory banner div-->
+        <div id="help" class="container mb-5 fade">
+            <div class="row">
+                <div class="col tutorial">
+                    <a id="closeBtn" class="btn bg-inverse" role="button" data-toggle="tooltip" data-animation="false" data-placement="right" title="Close"><i class="fa fa-lg fa-close" aria-hidden="true"></i></a>
+                    <p>Steam Review Editor allows you to easily create and modify your reviews in real-time without having to manually apply steam markup tags. Simply type your review, hit "Copy to Clipboard", and paste it in Steam!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Text Editor Window -->   
+        <div id="editorWindow" class="container mb-5 p-0 fade">
+            <div id="toolbar">
+                <span class="ql-formats">
+                    <select class="ql-header">
+                        <option value="1"></option>
+                        <option></option>
+                    </select>                   
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-bold" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Bold"></button>
+                    <button class="ql-italic" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Italics"></button>
+                    <button class="ql-underline" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Underline"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-strike" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Strikethrough"></button>
+                    <button id="spoiler" class="ql-span fa fa-lg fa-low-vision" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Spoiler"></button>
+                    <button class="ql-blockquote" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Blockquote"></button>
+                    <button class="ql-code" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="In-line (&quot;No-parse&quot;) Text"></button>
+                    <button class="ql-code-block" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Pre-formatted Text"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-header" type="button" value="1" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Heading 1"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-list" type="button" value="ordered" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Ordered List"></button>
+                    <button class="ql-list" type="button" value="bullet" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Bulleted List"></button>
+                </span>
+                <span class="ql-formats">
+                    <button class="ql-clean" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Clear Formatting"></button>
+                </span>
+            </div>
+            <div id="editor">
+            </div>
+        </div>
+
+        <!--Show preview & Copy Markup Buttons-->
+        <div class="container fade">
+            <div class="row justify-content-md-center mb-4">
+                <div class="col-md-6">
+                    <button id="showBtn" class="btn btn-block btn-primary" type="button" data-toggle="collapse" data-target="#previewCollapse">Show Preview</button>
+                </div>
+            </div>
+            <div class="row justify-content-md-center mb-5">
+                <div class="col-md-6">
+                    <button id="copyBtn" onClick="CopyToClipboard('markup')" class="btn btn-block btn-success" type="button" >Copy Markup to Clipboard</button>
+                </div>
+            </div>
+        </div>
+
+        <!--Keeps both preview areas hidden with a toggle-->
+        <div id="previewCollapse" class="collapse">
+            <div class="container-fluid ml-sm-2 mr-sm-2 ml-lg-5 mr-lg-5">
+                <div class="row">
+                    <div class="col-12 col-lg-6 mb-sm-3 mb-xl-0">
+                        <div class="row">
+                            <div class="col"><h1 class="lead brighter">Store Preview</h1></div>
+                        </div>
+                        <div class="row preview-top py-2">
+                            <div class="col-4 mr-xl-5">
+                                <div class="d-flex">
+                                    <span class="fa-stack fa-lg mr-2">
+                                        <i class="fa fa-square fa-stack-2x fa-inverse hide" aria-hidden="true"></i>
+                                        <i class="fa fa-question-circle fa-stack-1x" aria-hidden="true"></i>
+                                    </span>
+                                    <p class="name">Your Username</p>
+                                </div>
+                            </div>
+                            <div class="col next pl-0">
+                                <div class="d-flex">
+                                    <span class="fa-stack fa-2x mr-2">
+                                        <i class="fa fa-square fa-stack-2x fa-inverse hide" aria-hidden="true"></i>
+                                        <i class="fa fa-thumbs-up fa-stack-2x fa-flip-horizontal" aria-hidden="true"></i>
+                                    </span>
+                                    <div class="d-flex flex-column">
+                                        <h1 class="recommended mb-0">Recommended</h1>
+                                        <p class="mb-0">0.0 hrs on record</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col preview-container p-0">
+                                <div class="d-flex justify-content-xl-end">
+                                    <div id="preview" class="preview p-3"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col"><h1 class="lead brighter">Markup Preview</h1></div>
+                        </div>
+                        <div id="markup" class="col markup p-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div id="changelogModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Changelog Modal" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content p-3">
+                    <h3>Beta version 0.1 (22/01/2017) <span class="badge badge-success">New</span></h3>
+                    <p>We've entered the open beta stages of this simple, yet effective tool. At this point 95% of the required features have been implemented. Here's an overview of the changes</p>
+                    <h5>Changes</h5>
+                    <ul>
+                        <li>Added this new changelog section!</li>
+                        <li>Refined the look of the Store Preview to look more closely like the official store</li>
+                        <li>Swapped the places of the Store Preview and Markup Preview</li>
+                        <li>Modified the preview windows to use more of the screen space on smaller screens</li>
+                        <li>Updated the Quill editor to version 1.2.0</li>
+                        <li>Updated icon and button sizes to be more appropriate</li>
+                    </ul>
+                    <h5>Still to come</h5>
+                    <ul>
+                        <li>Table Creation</li>
+                        <li>Quick-Insert Special Characters</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!--Keeps the footer at the very bottom of the screen without sticky-->
+        <div class="push"></div>
+
+        <!--Social Links, License & Disclaimers-->
+        <footer id="footer" class="easy-footer fade">
+            <div class="container">
+                <a class="mr-2" href="http://twitter.com/kcinnovations" target="_none"><i data-toggle="tooltip" data-animation="false" data-placement="top" title="Twitter" class="fa fa-3x fa-twitter-square" aria-hidden="true"></i></a>
+                <a href="#changelogModal" role="button" data-toggle="modal"><i data-toggle="tooltip" data-animation="false" data-placement="top" title="Changelog" class="fa fa-3x fa-question" aria-hidden="true"></i></a>
+                <!--<button type="button" class="btn" data-toggle="modal" data-target="#changelogModal"><i class="fa fa-3x fa-question" aria-hidden="true"></i></button>-->
+                <p>Copyright &copy; 2017 Keno Clayton, Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</a>
+                <br>
+                This website is <strong>not</strong> associated with Valve Corporation</p>
+            </div>
+        </footer>
+
+    </body>
+</html>
