@@ -26,6 +26,7 @@ Quill.register({
     'formats/spoiler': Spoiler
 });
 
+var Delta = Quill.import('delta');
 var quill = new Quill('#editor', {
     modules: {
         toolbar : { container : '#toolbar',
@@ -43,6 +44,7 @@ var text = quill.container.firstChild.innerHTML;
 // Enable all tooltips
 $('[data-toggle="tooltip"]').tooltip();
 
+var change = new Delta();
 
 quill.on('selection-change', function(range, oldRange, source) {
     text = quill.container.firstChild.innerHTML;
@@ -57,6 +59,7 @@ quill.on('selection-change', function(range, oldRange, source) {
 quill.on('text-change', function(delta, oldDelta, source) {
     text = quill.container.firstChild.innerHTML;
     convertHTML(text);
+    change = change.compose(delta);
 });
 
 function convertHTML(convertText) {
@@ -122,12 +125,6 @@ $('#closeBtn').click(function() {
     });
 });
 
-// Store accumulated changes
-var change = new Delta();
-quill.on('text-change', function(delta) {
-  change = change.compose(delta);
-});
-
 // Save periodically
 setInterval(function() {
   if (change.length() > 0) {
@@ -143,6 +140,7 @@ setInterval(function() {
       doc: JSON.stringify(quill.getContents())
     });
     */
+    //CopyToClipboard(quill.container.firstChild.innerHTML);
     change = new Delta();
   }
 }, 5*1000);
