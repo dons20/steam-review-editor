@@ -6,14 +6,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="description" content="Steam Review Editor allows you to easily create and modify your reviews in real-time without having to manually apply steam markup tags. Simply type your review, hit &quot;Copy to Clipboard&quot;, and paste it in Steam!">
         <meta name="keywords" content="Steam, review, editor, markup, realtime, writing, responsive">
-        <link rel="shortcut icon" href="assets/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon">
 
         <!--Stylesheets-->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">        
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-        <link rel="stylesheet" href="https://cdn.quilljs.com/1.2.4/quill.snow.css">
-        <link rel="stylesheet" href="assets/style.min.css">
+        
+        <link rel="stylesheet" href="assets/css/style.min.css">
     </head>
     <body>
         <!--Header section-->
@@ -81,7 +80,7 @@
             </div>
             <div class="row justify-content-md-center mb-5">
                 <div class="col-md-6">
-                    <button id="copyBtn" onClick="CopyToClipboard('markup')" class="btn btn-block btn-success" type="button" >Copy Markup to Clipboard</button>
+                    <button id="copyBtn" onclick="CopyToClipboard('markup')" class="btn btn-block btn-success" type="button" >Copy Markup to Clipboard</button>
                 </div>
             </div>
         </div>
@@ -175,19 +174,12 @@
         </footer>
 
         <!--Javascript-->
-        <!--Bootstrap 4-->
-        <script src="https://code.jquery.com/jquery-3.2.1.min.js" 
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
-        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-        <script defer src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-
-        <!--Font Awesome-->
-        <script defer src="https://use.fontawesome.com/8be862904e.js"></script>
-
-        <!--Text Editor Quill-->
-        <script defer src="https://cdn.quilljs.com/1.2.4/quill.min.js"></script>
+        
+        
+        <script
+        src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 
         <!--Local Scripts-->
-        <script defer src="assets/scripts.min.js"></script>
+        <script defer src="assets/js/scripts.min.js"></script>
     </body>
 </html>

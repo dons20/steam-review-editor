@@ -237,8 +237,7 @@ a i{
 }
 
 body {
-  //background-color: $body-background-color;
-  background: url('background.png') center top no-repeat $body-background-color;
+  background: $body-background-color url('../images/background.png') center top no-repeat;
   font-family: $primary-font;
   font-size: $font-size;
   height: 100%;

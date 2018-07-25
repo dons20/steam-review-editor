@@ -1,0 +1,23 @@
+{
+  "name": "steam-review-editor",
+  "version": "1.0.0",
+  "description": "Steam Review Editor allows you to easily create and modify your reviews in real-time, without having to manually apply steam's complex markup tags.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dons20/steam-review-editor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dons20/steam-review-editor/issues"
+  },
+  "homepage": "https://github.com/dons20/steam-review-editor#readme",
+  "dependencies": {
+    "bulma": "0.7.1"
+  }
+}

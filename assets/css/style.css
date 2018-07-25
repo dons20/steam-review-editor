@@ -161,7 +161,7 @@ a i {
   color: white; }
 
 body {
-  background: url("background.png") center top no-repeat #1B2838;
+  background: #1B2838 url("../images/background.png") center top no-repeat;
   font-family: "Motiva Sans", Sans-serif;
   font-size: 13px;
   height: 100%;

@@ -1,8 +1,8 @@
-var Embed = Quill.import('blots/embed');
+//var Embed = Quill.import('blots/embed');
 
 //Create a new spoiler class for span tags with class spoiler applied
 
-class Spoiler extends Embed {
+/*class Spoiler extends Embed {
     static create(value) {
         let node = super.create(value);
         node.innerHTML = value;
@@ -139,7 +139,7 @@ setInterval(function() {
     $.post('/your-endpoint', { 
       doc: JSON.stringify(quill.getContents())
     });
-    */
+    
     //CopyToClipboard(quill.container.firstChild.innerHTML);
     change = new Delta();
   }
@@ -157,4 +157,4 @@ $(document).ready(function () {
     var fade = $(".fade");
     fade.css({ "opacity":"0"});
     fade.fadeTo(500, 1, "swing");
-});
+});*/
