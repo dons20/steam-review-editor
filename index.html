@@ -8,11 +8,18 @@
         <meta name="keywords" content="Steam, review, editor, markup, realtime, writing, responsive">
         <link rel="shortcut icon" href="assets/images/favicon.ico" type="image/x-icon">
 
-        <!--Stylesheets-->
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">        
+        <!--Stylesheets-->        
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-        
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
         <link rel="stylesheet" href="assets/css/style.min.css">
+
+        <style>
+            #mytextarea {
+                min-height: 15rem;
+                min-width: 60rem;
+            }
+        </style>
     </head>
     <body>
         <!--Header section-->
@@ -29,46 +36,15 @@
         <div id="help" class="container mb-5 fade">
             <div class="row">
                 <div class="col tutorial">
-                    <a id="closeBtn" class="btn bg-inverse" role="button" data-toggle="tooltip" data-animation="false" data-placement="right" title="Close"><i class="fa fa-lg fa-close" aria-hidden="true"></i></a>
+                    <a id="closeBtn" class="btn btn-dark" role="button" data-toggle="tooltip" data-animation="false" data-placement="right" title="Close"><i class="fa fa-times" aria-hidden="true"></i></a>
                     <p>Steam Review Editor allows you to easily create and modify your reviews in real-time without having to manually apply steam markup tags. Simply type your review, hit "Copy to Clipboard", and paste it in Steam!</p>
                 </div>
             </div>
         </div>
 
-        <!-- Text Editor Window -->   
-        <div id="editorWindow" class="container mb-5 p-0 fade">
-            <div id="toolbar">
-                <span class="ql-formats">
-                    <select class="ql-header">
-                        <option value="1"></option>
-                        <option></option>
-                    </select>                   
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-bold" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Bold"></button>
-                    <button class="ql-italic" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Italics"></button>
-                    <button class="ql-underline" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Underline"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-strike" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Strikethrough"></button>
-                    <button id="spoiler" class="ql-span fa fa-lg fa-low-vision" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Spoiler"></button>
-                    <button class="ql-blockquote" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Blockquote"></button>
-                    <button class="ql-code" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="In-line (&quot;No-parse&quot;) Text"></button>
-                    <button class="ql-code-block" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Pre-formatted Text"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-header" type="button" value="1" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Heading 1"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-list" type="button" value="ordered" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Ordered List"></button>
-                    <button class="ql-list" type="button" value="bullet" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Bulleted List"></button>
-                </span>
-                <span class="ql-formats">
-                    <button class="ql-clean" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Clear Formatting"></button>
-                </span>
-            </div>
-            <div id="editor">
-            </div>
+        
+        <div class="container">
+            <textarea id="mytextarea"></textarea>
         </div>
 
         <!--Show preview & Copy Markup Buttons-->
@@ -164,7 +140,7 @@
         <!--Social Links, License & Disclaimers-->
         <footer id="footer" class="easy-footer fade">
             <div class="container">
-                <a class="mr-2" href="http://twitter.com/kcinnovations" target="_none"><i data-toggle="tooltip" data-animation="false" data-placement="top" title="Twitter" class="fa fa-3x fa-twitter-square" aria-hidden="true"></i></a>
+                <a class="mr-2" href="http://twitter.com/kcinnovations" target="_none"><i data-toggle="tooltip" data-animation="false" data-placement="top" title="Twitter" class="fab fa-3x fa-twitter-square" aria-hidden="true"></i></a>
                 <a href="#changelogModal" role="button" data-toggle="modal"><i data-toggle="tooltip" data-animation="false" data-placement="top" title="Changelog" class="fa fa-3x fa-question" aria-hidden="true"></i></a>
                 <!--<button type="button" class="btn" data-toggle="modal" data-target="#changelogModal"><i class="fa fa-3x fa-question" aria-hidden="true"></i></button>-->
                 <p>Copyright &copy; 2017 Keno Clayton, Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</a>
@@ -173,11 +149,19 @@
             </div>
         </footer>
 
-        <!--Javascript-->
-        
-        
+        <!--JQuery-->
         <script
         src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+        <!-- <script defer src="https://use.fontawesome.com/releases/v5.2.0/js/all.js" integrity="sha384-4oV5EgaV02iISL2ban6c/RmotsABqE4yZxZLcYMAdG7FAPsyHYAPpywE9PJo+Khy" crossorigin="anonymous"></script> -->
+
+        <!-- TinyMCE -->
+        <script src="https://cloud.tinymce.com/stable/tinymce.min.js?apiKey=mwprvv1ipa6q56ixx7rdjj0oy6v66nztt1nmvnja7wvu0ctz"></script>
+
+        <!-- Popper -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+
+        <!-- Bootstrap -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 
         <!--Local Scripts-->
         <script defer src="assets/js/scripts.min.js"></script>

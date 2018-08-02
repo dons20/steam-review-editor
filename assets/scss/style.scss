@@ -75,7 +75,7 @@ $line-height: 1.3rem;
 }
 
 .brighter {
-  background-image: url('rule.png');
+  background-image: url('../images/rule.png');
   background-position: bottom left;
   background-repeat: no-repeat;
   color: #fff;
@@ -112,8 +112,10 @@ $line-height: 1.3rem;
 }
 
 .display-4 {
-  @include transition(color 0.3s ease);
+  @include transition(color 0.15s ease-in-out);
   color: $header-font-color;
+  cursor: default;
+  will-change: color;
   &:hover {
     color: $text-color;
   }
@@ -274,8 +276,6 @@ footer {
 }
 
 textarea {
-    min-height: 15rem;
-    min-width: 60rem;
     @include box-shadow(0px 0px 10px 3px rgba(0, 0, 0, 0.75));
     margin-bottom: 2rem;
 }

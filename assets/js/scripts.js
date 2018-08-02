@@ -96,16 +96,6 @@ function CopyToClipboard(containerid) {
     alert("Markup copied to clipboard!");
 };
 
-function pushFooter() {
-    var docHeight = $(window).height();
-    var footerHeight = $('#footer').height();
-    var footerTop = $('#footer').position().top + footerHeight;
-
-    if (footerTop < docHeight) {
-        $('#footer').css('margin-top', 10+ (docHeight - footerTop) + 'px');
-    }
-}
-
 //Show Preview
 $('#previewCollapse').on('show.bs.collapse', function() {
     quill.blur();
@@ -150,11 +140,24 @@ window.onbeforeunload = function() {
   if (change.length() > 0) {
     return 'There are unsaved changes. Are you sure you want to leave?';
   }
+}*/
+
+pushFooter();
+var fade = $(".fade");
+fade.css({ "opacity":"0"});
+fade.fadeTo(500, 1, "swing");
+tinymce.init({ 
+    selector: '#mytextarea' 
+});
+
+function pushFooter() {
+    var docHeight = $(window).height();
+    var footerHeight = $('#footer').height();
+    var footerTop = $('#footer').position().top + footerHeight;
+
+    if (footerTop < docHeight) {
+        $('#footer').css('margin-top', 10+ (docHeight - footerTop) + 'px');
+    }
 }
 
-$(document).ready(function () {
-    pushFooter();
-    var fade = $(".fade");
-    fade.css({ "opacity":"0"});
-    fade.fadeTo(500, 1, "swing");
-});*/
+console.log("%c Browser Test Example", "color: indigo");
