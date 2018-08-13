@@ -161,3 +161,4 @@ function pushFooter() {
 }
 
 console.log("%c Browser Test Example", "color: indigo");
+console.log("%c Browser Test Example", "color: indigo");

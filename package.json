@@ -18,15 +18,10 @@
   },
   "homepage": "https://github.com/dons20/steam-review-editor#readme",
   "devDependencies": {
-    "browser-sync": "^2.24.6",
-    "clean-css": "^4.1.11",
-    "gulp": "^4.0.0",
-    "gulp-autoprefixer": "^5.0.0",
-    "gulp-clean-css": "^3.9.4",
-    "gulp-concat": "^2.6.1",
-    "gulp-rename": "^1.4.0",
-    "gulp-sass": "^4.0.1",
-    "gulp-uglify": "^3.0.1",
-    "gulp-util": "^3.0.8"
+    "fuse-box": "^3.4.0",
+    "rollup": "^0.64.1",
+    "typescript": "^3.0.1",
+    "uglify-es": "^3.3.9",
+    "uglify-js": "^3.4.7"
   }
 }
