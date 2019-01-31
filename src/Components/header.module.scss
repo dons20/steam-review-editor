@@ -1,0 +1,26 @@
+.banner {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: 0;
+    z-index: 1;
+}
+
+.main {
+    background-color: #171a21;
+    color: #eee;
+    cursor: default;
+    font-variant: small-caps;
+    text-shadow: 1px 1px 10px #222;
+    text-align: center;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: bold;
+    letter-spacing: 5px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

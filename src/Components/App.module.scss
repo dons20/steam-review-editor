@@ -1,3 +1,6 @@
-.app {
+.root {
+    display: grid;
+    grid-template-rows: 1fr 4fr minmax(100px, 200px);
     width: 100%;
+    min-height: 100vh;
 }
