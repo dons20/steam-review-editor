@@ -1,0 +1,12 @@
+.root {
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 10px;
+    margin-top: 20px;
+    min-height: 10vh;
+    padding: 1.5rem;
+    width: 66.66%;
+    &:focus {
+        box-shadow: 0 3px 6px rgba(255, 255, 255, 0.5);
+    }
+}

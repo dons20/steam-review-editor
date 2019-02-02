@@ -1,3 +1,41 @@
+@import "./utils.module.scss";
+
+.close {
+    cursor: pointer;
+}
+
+.instructions {
+    align-items: center;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    background: #e3eaef;
+    background: linear-gradient(180deg, #e3eaef 5%, #c7d5e0 95%);
+    background-color: #fff;
+    border-radius: 10px;
+    display: grid;
+    grid-template-columns: 1fr 10%;
+    font-size: 20px;
+    line-height: 1.95rem;
+    padding: 1.5rem;
+    text-align: center;
+    width: 66.66%;
+}
+
 .main {
-    content: "";
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 2% 0;
+}
+
+.markupBtn,
+.previewBtn {
+    border-radius: 10px;
+    margin-top: 1%;
+}
+
+.markupBtn {
+    background-color: rgba(0, 0, 0, 0);
+    border-color: #fff;
+    color: #fff;
 }

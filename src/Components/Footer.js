@@ -6,7 +6,7 @@ function Footer() {
     const date = new Date().getFullYear();
 
     return (
-        <footer className={classes.footer}>
+        <footer className={classes.root}>
             <div className={classes.iconRow}>
                 <a
                     className={classes.tooltip}
@@ -36,8 +36,8 @@ function Footer() {
             </div>
             <p>
                 Copyright &copy; {date} | Keno Clayton, Licensed under the{" "}
-                <a href="http://www.apache.org/licenses/LICENSE-2.0.html">
-                    Apache License, Version 2.0
+                <a href="https://github.com/dons20/steam-review-editor/blob/gh-pages/LICENSE">
+                    MIT License
                 </a>
                 <br />
                 This website is <strong>not</strong> associated with Valve
