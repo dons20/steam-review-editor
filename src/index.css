@@ -28,6 +28,12 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+@media only screen and (max-width: 768px) {
+    body {
+        font-size: 13px;
+    }
+}
+
 /*! normalize.css v8.0.1 | MIT License | github.com/necolas/normalize.css */
 
 /* Document

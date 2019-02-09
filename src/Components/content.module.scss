@@ -1,5 +1,22 @@
 @import "./utils.module.scss";
 
+@keyframes hide {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+.buttons {
+    display: flex;
+    font-size: 20px;
+    justify-content: space-around;
+    max-width: 700px;
+    width: 100%;
+}
+
 .close {
     cursor: pointer;
 }
@@ -18,6 +35,13 @@
     padding: 1.5rem;
     text-align: center;
     width: 66.66%;
+    will-change: opacity;
+    &.hiding {
+        animation-name: hide;
+        animation-fill-mode: forwards;
+        animation-duration: 0.3s;
+        animation-timing-function: ease-in;
+    }
 }
 
 .main {
@@ -26,16 +50,50 @@
     flex-direction: column;
     justify-content: space-around;
     padding: 2% 0;
+    position: relative;
 }
 
 .markupBtn,
 .previewBtn {
-    border-radius: 10px;
+    border: 1px solid;
+    border-radius: 5px;
+    cursor: pointer;
     margin-top: 1%;
+    outline: 0;
+    padding: 10px 15px;
+    transition: background-color 0.1s ease-out;
+    will-change: background-color;
 }
 
 .markupBtn {
     background-color: rgba(0, 0, 0, 0);
     border-color: #fff;
     color: #fff;
+    &:hover {
+        background-color: #fff;
+        color: #333;
+    }
+    &:active {
+        background-color: #ccc;
+    }
+}
+
+.previewBtn {
+    background-color: rgba(2, 117, 216, 0.7);
+    color: #fff;
+    &:hover {
+        background-color: #fff;
+        color: rgba(2, 117, 216, 1);
+    }
+    &:active {
+        background-color: #ccc;
+    }
+}
+
+.showHelp {
+    color: #fff;
+    cursor: pointer;
+    top: 2%;
+    right: 2%;
+    position: absolute;
 }

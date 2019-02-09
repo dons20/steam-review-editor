@@ -4,17 +4,56 @@ import classes from "./content.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 class Content extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showTip: JSON.parse(sessionStorage.getItem("showTip")),
+            hideHelp: false
+        };
+        this.showInstructions = this.showInstructions.bind(this);
+        this.hideInstructions = this.hideInstructions.bind(this);
+        this.saveState = this.saveState.bind(this);
+    }
+
+    showInstructions() {
+        this.setState({ showTip: true, hideHelp: false });
+    }
+
     hideInstructions() {
-        sessionStorage.showTip = false;
+        this.setState({ showTip: false });
+    }
+
+    saveState() {
+        sessionStorage.setItem("showTip", JSON.stringify(this.state.showTip));
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener("beforeunload", this.saveState);
+    }
+
+    componentDidMount() {
+        if (this.state.showTip === null) {
+            this.setState({ showTip: true });
+        }
+
+        window.addEventListener("beforeunload", this.saveState);
     }
 
     render() {
-        let showTip = sessionStorage.showTip;
+        const { showTip, hideHelp } = this.state;
+        let helpClasses = [classes.instructions];
+        if (hideHelp) {
+            helpClasses.push(classes.hiding);
+        }
+        let join = helpClasses.join(" ");
 
         return (
             <main className={classes.main}>
-                {showTip && (
-                    <div className={classes.instructions}>
+                {showTip === true && (
+                    <div
+                        className={join}
+                        onAnimationEnd={this.hideInstructions}
+                    >
                         <p>
                             Steam Review Editor allows you to easily create and
                             modify your reviews in real-time without having to
@@ -27,16 +66,32 @@ class Content extends Component {
                                 icon={["far", "times-circle"]}
                                 size={"2x"}
                                 className={classes.close}
-                                onClick={() => this.hideInstructions}
+                                onClick={() =>
+                                    this.setState({ hideHelp: true })
+                                }
                             />
                         </div>
                     </div>
                 )}
+                {showTip === false && (
+                    <div
+                        className={`${classes.tooltip} ${classes.showHelp}`}
+                        data-title="Help"
+                    >
+                        <FontAwesomeIcon
+                            icon={["far", "question-circle"]}
+                            size={"4x"}
+                            onClick={this.showInstructions}
+                        />
+                    </div>
+                )}
                 <Editor />
-                <button className={classes.previewBtn}>Show Preview</button>
-                <button className={classes.markupBtn}>
-                    Copy Markup to Clipboard
-                </button>
+                <div className={classes.buttons}>
+                    <button className={classes.previewBtn}>Show Preview</button>
+                    <button className={classes.markupBtn}>
+                        Copy Markup to Clipboard
+                    </button>
+                </div>
             </main>
         );
     }

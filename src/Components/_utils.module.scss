@@ -2,51 +2,56 @@
     cursor: pointer;
     position: relative;
     z-index: 2;
+}
 
-    &:before,
-    &:after {
-        visibility: hidden;
-        opacity: 0;
-        pointer-events: none;
-    }
+@media only screen and (min-width: 769px) {
+    .tooltip {
+        &:before,
+        &:after {
+            visibility: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
 
-    &:hover::before,
-    &:hover::after {
-        visibility: visible;
-        opacity: 1;
-    }
+        &:hover::before,
+        &:hover::after {
+            visibility: visible;
+            opacity: 1;
+        }
 
-    &:before {
-        background-color: rgba(0, 0, 0, 0.7);
-        border-radius: 10px;
-        bottom: 120%;
-        color: #fff;
-        content: attr(data-title);
-        font-size: 16px;
-        left: 0;
-        right: 0;
-        line-height: 1.2;
-        margin: 0 auto 5px auto;
-        padding: 5px 10px;
-        position: absolute;
-        text-align: center;
-        transition: opacity 0.1s cubic-bezier(0.215, 0.61, 0.355, 1);
-        width: 100%;
-        max-width: 120px;
-        will-change: opacity;
-    }
+        &:before {
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            bottom: 110%;
+            color: #fff;
+            content: attr(data-title);
+            font-size: 16px;
+            font-weight: bold;
+            left: 0;
+            right: 0;
+            line-height: 1.2;
+            margin: 0 auto 5px auto;
+            padding: 5px 10px;
+            position: absolute;
+            text-align: center;
+            transition: opacity 0.1s cubic-bezier(0.215, 0.61, 0.355, 1);
+            width: 100%;
+            max-width: 120px;
+            will-change: opacity;
+        }
 
-    &:after {
-        position: absolute;
-        bottom: 120%;
-        left: 50%;
-        margin-left: -5px;
-        width: 0;
-        border-top: 5px solid rgba(0, 0, 0, 0.7);
-        border-right: 5px solid transparent;
-        border-left: 5px solid transparent;
-        content: " ";
-        font-size: 0;
-        line-height: 0;
+        &:after {
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            margin-left: -5px;
+            width: 0;
+            border-top: 5px solid rgba(0, 0, 0, 0.7);
+            border-right: 5px solid transparent;
+            border-left: 5px solid transparent;
+            content: " ";
+            font-size: 0;
+            line-height: 0;
+        }
     }
 }

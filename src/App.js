@@ -1,16 +1,17 @@
 import React, { Component } from "react";
-import classes from "./app.module.scss";
-import Header from "./Header";
-import Content from "./Content";
-import Footer from "./Footer";
+import classes from "./App.module.scss";
+import Header from "./Components/Header";
+import Content from "./Components/Content";
+import Footer from "./Components/Footer";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import {
+    faListAlt,
     faQuestionCircle,
     faTimesCircle
 } from "@fortawesome/free-regular-svg-icons";
 
-library.add(fab, faQuestionCircle, faTimesCircle);
+library.add(fab, faListAlt, faQuestionCircle, faTimesCircle);
 
 class App extends Component {
     render() {

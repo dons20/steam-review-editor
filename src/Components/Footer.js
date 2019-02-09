@@ -28,7 +28,7 @@ function Footer() {
                     data-title="Changelog"
                 >
                     <FontAwesomeIcon
-                        icon={["far", "question-circle"]}
+                        icon={["far", "list-alt"]}
                         size={"3x"}
                         className={classes.icon}
                     />
