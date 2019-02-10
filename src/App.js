@@ -10,8 +10,45 @@ import {
     faQuestionCircle,
     faTimesCircle
 } from "@fortawesome/free-regular-svg-icons";
+import {
+    faHeading,
+    faBold,
+    faUnderline,
+    faItalic,
+    faStrikethrough,
+    faEyeSlash,
+    faCode,
+    faLink,
+    faListOl,
+    faListUl,
+    faComment,
+    faQuoteLeft,
+    faTable,
+    faSpinner,
+    faBan
+} from "@fortawesome/free-solid-svg-icons";
 
-library.add(fab, faListAlt, faQuestionCircle, faTimesCircle);
+library.add(
+    fab,
+    faHeading,
+    faBold,
+    faBan,
+    faUnderline,
+    faItalic,
+    faStrikethrough,
+    faEyeSlash,
+    faCode,
+    faLink,
+    faListOl,
+    faListUl,
+    faComment,
+    faQuoteLeft,
+    faTable,
+    faSpinner,
+    faListAlt,
+    faQuestionCircle,
+    faTimesCircle
+);
 
 class App extends Component {
     render() {

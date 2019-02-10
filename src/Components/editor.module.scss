@@ -1,13 +1,54 @@
+@import "./utils.module.scss";
+
+.custom {
+    color: #888;
+    cursor: pointer;
+    flex: 1;
+    text-align: center;
+    transition: transform 0.1s ease-in;
+    will-change: transform;
+    &:hover {
+        transform: translateY(-2px);
+    }
+    &.active {
+        color: #333;
+    }
+}
+
+.editor {
+    padding: 1.5rem;
+}
+
+.menu {
+    align-items: center;
+    border-bottom: 1px solid rgb(204, 204, 204);
+    color: #555;
+    display: flex;
+    height: 20%;
+    justify-content: space-around;
+    padding: 1.5rem;
+    user-select: none;
+}
+
 .root {
     background-color: #fff;
-    border: 1px solid #000;
-    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.24);
     font-size: 18px;
     margin-top: 20px;
     min-height: 20vh;
-    padding: 1.5rem;
+
     width: 66.66%;
     &:focus {
         box-shadow: 0 3px 6px rgba(255, 255, 255, 0.5);
+    }
+}
+
+@media only screen and (min-width: 769px) {
+    .tooltip:before {
+        right: inherit;
+        text-align: center;
+        width: initial;
+        max-width: inherit;
+        min-width: 100%;
     }
 }

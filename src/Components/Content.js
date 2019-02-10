@@ -8,6 +8,7 @@ class Content extends Component {
         super(props);
         this.state = {
             showTip: JSON.parse(sessionStorage.getItem("showTip")),
+            contentIsDirty: false,
             hideHelp: false
         };
         this.showInstructions = this.showInstructions.bind(this);
@@ -23,8 +24,17 @@ class Content extends Component {
         this.setState({ showTip: false });
     }
 
-    saveState() {
-        sessionStorage.setItem("showTip", JSON.stringify(this.state.showTip));
+    saveState(e) {
+        if (this.state.contentIsDirty) {
+            // Cancel the event
+            e.preventDefault();
+            // Chrome requires returnValue to be set
+            e.returnValue = "";
+            sessionStorage.setItem(
+                "showTip",
+                JSON.stringify(this.state.showTip)
+            );
+        }
     }
 
     componentWillUnmount() {
@@ -36,7 +46,7 @@ class Content extends Component {
             this.setState({ showTip: true });
         }
 
-        window.addEventListener("beforeunload", this.saveState);
+        window.addEventListener("beforeunload", e => this.saveState(e));
     }
 
     render() {
