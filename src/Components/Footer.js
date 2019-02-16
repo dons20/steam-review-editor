@@ -13,9 +13,23 @@ function Footer() {
                     href="http://twitter.com/kcinnovations"
                     target="_none"
                     data-title="Twitter"
+                    rel="noopener noreferrer"
                 >
                     <FontAwesomeIcon
                         icon={["fab", "twitter-square"]}
+                        size={"3x"}
+                        className={classes.icon}
+                    />
+                </a>
+                <a
+                    className={classes.tooltip}
+                    href="https://github.com/dons20/Steam-Review-Editor"
+                    target="_none"
+                    data-title="GitHub"
+                    rel="noopener noreferrer"
+                >
+                    <FontAwesomeIcon
+                        icon={["fab", "github-square"]}
                         size={"3x"}
                         className={classes.icon}
                     />

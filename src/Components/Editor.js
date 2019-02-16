@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Editor as ReviewEditor } from "slate-react";
 import { Value } from "slate";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { isKeyHotkey } from "../Util/isHotkey";
 import classes from "./editor.module.scss";
+import Menu from "./Menu";
 
-const existingValue = JSON.parse(localStorage.getItem("content"));
-const basicValue = {
+const databaseValue = JSON.parse(localStorage.getItem("content"));
+const initialValue = {
     document: {
         nodes: [
             {
@@ -25,167 +26,245 @@ const basicValue = {
         ]
     }
 };
-const initialValue = Value.fromJSON(existingValue || basicValue);
-
-const items = [
-    {
-        name: "Header",
-        value: <FontAwesomeIcon icon="heading" />
-    },
-    {
-        name: "Bold",
-        value: <FontAwesomeIcon icon="bold" />
-    },
-    {
-        name: "Underlined",
-        value: <FontAwesomeIcon icon="underline" />
-    },
-    {
-        name: "Italic",
-        value: <FontAwesomeIcon icon="italic" />
-    },
-    {
-        name: "Strikethrough",
-        value: <FontAwesomeIcon icon="strikethrough" />
-    },
-    {
-        name: "Spoiler",
-        value: <FontAwesomeIcon icon="eye-slash" />
-    },
-    {
-        name: "Noparse",
-        value: (
-            <span className="fa-layers fa-fw static">
-                <FontAwesomeIcon icon="code" />
-                <FontAwesomeIcon
-                    icon="ban"
-                    color="rgba(255, 99, 71, 0.5)"
-                    size="2x"
-                />
-            </span>
-        )
-    },
-    {
-        name: "Link",
-        value: <FontAwesomeIcon icon="link" />
-    },
-    {
-        name: "Unordered List",
-        value: <FontAwesomeIcon icon="list-ul" />
-    },
-    {
-        name: "Ordered List",
-        value: <FontAwesomeIcon icon="list-ol" />
-    },
-    {
-        name: "Quote",
-        value: <FontAwesomeIcon icon="comment" />
-    },
-    {
-        name: "Code",
-        value: <FontAwesomeIcon icon="code" />
-    },
-    {
-        name: "Table",
-        value: <FontAwesomeIcon icon="table" />
-    },
-    {
-        name: "Reset to Default",
-        value: <FontAwesomeIcon icon="spinner" />
-    }
-];
+const starterValue = Value.fromJSON(databaseValue || initialValue);
 
 /**
- * Required features
+ * Define the default node type.
  *
- * H1
- * Bold
- * Underlined
- * Italic
- * Strikethrough
- * Spoiler
- * Noparse
- * Link/URL
- * Unordered List
- * Ordered list
- * Quote
- * Code
- * Table
- * Reset to Default
+ * @type {String}
  */
 
-const MenuItems = props => {
-    const [activeItems, setActiveItems] = useState(Array);
-    const listItems = items.map((item, index) => (
-        <div
-            className={`${classes.tooltip} ${classes.custom}${
-                activeItems.includes(index) ? ` ${classes.active}` : ""
-            }`}
-            data-title={item.name}
-            key={item.name}
-            onClick={() => handleActiveItems(index)}
-        >
-            {item.value}
-        </div>
-    ));
+const DEFAULT_NODE = "paragraph";
 
-    function handleActiveItems(index) {
-        let pos = activeItems.indexOf(index);
-        let copy = [...activeItems];
-        if (pos !== -1) {
-            copy.splice(pos, 1);
-            setActiveItems(copy);
+/**
+ * Define hotkey matchers.
+ *
+ * @type {Function}
+ */
+
+const isHeadingHotkey = isKeyHotkey("mod+h");
+const isBoldHotkey = isKeyHotkey("mod+b");
+const isUnderlinedHotkey = isKeyHotkey("mod+u");
+const isItalicHotkey = isKeyHotkey("mod+i");
+const isStrikethroughHotkey = isKeyHotkey("mod+-");
+const isCodeHotkey = isKeyHotkey("mod+`");
+
+/**
+ * Deserialize the initial editor value.
+ *
+ * @type {JSX.Element}
+ */
+
+function Editor(props) {
+    const [value, setValue] = useState(starterValue);
+    const editor = useRef();
+
+    /**
+     * When a mark button is clicked, toggle the current mark.
+     *
+     * @param {Event} event
+     * @param {String} type
+     */
+
+    const onClickMark = (event, type) => {
+        event.preventDefault();
+        editor.current.toggleMark(type);
+    };
+
+    /**
+     * When a block button is clicked, toggle the block type.
+     *
+     * @param {Event} event
+     * @param {String} type
+     */
+
+    const onClickBlock = (event, type) => {
+        event.preventDefault();
+
+        const { value } = editor.current;
+        const { document } = value;
+
+        // Handle everything but list buttons.
+        if (type !== "unordered list" && type !== "ordered list") {
+            const isActive = hasBlock(type);
+            const isList = hasBlock("list-item");
+
+            if (isList) {
+                editor
+                    .setBlocks(isActive ? DEFAULT_NODE : type)
+                    .unwrapBlock("bulleted-list")
+                    .unwrapBlock("numbered-list");
+            } else {
+                editor.current.setBlocks(isActive ? DEFAULT_NODE : type);
+            }
         } else {
-            setActiveItems([...copy, index]);
-        }
-    }
+            // Handle the extra wrapping required for list buttons.
+            const isList = hasBlock("list-item");
+            const isType = value.blocks.some(block => {
+                return !!document.getClosest(
+                    block.key,
+                    parent => parent.type === type
+                );
+            });
 
-    return listItems;
-};
-
-function Editor() {
-    const [value, setValue] = useState(initialValue);
-
-    // On change, update the app's React state with the new editor value.
-    function onChange({ value: localValue }) {
-        // Check to see if the document has changed before saving.
-        if (localValue.document !== value.document) {
-            const content = JSON.stringify(value.toJSON());
-            localStorage.setItem("content", content);
-        }
-
-        setValue(localValue);
-    }
-
-    function onKeyDown(e, change) {
-        if (!e.ctrlKey) {
-            return;
-        }
-        e.preventDefault();
-
-        switch (e.key) {
-            case "b": {
-                change.addMark("bold");
-                return true;
-            }
-            default: {
-                return;
+            if (isList && isType) {
+                editor
+                    .setBlocks(DEFAULT_NODE)
+                    .unwrapBlock("bulleted-list")
+                    .unwrapBlock("numbered-list");
+            } else if (isList) {
+                editor
+                    .unwrapBlock(
+                        type === "bulleted-list"
+                            ? "numbered-list"
+                            : "bulleted-list"
+                    )
+                    .wrapBlock(type);
+            } else {
+                editor.current.setBlocks("list-item").wrapBlock(type);
             }
         }
-    }
+    };
 
-    useEffect(() => {});
+    /**
+     * Check if the current selection has a mark with `type` in it.
+     *
+     * @param {String} type
+     * @return {Boolean}
+     */
+
+    const hasMark = type => {
+        return value.activeMarks.some(mark => mark.type === type);
+    };
+
+    /**
+     * Check if the any of the currently selected blocks are of `type`.
+     *
+     * @param {String} type
+     * @return {Boolean}
+     */
+
+    const hasBlock = type => {
+        return value.blocks.some(node => node.type === type);
+    };
+
+    /**
+     * Render a Slate node.
+     *
+     * @param {Object} props
+     * @return {Element}
+     */
+
+    const renderNode = (props, editor, next) => {
+        const { attributes, children, node } = props;
+
+        switch (node.type) {
+            case "quote":
+                return <blockquote {...attributes}>{children}</blockquote>;
+            case "unordered list":
+                return <ul {...attributes}>{children}</ul>;
+            case "heading":
+                return <h1 {...attributes}>{children}</h1>;
+            case "list item":
+                return <li {...attributes}>{children}</li>;
+            case "ordered list":
+                return <ol {...attributes}>{children}</ol>;
+            default:
+                return next();
+        }
+    };
+
+    /**
+     * Render a Slate mark.
+     *
+     * @param {Object} props
+     * @return {Element}
+     */
+
+    const renderMark = (props, editor, next) => {
+        const { children, mark, attributes } = props;
+
+        switch (mark.type) {
+            case "bold":
+                return <strong {...attributes}>{children}</strong>;
+            case "code":
+                return <code {...attributes}>{children}</code>;
+            case "italic":
+                return <em {...attributes}>{children}</em>;
+            case "underlined":
+                return <u {...attributes}>{children}</u>;
+            default:
+                return next();
+        }
+    };
+
+    /**
+     * On change, save the new `value`.
+     *
+     * @param {Editor} editor
+     */
+
+    const onChange = ({ value }) => {
+        setValue(value);
+    };
+
+    /**
+     * On key down, if it's a formatting command toggle a mark.
+     *
+     * @param {Event} event
+     * @param {Editor} editor
+     * @return {Change}
+     */
+
+    const onKeyDown = (event, editor, next) => {
+        let mark, node;
+
+        if (isBoldHotkey(event)) {
+            mark = "bold";
+        } else if (isItalicHotkey(event)) {
+            mark = "italic";
+        } else if (isUnderlinedHotkey(event)) {
+            mark = "underlined";
+        } else if (isCodeHotkey(event)) {
+            mark = "code";
+        } else if (isHeadingHotkey(event)) {
+            node = "heading";
+        } else if (isStrikethroughHotkey(event)) {
+            mark = "strikethrough";
+        } else {
+            return next();
+        }
+
+        event.preventDefault();
+        if (mark) {
+            editor.toggleMark(mark);
+        } else {
+            this.handleBlock(event, node);
+        }
+    };
 
     return (
         <div className={classes.root}>
             <div className={classes.menu}>
-                <MenuItems />
+                <Menu
+                    hasMark={hasMark}
+                    hasBlock={hasBlock}
+                    classes={classes}
+                    onClickBlock={onClickBlock}
+                    onClickMark={onClickMark}
+                />
             </div>
             <div className={classes.editor}>
                 <ReviewEditor
+                    spellCheck
+                    autoFocus
+                    placeholder="Type your review here..."
+                    ref={editor}
                     value={value}
                     onChange={onChange}
                     onKeyDown={onKeyDown}
+                    renderNode={renderNode}
+                    renderMark={renderMark}
                 />
             </div>
         </div>

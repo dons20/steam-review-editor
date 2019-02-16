@@ -4,13 +4,14 @@
     color: #888;
     cursor: pointer;
     flex: 1;
+    text-transform: capitalize;
     text-align: center;
     transition: transform 0.1s ease-in;
     will-change: transform;
     &:hover {
         transform: translateY(-2px);
     }
-    &.active {
+    &[data-active] {
         color: #333;
     }
 }
