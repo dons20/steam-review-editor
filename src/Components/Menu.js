@@ -82,6 +82,16 @@ const items = [
     }
 ];
 
+/**
+ * Renders a div with custom props to behave like a button
+ *
+ * @param {Object} props
+ *   @property {Object} item - Reference to current item
+ *   @property {Boolean} active - Denotes active state of button
+ *   @property {Function} onClick - Click handler function
+ *   @property {Object} classes - Object containing styles
+ */
+
 const Button = ({ item, active, onClick, classes }) => {
     return (
         <div
@@ -96,8 +106,21 @@ const Button = ({ item, active, onClick, classes }) => {
     );
 };
 
+/**
+ * Populates editor toolbar buttons
+ *
+ * @type {React.Component}
+ */
 export default function Menu(props) {
-    const { classes, hasMark, hasBlock, onClickBlock, onClickMark } = props;
+    const {
+        classes,
+        hasMark,
+        hasBlock,
+        onClickBlock,
+        onClickMark,
+        onClickCustom
+    } = props;
+
     const listItems = items.map(item => {
         if (item.type === "block") {
             let active = hasBlock(item.name);
@@ -126,8 +149,8 @@ export default function Menu(props) {
                 <Button
                     key={item.name}
                     item={item}
-                    //active={active}
-                    onClick={null}
+                    active={true}
+                    onClick={e => onClickCustom(e, item.name)}
                     classes={classes}
                 />
             );

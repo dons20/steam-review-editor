@@ -50,14 +50,72 @@ const isStrikethroughHotkey = isKeyHotkey("mod+-");
 const isCodeHotkey = isKeyHotkey("mod+`");
 
 /**
+ * A change helper to standardize wrapping links.
+ *
+ * @param {Editor} editor
+ * @param {String} href
+ */
+
+function wrapLink(editor, href) {
+    editor.wrapInline({
+        type: "link",
+        data: { href }
+    });
+
+    editor.moveToEnd();
+}
+
+/**
+ * A change helper to standardize unwrapping links.
+ *
+ * @param {Editor} editor
+ */
+
+function unwrapLink(editor) {
+    editor.unwrapInline("link");
+}
+
+/**
  * Deserialize the initial editor value.
  *
  * @type {JSX.Element}
  */
 
-function Editor(props) {
+function Editor() {
     const [value, setValue] = useState(starterValue);
     const editor = useRef();
+
+    /**
+     * Check if the current selection has a mark with `type` in it.
+     *
+     * @param {String} type
+     * @return {Boolean}
+     */
+
+    const hasMark = type => {
+        return value.activeMarks.some(mark => mark.type === type);
+    };
+
+    /**
+     * Check if the any of the currently selected blocks are of `type`.
+     *
+     * @param {String} type
+     * @return {Boolean}
+     */
+
+    const hasBlock = type => {
+        return value.blocks.some(node => node.type === type);
+    };
+
+    /**
+     * Check whether the current selection has a link in it.
+     *
+     * @return {Boolean} hasLinks
+     */
+
+    const hasLinks = () => {
+        return value.inlines.some(inline => inline.type === "link");
+    };
 
     /**
      * When a mark button is clicked, toggle the current mark.
@@ -126,26 +184,50 @@ function Editor(props) {
         }
     };
 
-    /**
-     * Check if the current selection has a mark with `type` in it.
-     *
-     * @param {String} type
-     * @return {Boolean}
-     */
+    const onClickCustom = (event, type) => {
+        event.preventDefault();
 
-    const hasMark = type => {
-        return value.activeMarks.some(mark => mark.type === type);
-    };
+        const { value } = editor.current;
 
-    /**
-     * Check if the any of the currently selected blocks are of `type`.
-     *
-     * @param {String} type
-     * @return {Boolean}
-     */
+        switch (type) {
+            case "reset to default":
+                setValue(Value.fromJSON(initialValue));
+                break;
+            case "link":
+                const editorHasLinks = hasLinks();
 
-    const hasBlock = type => {
-        return value.blocks.some(node => node.type === type);
+                if (editorHasLinks) {
+                    editor.current.command(unwrapLink);
+                } else if (value.selection.isExpanded) {
+                    const href = window.prompt("Enter the URL of the link:");
+
+                    if (href === null) {
+                        return;
+                    }
+
+                    editor.current.command(wrapLink, href);
+                } else {
+                    const href = window.prompt("Enter the URL of the link:");
+
+                    if (href === null) {
+                        return;
+                    }
+
+                    const text = window.prompt("Enter the text for the link:");
+
+                    if (text === null) {
+                        return;
+                    }
+
+                    editor.current
+                        .insertText(text)
+                        .moveFocusBackward(text.length)
+                        .command(wrapLink, href);
+                }
+                break;
+            default:
+                break;
+        }
     };
 
     /**
@@ -169,6 +251,16 @@ function Editor(props) {
                 return <li {...attributes}>{children}</li>;
             case "ordered list":
                 return <ol {...attributes}>{children}</ol>;
+
+            case "link": {
+                const { data } = node;
+                const href = data.get("href");
+                return (
+                    <a {...attributes} href={href}>
+                        {children}
+                    </a>
+                );
+            }
             default:
                 return next();
         }
@@ -204,8 +296,15 @@ function Editor(props) {
      * @param {Editor} editor
      */
 
-    const onChange = ({ value }) => {
-        setValue(value);
+    const onChange = ({ value: newValue }) => {
+        // Check to see if the document has changed before saving.
+        if (value.document !== newValue.document) {
+            const content = JSON.stringify(value.toJSON());
+            console.log(content);
+            localStorage.setItem("content", content);
+        }
+
+        setValue(newValue);
     };
 
     /**
@@ -250,8 +349,9 @@ function Editor(props) {
                     hasMark={hasMark}
                     hasBlock={hasBlock}
                     classes={classes}
-                    onClickBlock={onClickBlock}
                     onClickMark={onClickMark}
+                    onClickBlock={onClickBlock}
+                    onClickCustom={onClickCustom}
                 />
             </div>
             <div className={classes.editor}>
