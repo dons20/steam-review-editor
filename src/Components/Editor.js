@@ -148,7 +148,7 @@ function Editor() {
             const isList = hasBlock("list-item");
 
             if (isList) {
-                editor
+                editor.current
                     .setBlocks(isActive ? DEFAULT_NODE : type)
                     .unwrapBlock("bulleted-list")
                     .unwrapBlock("numbered-list");
