@@ -116,6 +116,7 @@ export default function Menu(props) {
         classes,
         hasMark,
         hasBlock,
+        hasLinks,
         onClickBlock,
         onClickMark,
         onClickCustom
@@ -141,6 +142,17 @@ export default function Menu(props) {
                     item={item}
                     active={active}
                     onClick={e => onClickMark(e, item.name)}
+                    classes={classes}
+                />
+            );
+        } else if (item.type === "inline") {
+            let active = hasLinks(item.name);
+            return (
+                <Button
+                    key={item.name}
+                    item={item}
+                    active={active}
+                    onClick={e => onClickCustom(e, item.name)}
                     classes={classes}
                 />
             );

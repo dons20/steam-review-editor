@@ -52,7 +52,7 @@ const isCodeHotkey = isKeyHotkey("mod+`");
 /**
  * A change helper to standardize wrapping links.
  *
- * @param {Editor} editor
+ * @param {ReviewEditor} editor
  * @param {String} href
  */
 
@@ -68,7 +68,7 @@ function wrapLink(editor, href) {
 /**
  * A change helper to standardize unwrapping links.
  *
- * @param {Editor} editor
+ * @param {ReviewEditor} editor
  */
 
 function unwrapLink(editor) {
@@ -93,7 +93,10 @@ function Editor() {
      */
 
     const hasMark = type => {
-        return value.activeMarks.some(mark => mark.type === type);
+        if (editor.current) {
+            const { value } = editor.current;
+            return value.activeMarks.some(mark => mark.type === type);
+        }
     };
 
     /**
@@ -104,7 +107,10 @@ function Editor() {
      */
 
     const hasBlock = type => {
-        return value.blocks.some(node => node.type === type);
+        if (editor.current) {
+            const { value } = editor.current;
+            return value.blocks.some(node => node.type === type);
+        }
     };
 
     /**
@@ -114,7 +120,10 @@ function Editor() {
      */
 
     const hasLinks = () => {
-        return value.inlines.some(inline => inline.type === "link");
+        if (editor.current) {
+            const { value } = editor.current;
+            return value.inlines.some(inline => inline.type === "link");
+        }
     };
 
     /**
@@ -293,7 +302,7 @@ function Editor() {
     /**
      * On change, save the new `value`.
      *
-     * @param {Editor} editor
+     * @param {ReviewEditor} editor
      */
 
     const onChange = ({ value: newValue }) => {
@@ -311,7 +320,7 @@ function Editor() {
      * On key down, if it's a formatting command toggle a mark.
      *
      * @param {Event} event
-     * @param {Editor} editor
+     * @param {ReviewEditor} editor
      * @return {Change}
      */
 
@@ -338,7 +347,9 @@ function Editor() {
         if (mark) {
             editor.toggleMark(mark);
         } else {
-            this.handleBlock(event, node);
+            //editor.toggleBlock(event, node);
+            onClickBlock(event, node);
+            //editor.setBlocks(node);
         }
     };
 
@@ -348,6 +359,7 @@ function Editor() {
                 <Menu
                     hasMark={hasMark}
                     hasBlock={hasBlock}
+                    hasLinks={hasLinks}
                     classes={classes}
                     onClickMark={onClickMark}
                     onClickBlock={onClickBlock}
