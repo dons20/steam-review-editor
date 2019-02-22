@@ -1,5 +1,14 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+/**
+ * Contains a list of toolbar items to be displayed
+ *
+ * @type {Array(Object)}
+ * @property {String} name
+ * @property {String} type
+ * @property {FontAwesomeIcon} value
+ */
 
 const items = [
     {
@@ -38,11 +47,7 @@ const items = [
         value: (
             <span className="fa-layers fa-fw static">
                 <FontAwesomeIcon icon="code" />
-                <FontAwesomeIcon
-                    icon="ban"
-                    color="rgba(255, 99, 71, 0.5)"
-                    size="2x"
-                />
+                <FontAwesomeIcon icon="ban" color="rgba(255, 99, 71, 0.5)" size="2x" />
             </span>
         )
     },
@@ -92,7 +97,7 @@ const items = [
  *   @property {Object} classes - Object containing styles
  */
 
-const Button = ({ item, active, onClick, classes }) => {
+const Button = ({ item, active, onClick, classes, reset }) => {
     return (
         <div
             className={`${classes.tooltip} ${classes.custom}`}
@@ -100,6 +105,7 @@ const Button = ({ item, active, onClick, classes }) => {
             data-title={item.name}
             data-type={item.type}
             onClick={onClick}
+            reset={reset ? "" : null}
         >
             {item.value}
         </div>
@@ -113,6 +119,7 @@ const Button = ({ item, active, onClick, classes }) => {
  */
 export default function Menu(props) {
     const {
+        editor,
         classes,
         hasMark,
         hasBlock,
@@ -122,52 +129,68 @@ export default function Menu(props) {
         onClickCustom
     } = props;
 
-    const listItems = items.map(item => {
-        if (item.type === "block") {
-            let active = hasBlock(item.name);
-            return (
-                <Button
-                    key={item.name}
-                    item={item}
-                    active={active}
-                    onClick={e => onClickBlock(e, item.name)}
-                    classes={classes}
-                />
-            );
-        } else if (item.type === "mark") {
-            let active = hasMark(item.name);
-            return (
-                <Button
-                    key={item.name}
-                    item={item}
-                    active={active}
-                    onClick={e => onClickMark(e, item.name)}
-                    classes={classes}
-                />
-            );
-        } else if (item.type === "inline") {
-            let active = hasLinks(item.name);
-            return (
-                <Button
-                    key={item.name}
-                    item={item}
-                    active={active}
-                    onClick={e => onClickCustom(e, item.name)}
-                    classes={classes}
-                />
-            );
-        } else {
-            return (
-                <Button
-                    key={item.name}
-                    item={item}
-                    active={true}
-                    onClick={e => onClickCustom(e, item.name)}
-                    classes={classes}
-                />
-            );
-        }
-    });
+    const listItems = useMemo(() =>
+        items.map(item => {
+            if (item.type === "block") {
+                let active = hasBlock(item.name);
+
+                if (editor.current) {
+                    const {
+                        value: { document, blocks }
+                    } = editor.current;
+
+                    if (["ordered list", "unordered list"].includes(item.name)) {
+                        if (blocks.size > 0) {
+                            const parent = document.getParent(blocks.first().key);
+                            active = hasBlock("list item") && parent && parent.type === item.name;
+                        }
+                    }
+                }
+
+                return (
+                    <Button
+                        key={item.name}
+                        item={item}
+                        active={active}
+                        onClick={e => onClickBlock(e, item.name)}
+                        classes={classes}
+                    />
+                );
+            } else if (item.type === "mark") {
+                let active = hasMark(item.name);
+                return (
+                    <Button
+                        key={item.name}
+                        item={item}
+                        active={active}
+                        onClick={e => onClickMark(e, item.name)}
+                        classes={classes}
+                    />
+                );
+            } else if (item.type === "inline") {
+                let active = hasLinks(item.name);
+                return (
+                    <Button
+                        key={item.name}
+                        item={item}
+                        active={active}
+                        onClick={e => onClickCustom(e, item.name)}
+                        classes={classes}
+                    />
+                );
+            } else {
+                return (
+                    <Button
+                        reset={true}
+                        key={item.name}
+                        item={item}
+                        onClick={e => onClickCustom(e, item.name)}
+                        classes={classes}
+                    />
+                );
+            }
+        })
+    );
 
     return listItems;
 }

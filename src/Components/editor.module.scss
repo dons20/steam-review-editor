@@ -12,7 +12,10 @@
         transform: translateY(-2px);
     }
     &[data-active] {
-        color: #333;
+        color: #0063fd;
+    }
+    &[reset] {
+        color: tomato;
     }
 }
 
@@ -41,6 +44,14 @@
     width: 66.66%;
     &:focus {
         box-shadow: 0 3px 6px rgba(255, 255, 255, 0.5);
+    }
+
+    & pre {
+        background-color: rgb(32, 32, 32);
+        color: #ffffff;
+        line-height: 2.5rem;
+        padding: 5px 10px;
+        white-space: pre-wrap;
     }
 }
 

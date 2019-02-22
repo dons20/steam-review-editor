@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Editor as ReviewEditor } from "slate-react";
 import { Value } from "slate";
 import { isKeyHotkey } from "../Util/isHotkey";
@@ -48,6 +48,7 @@ const isUnderlinedHotkey = isKeyHotkey("mod+u");
 const isItalicHotkey = isKeyHotkey("mod+i");
 const isStrikethroughHotkey = isKeyHotkey("mod+-");
 const isCodeHotkey = isKeyHotkey("mod+`");
+const isNewlineHotKey = isKeyHotkey("shift+enter");
 
 /**
  * A change helper to standardize wrapping links.
@@ -76,14 +77,71 @@ function unwrapLink(editor) {
 }
 
 /**
- * Deserialize the initial editor value.
+ * Hook to trigger a timeout
  *
- * @type {JSX.Element}
+ * @param {Function} callback
+ * @param {Function} beforeTimeout
+ * @param {Number} delay
+ * @param {Boolean} active
+ */
+function useTimeout(beforeTimeout, callback, delay, active) {
+    const savedCallback = useRef();
+
+    // Remember the latest callback and run initial function
+    useEffect(() => {
+        savedCallback.current = callback;
+        beforeTimeout();
+    });
+
+    // Set up the interval.
+    useEffect(() => {
+        function save() {
+            savedCallback.current();
+        }
+        if (delay !== null) {
+            let id = setTimeout(save, delay);
+            return () => clearInterval(id);
+        }
+    }, [active, delay]);
+}
+
+/**
+ * Defines the core editor component
  */
 
 function Editor() {
+    /**
+     * @type {Object} value
+     * @type {Function} setValue
+     */
     const [value, setValue] = useState(starterValue);
-    const editor = useRef();
+    const [timerActive, setTimerActive] = useState(false);
+    const editor = useRef(null);
+
+    /**
+     * Adds event listener to save editor content before refreshes/navigation changes
+     */
+    useEffect(() => {
+        window.addEventListener("beforeunload", saveEditor.bind(this, value));
+        return function cleanup() {
+            window.removeEventListener("beforeunload", saveEditor);
+        };
+    });
+
+    /**
+     * Auto-saves editor content after delay.
+     */
+    useTimeout(() => setTimerActive(false), () => saveEditor(value), 1000, timerActive);
+
+    /**
+     * Saves the content of the editor to localStorage
+     *
+     * @param {Value} value
+     */
+    const saveEditor = value => {
+        const content = JSON.stringify(value.toJSON());
+        localStorage.setItem("content", content);
+    };
 
     /**
      * Check if the current selection has a mark with `type` in it.
@@ -136,6 +194,10 @@ function Editor() {
     const onClickMark = (event, type) => {
         event.preventDefault();
         editor.current.toggleMark(type);
+        //Small hack to allow correct editor reference to be focused
+        setTimeout(() => {
+            editor.current.focus();
+        });
     };
 
     /**
@@ -148,51 +210,58 @@ function Editor() {
     const onClickBlock = (event, type) => {
         event.preventDefault();
 
+        /**
+         * @type {Object}
+         */
         const { value } = editor.current;
         const { document } = value;
 
         // Handle everything but list buttons.
         if (type !== "unordered list" && type !== "ordered list") {
             const isActive = hasBlock(type);
-            const isList = hasBlock("list-item");
+            const isList = hasBlock("list item");
 
             if (isList) {
                 editor.current
                     .setBlocks(isActive ? DEFAULT_NODE : type)
-                    .unwrapBlock("bulleted-list")
-                    .unwrapBlock("numbered-list");
+                    .unwrapBlock("unordered list")
+                    .unwrapBlock("ordered list");
             } else {
                 editor.current.setBlocks(isActive ? DEFAULT_NODE : type);
             }
         } else {
             // Handle the extra wrapping required for list buttons.
-            const isList = hasBlock("list-item");
+            const isList = hasBlock("list item");
             const isType = value.blocks.some(block => {
-                return !!document.getClosest(
-                    block.key,
-                    parent => parent.type === type
-                );
+                return !!document.getClosest(block.key, parent => parent.type === type);
             });
 
             if (isList && isType) {
-                editor
+                editor.current
                     .setBlocks(DEFAULT_NODE)
-                    .unwrapBlock("bulleted-list")
-                    .unwrapBlock("numbered-list");
+                    .unwrapBlock("unordered list")
+                    .unwrapBlock("ordered list");
             } else if (isList) {
-                editor
-                    .unwrapBlock(
-                        type === "bulleted-list"
-                            ? "numbered-list"
-                            : "bulleted-list"
-                    )
+                editor.current
+                    .unwrapBlock(type === "unordered list" ? "ordered list" : "unordered list")
                     .wrapBlock(type);
             } else {
-                editor.current.setBlocks("list-item").wrapBlock(type);
+                editor.current.setBlocks("list item").wrapBlock(type);
             }
         }
+
+        //Small hack to allow correct editor reference to be focused
+        setTimeout(() => {
+            editor.current.focus();
+        });
     };
 
+    /**
+     * Performs Custom behaviour on click
+     *
+     * @param {MouseEvent} event
+     * @param {String} type
+     */
     const onClickCustom = (event, type) => {
         event.preventDefault();
 
@@ -200,7 +269,8 @@ function Editor() {
 
         switch (type) {
             case "reset to default":
-                setValue(Value.fromJSON(initialValue));
+                //Select all and delete
+                editor.current.moveToRangeOfDocument().insertText("");
                 break;
             case "link":
                 const editorHasLinks = hasLinks();
@@ -237,12 +307,17 @@ function Editor() {
             default:
                 break;
         }
+        //Small hack to allow correct editor reference to be focused
+        setTimeout(() => {
+            editor.current.focus();
+        });
     };
 
     /**
      * Render a Slate node.
      *
      * @param {Object} props
+     * @param {ReviewEditor} editor
      * @return {Element}
      */
 
@@ -250,6 +325,8 @@ function Editor() {
         const { attributes, children, node } = props;
 
         switch (node.type) {
+            case "code":
+                return <pre {...attributes}>{children}</pre>;
             case "quote":
                 return <blockquote {...attributes}>{children}</blockquote>;
             case "unordered list":
@@ -260,7 +337,6 @@ function Editor() {
                 return <li {...attributes}>{children}</li>;
             case "ordered list":
                 return <ol {...attributes}>{children}</ol>;
-
             case "link": {
                 const { data } = node;
                 const href = data.get("href");
@@ -288,8 +364,6 @@ function Editor() {
         switch (mark.type) {
             case "bold":
                 return <strong {...attributes}>{children}</strong>;
-            case "code":
-                return <code {...attributes}>{children}</code>;
             case "italic":
                 return <em {...attributes}>{children}</em>;
             case "underlined":
@@ -308,9 +382,7 @@ function Editor() {
     const onChange = ({ value: newValue }) => {
         // Check to see if the document has changed before saving.
         if (value.document !== newValue.document) {
-            const content = JSON.stringify(value.toJSON());
-            console.log(content);
-            localStorage.setItem("content", content);
+            setTimerActive(true);
         }
 
         setValue(newValue);
@@ -339,6 +411,8 @@ function Editor() {
             node = "heading";
         } else if (isStrikethroughHotkey(event)) {
             mark = "strikethrough";
+        } else if (isNewlineHotKey(event)) {
+            return editor.insertText("\n");
         } else {
             return next();
         }
@@ -347,9 +421,7 @@ function Editor() {
         if (mark) {
             editor.toggleMark(mark);
         } else {
-            //editor.toggleBlock(event, node);
             onClickBlock(event, node);
-            //editor.setBlocks(node);
         }
     };
 
@@ -357,6 +429,7 @@ function Editor() {
         <div className={classes.root}>
             <div className={classes.menu}>
                 <Menu
+                    editor={editor}
                     hasMark={hasMark}
                     hasBlock={hasBlock}
                     hasLinks={hasLinks}

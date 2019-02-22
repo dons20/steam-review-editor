@@ -13,12 +13,7 @@ import { Set } from "immutable";
  */
 
 function deserialize(string, options = {}) {
-    let {
-        defaultBlock = "line",
-        defaultMarks = [],
-        delimiter = "\n",
-        toJSON = false
-    } = options;
+    let { defaultBlock = "line", defaultMarks = [], delimiter = "\n", toJSON = false } = options;
 
     if (Set.isSet(defaultMarks)) {
         defaultMarks = defaultMarks.toArray();
@@ -79,12 +74,10 @@ function serialize(value, options = {}) {
 function serializeNode(node, options = {}) {
     const { delimiter = "\n" } = options;
 
-    if (
-        node.object === "document" ||
-        (node.object === "block" && Block.isBlockList(node.nodes))
-    ) {
+    if (node.object === "document" || (node.object === "block" && Block.isBlockList(node.nodes))) {
         return node.nodes.map(serializeNode).join(delimiter);
     } else {
+        console.log(Node);
         return node.text;
     }
 }

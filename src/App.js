@@ -1,15 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, Suspense } from "react";
 import classes from "./App.module.scss";
 import Header from "./Components/Header";
 import Content from "./Components/Content";
 import Footer from "./Components/Footer";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import {
-    faListAlt,
-    faQuestionCircle,
-    faTimesCircle
-} from "@fortawesome/free-regular-svg-icons";
+import { faListAlt, faQuestionCircle, faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import {
     faHeading,
     faBold,
@@ -55,7 +51,9 @@ class App extends Component {
         return (
             <div className={classes.root}>
                 <Header />
-                <Content />
+                <Suspense fallback={<div>Editor is now loading...</div>}>
+                    <Content />
+                </Suspense>
                 <Footer />
             </div>
         );
