@@ -5,7 +5,7 @@ import { isKeyHotkey } from "../Util/isHotkey";
 import classes from "./editor.module.scss";
 import Menu from "./Menu";
 
-const databaseValue = JSON.parse(localStorage.getItem("content"));
+/** @type {JSON} */ const databaseValue = JSON.parse(localStorage.getItem("content"));
 const initialValue = {
     document: {
         nodes: [
@@ -28,27 +28,17 @@ const initialValue = {
 };
 const starterValue = Value.fromJSON(databaseValue || initialValue);
 
-/**
- * Define the default node type.
- *
- * @type {String}
- */
+/** @type {String} */ const DEFAULT_NODE = "paragraph";
 
-const DEFAULT_NODE = "paragraph";
-
-/**
- * Define hotkey matchers.
- *
- * @type {Function}
- */
-
-const isHeadingHotkey = isKeyHotkey("mod+h");
-const isBoldHotkey = isKeyHotkey("mod+b");
-const isUnderlinedHotkey = isKeyHotkey("mod+u");
-const isItalicHotkey = isKeyHotkey("mod+i");
-const isStrikethroughHotkey = isKeyHotkey("mod+-");
-const isCodeHotkey = isKeyHotkey("mod+`");
-const isNewlineHotKey = isKeyHotkey("shift+enter");
+/** @type {Boolean} */ const isHeadingHotkey = isKeyHotkey("mod+h");
+/** @type {Boolean} */ const isBoldHotkey = isKeyHotkey("mod+b");
+/** @type {Boolean} */ const isUnderlinedHotkey = isKeyHotkey("mod+u");
+/** @type {Boolean} */ const isItalicHotkey = isKeyHotkey("mod+i");
+/** @type {Boolean} */ const isStrikethroughHotkey = isKeyHotkey("mod+-");
+/** @type {Boolean} */ const isCodeHotkey = isKeyHotkey("mod+`");
+/** @type {Boolean} */ const isNewlineHotKey = isKeyHotkey("shift+enter");
+/** @type {Boolean} */ const isDeleteHotKey = isKeyHotkey("delete");
+/** @type {Boolean} */ const isSelectAllHotKey = isKeyHotkey("mod+a");
 
 /**
  * A change helper to standardize wrapping links.
@@ -110,12 +100,16 @@ function useTimeout(beforeTimeout, callback, delay, active) {
  */
 
 function Editor() {
-    /**
-     * @type {Object} value
-     * @type {Function} setValue
-     */
+    /** @type {[import('slate'.Value) | React.SetStateAction<Value>]} */
     const [value, setValue] = useState(starterValue);
+
+    /** @type {[Boolean, React.SetStateAction<Boolean>]} */
     const [timerActive, setTimerActive] = useState(false);
+
+    /** @type {[Boolean, React.SetStateAction<Boolean>]} */
+    const [isAllSelected, shouldSelectAll] = useState(false);
+
+    /** @type {{current: import('slate'.Editor)}} */
     const editor = useRef(null);
 
     /**
@@ -139,6 +133,7 @@ function Editor() {
      * @param {Value} value
      */
     const saveEditor = value => {
+        console.log(value.toJSON());
         const content = JSON.stringify(value.toJSON());
         localStorage.setItem("content", content);
     };
@@ -210,9 +205,6 @@ function Editor() {
     const onClickBlock = (event, type) => {
         event.preventDefault();
 
-        /**
-         * @type {Object}
-         */
         const { value } = editor.current;
         const { document } = value;
 
@@ -265,19 +257,27 @@ function Editor() {
     const onClickCustom = (event, type) => {
         event.preventDefault();
 
-        const { value } = editor.current;
+        /** @type {import('slate'.Editor)}*/
+        const { value: currentValue } = editor.current;
 
         switch (type) {
             case "reset to default":
                 //Select all and delete
-                editor.current.moveToRangeOfDocument().insertText("");
+                if (currentValue.document.nodes.size > 0) {
+                    editor.current.moveToRangeOfDocument().delete();
+                } else {
+                    let willReset = window.confirm(
+                        "The editor has no child nodes. Will you reset to a default value? (Will remove previous history)"
+                    );
+                    if (willReset) setValue(Value.fromJSON(initialValue));
+                }
                 break;
             case "link":
                 const editorHasLinks = hasLinks();
 
                 if (editorHasLinks) {
                     editor.current.command(unwrapLink);
-                } else if (value.selection.isExpanded) {
+                } else if (currentValue.selection.isExpanded) {
                     const href = window.prompt("Enter the URL of the link:");
 
                     if (href === null) {
@@ -325,18 +325,34 @@ function Editor() {
         const { attributes, children, node } = props;
 
         switch (node.type) {
-            case "code":
-                return <pre {...attributes}>{children}</pre>;
+            case "heading":
+                return <h1 {...attributes}>{children}</h1>;
             case "quote":
                 return <blockquote {...attributes}>{children}</blockquote>;
             case "unordered list":
                 return <ul {...attributes}>{children}</ul>;
-            case "heading":
-                return <h1 {...attributes}>{children}</h1>;
             case "list item":
                 return <li {...attributes}>{children}</li>;
             case "ordered list":
                 return <ol {...attributes}>{children}</ol>;
+            case "code":
+                return (
+                    <pre className={classes.code} {...attributes}>
+                        {children}
+                    </pre>
+                );
+            case "spoiler":
+                return (
+                    <div className={classes.spoiler} {...attributes}>
+                        {children}
+                    </div>
+                );
+            case "noparse":
+                return (
+                    <pre className={classes.noparse} {...attributes}>
+                        {children}
+                    </pre>
+                );
             case "link": {
                 const { data } = node;
                 const href = data.get("href");
@@ -368,6 +384,14 @@ function Editor() {
                 return <em {...attributes}>{children}</em>;
             case "underlined":
                 return <u {...attributes}>{children}</u>;
+            case "strikethrough":
+                return <s {...attributes}>{children}</s>;
+            case "image":
+                return (
+                    <img alt="" {...attributes}>
+                        {children}
+                    </img>
+                );
             default:
                 return next();
         }
@@ -376,13 +400,21 @@ function Editor() {
     /**
      * On change, save the new `value`.
      *
-     * @param {ReviewEditor} editor
+     * @typedef {Object} props
+     * @property {import('slate').Value} value
+     *
+     * @param {props} props
      */
 
     const onChange = ({ value: newValue }) => {
         // Check to see if the document has changed before saving.
         if (value.document !== newValue.document) {
             setTimerActive(true);
+            //Unwrap all nodes if toolbar has options selected
+            if (newValue.document.text.length === 0) {
+                console.log(newValue.document.text.length);
+                editor.current.setBlocks(DEFAULT_NODE);
+            }
         }
 
         setValue(newValue);
@@ -413,7 +445,19 @@ function Editor() {
             mark = "strikethrough";
         } else if (isNewlineHotKey(event)) {
             return editor.insertText("\n");
+        } else if (isSelectAllHotKey(event)) {
+            shouldSelectAll(!isAllSelected);
+            return next();
+        } else if (isDeleteHotKey(event)) {
+            if (isAllSelected) {
+                editor.setBlocks(DEFAULT_NODE);
+                shouldSelectAll(false);
+                return next();
+            } else {
+                return next();
+            }
         } else {
+            if (isAllSelected) shouldSelectAll(false);
             return next();
         }
 
@@ -423,6 +467,11 @@ function Editor() {
         } else {
             onClickBlock(event, node);
         }
+    };
+
+    const onSelect = (event, editor, next) => {
+        if (isAllSelected) shouldSelectAll(false);
+        return next();
     };
 
     return (
@@ -447,6 +496,7 @@ function Editor() {
                     ref={editor}
                     value={value}
                     onChange={onChange}
+                    onSelect={onSelect}
                     onKeyDown={onKeyDown}
                     renderNode={renderNode}
                     renderMark={renderMark}

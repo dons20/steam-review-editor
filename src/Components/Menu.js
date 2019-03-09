@@ -3,13 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
  * Contains a list of toolbar items to be displayed
- *
- * @type {Array(Object)}
- * @property {String} name
- * @property {String} type
- * @property {FontAwesomeIcon} value
  */
-
 const items = [
     {
         name: "heading",
@@ -82,7 +76,13 @@ const items = [
         value: <FontAwesomeIcon icon="table" />
     },
     {
+        name: "image",
+        type: "block",
+        value: <FontAwesomeIcon icon="image" />
+    },
+    {
         name: "reset to default",
+        type: null,
         value: <FontAwesomeIcon icon="spinner" />
     }
 ];
@@ -90,11 +90,14 @@ const items = [
 /**
  * Renders a div with custom props to behave like a button
  *
- * @param {Object} props
- *   @property {Object} item - Reference to current item
- *   @property {Boolean} active - Denotes active state of button
- *   @property {Function} onClick - Click handler function
- *   @property {Object} classes - Object containing styles
+ * @typedef {Object} props
+ * @property {Object<string, any>} item - Reference to current item
+ * @property {Boolean} active - Denotes active state of button
+ * @property {Function} onClick - Click handler function
+ * @property {Object<string, any>} classes - Object containing styles
+ * @property {Boolean} reset - Object containing styles
+ *
+ * @param {props} props
  */
 
 const Button = ({ item, active, onClick, classes, reset }) => {
@@ -115,24 +118,33 @@ const Button = ({ item, active, onClick, classes, reset }) => {
 /**
  * Populates editor toolbar buttons
  *
- * @type {React.Component}
+ * @typedef {Object} MenuProps
+ * @property {import('slate').Editor} editor
+ * @property {Object<string, any>} classes
+ * @property {Boolean} hasMark
+ * @property {Boolean} hasBlock
+ * @property {Boolean} hasLinks
+ * @property {Function} onClickBlock
+ * @property {Function} onClickMark
+ * @property {Function} onClickCustom
+ *
+ * @param {MenuProps} props
  */
-export default function Menu(props) {
-    const {
-        editor,
-        classes,
-        hasMark,
-        hasBlock,
-        hasLinks,
-        onClickBlock,
-        onClickMark,
-        onClickCustom
-    } = props;
-
+function Menu({
+    editor,
+    classes,
+    hasMark,
+    hasBlock,
+    hasLinks,
+    onClickBlock,
+    onClickMark,
+    onClickCustom
+}) {
     const listItems = useMemo(() =>
         items.map(item => {
+            let active;
             if (item.type === "block") {
-                let active = hasBlock(item.name);
+                active = hasBlock(item.name);
 
                 if (editor.current) {
                     const {
@@ -157,7 +169,8 @@ export default function Menu(props) {
                     />
                 );
             } else if (item.type === "mark") {
-                let active = hasMark(item.name);
+                active = hasMark(item.name);
+
                 return (
                     <Button
                         key={item.name}
@@ -168,7 +181,8 @@ export default function Menu(props) {
                     />
                 );
             } else if (item.type === "inline") {
-                let active = hasLinks(item.name);
+                active = hasLinks(item.name);
+
                 return (
                     <Button
                         key={item.name}
@@ -194,3 +208,5 @@ export default function Menu(props) {
 
     return listItems;
 }
+
+export default Menu;

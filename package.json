@@ -8,7 +8,9 @@
         "@fortawesome/free-regular-svg-icons": "^5.7.2",
         "@fortawesome/free-solid-svg-icons": "^5.7.2",
         "@fortawesome/react-fontawesome": "^0.1.4",
+        "image-extensions": "^1.1.0",
         "immutable": "^4.0.0-rc.12",
+        "is-url": "^1.2.4",
         "node-sass": "^4.11.0",
         "react": "^16.8.3",
         "react-dom": "^16.8.3",
@@ -30,5 +32,8 @@
         "not dead",
         "not ie <= 11",
         "not op_mini all"
-    ]
+    ],
+    "devDependencies": {
+        "react-test-renderer": "^16.8.3"
+    }
 }

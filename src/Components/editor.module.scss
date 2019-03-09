@@ -1,5 +1,24 @@
 @import "./utils.module.scss";
 
+.code {
+    background-color: rgb(32, 32, 32);
+    color: #37d0ff;
+    line-height: 2.5rem;
+    padding: 6px 10px;
+    position: relative;
+    white-space: pre-wrap;
+    &::before {
+        color: #fff;
+        content: "code";
+        font-size: 11px;
+        left: 5px;
+        line-height: 10px;
+        padding: 0;
+        position: absolute;
+        top: 1px;
+    }
+}
+
 .custom {
     color: #888;
     cursor: pointer;
@@ -34,6 +53,24 @@
     user-select: none;
 }
 
+.noparse {
+    background-color: #f3f3f3;
+    line-height: 2.5rem;
+    padding: 5px 10px;
+    position: relative;
+    white-space: pre-wrap;
+    &::before {
+        background-color: #fff;
+        content: "no-parse";
+        font-size: 11px;
+        left: 5px;
+        line-height: 0;
+        padding: 0;
+        position: absolute;
+        top: 0;
+    }
+}
+
 .root {
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.24);
@@ -44,14 +81,6 @@
     width: 66.66%;
     &:focus {
         box-shadow: 0 3px 6px rgba(255, 255, 255, 0.5);
-    }
-
-    & pre {
-        background-color: rgb(32, 32, 32);
-        color: #ffffff;
-        line-height: 2.5rem;
-        padding: 5px 10px;
-        white-space: pre-wrap;
     }
 }
 

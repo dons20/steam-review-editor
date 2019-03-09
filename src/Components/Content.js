@@ -1,88 +1,82 @@
-import React, { Component } from "react";
+import React, { useState, useEffect } from "react";
 import Editor from "./Editor";
 import classes from "./content.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-class Content extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            showTip: JSON.parse(localStorage.getItem("showTip")),
-            hideHelp: false
+function Content() {
+    /** @type {[Boolean, React.SetStateAction<Boolean>]} */
+    const [showTip, setShowTip] = useState(JSON.parse(localStorage.getItem("showTip")));
+    /** @type {[Boolean, React.SetStateAction<Boolean>]} */
+    const [hideHelp, setHideHelp] = useState(false);
+
+    let helpClasses = [classes.instructions];
+    if (hideHelp) {
+        helpClasses.push(classes.hiding);
+    }
+    let join = helpClasses.join(" ");
+
+    useEffect(() => {
+        if (showTip === null) {
+            setShowTip(true);
+        }
+        window.addEventListener("beforeunload", saveState);
+        return function cleanup() {
+            window.removeEventListener("beforeunload", saveState);
         };
-        this.showInstructions = this.showInstructions.bind(this);
-        this.hideInstructions = this.hideInstructions.bind(this);
-        this.saveState = this.saveState.bind(this);
-    }
+    });
 
-    showInstructions() {
-        this.setState({ showTip: true, hideHelp: false });
-    }
+    const showInstructions = () => {
+        setShowTip(true);
+        setHideHelp(false);
+    };
 
-    hideInstructions() {
-        this.setState({ showTip: false });
-    }
+    const hideInstructions = () => {
+        setShowTip(false);
+    };
 
-    saveState() {
-        localStorage.setItem("showTip", JSON.stringify(this.state.showTip));
-    }
+    const startHide = () => {
+        setHideHelp(true);
+    };
 
-    componentWillUnmount() {
-        window.removeEventListener("beforeunload", this.saveState);
-    }
+    const saveState = () => {
+        localStorage.setItem("showTip", JSON.stringify(showTip));
+    };
 
-    componentDidMount() {
-        if (this.state.showTip === null) {
-            this.setState({ showTip: true });
-        }
-
-        window.addEventListener("beforeunload", this.saveState);
-    }
-
-    render() {
-        const { showTip, hideHelp } = this.state;
-        let helpClasses = [classes.instructions];
-        if (hideHelp) {
-            helpClasses.push(classes.hiding);
-        }
-        let join = helpClasses.join(" ");
-
-        return (
-            <main className={classes.main}>
-                {showTip === true && (
-                    <div className={join} onAnimationEnd={this.hideInstructions}>
-                        <p>
-                            Steam Review Editor allows you to easily create and modify your reviews
-                            in real-time without having to manually apply steam markup tags. Simply
-                            type your review, hit "Copy to Clipboard", and paste it in Steam!
-                        </p>
-                        <div className={classes.tooltip} data-title="Close">
-                            <FontAwesomeIcon
-                                icon={["far", "times-circle"]}
-                                size={"2x"}
-                                className={classes.close}
-                                onClick={() => this.setState({ hideHelp: true })}
-                            />
-                        </div>
-                    </div>
-                )}
-                {showTip === false && (
-                    <div className={`${classes.tooltip} ${classes.showHelp}`} data-title="Help">
+    return (
+        <main className={classes.main}>
+            {showTip === true && (
+                <div className={join} onAnimationEnd={hideInstructions}>
+                    <p>
+                        Steam Review Editor allows you to easily create and modify your reviews in
+                        real-time without having to manually apply steam markup tags. Simply type
+                        your review, hit "Copy to Clipboard", and paste it in Steam!
+                    </p>
+                    <div className={classes.tooltip} data-title="Close">
                         <FontAwesomeIcon
-                            icon={["far", "question-circle"]}
-                            size={"4x"}
-                            onClick={this.showInstructions}
+                            icon={["far", "times-circle"]}
+                            size={"2x"}
+                            className={classes.close}
+                            onClick={startHide}
                         />
                     </div>
-                )}
-                <Editor />
-                <div className={classes.buttons}>
-                    <button className={classes.previewBtn}>Show Preview</button>
-                    <button className={classes.markupBtn}>Copy Markup to Clipboard</button>
                 </div>
-            </main>
-        );
-    }
+            )}
+            {showTip === false && (
+                <div className={`${classes.tooltip} ${classes.showHelp}`} data-title="Help">
+                    <FontAwesomeIcon
+                        icon={["far", "question-circle"]}
+                        size={"4x"}
+                        onClick={showInstructions}
+                    />
+                </div>
+            )}
+            <Editor />
+            <div className={classes.buttons}>
+                <button className={classes.previewBtn}>Show Preview</button>
+                <button className={classes.markupBtn}>Copy Markup to Clipboard</button>
+            </div>
+        </main>
+    );
 }
 
 export default Content;

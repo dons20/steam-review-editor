@@ -21,7 +21,8 @@ import {
     faQuoteLeft,
     faTable,
     faSpinner,
-    faBan
+    faBan,
+    faImage
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -29,6 +30,7 @@ library.add(
     faHeading,
     faBold,
     faBan,
+    faImage,
     faUnderline,
     faItalic,
     faStrikethrough,
