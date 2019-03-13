@@ -3,30 +3,11 @@ import { Editor as ReviewEditor } from "slate-react";
 import { Value } from "slate";
 import { isKeyHotkey } from "../Util/isHotkey";
 import classes from "./editor.module.scss";
+import initalValueAsJSON from "./value.json";
 import Menu from "./Menu";
 
 /** @type {JSON} */ const databaseValue = JSON.parse(localStorage.getItem("content"));
-const initialValue = {
-    document: {
-        nodes: [
-            {
-                object: "block",
-                type: "paragraph",
-                nodes: [
-                    {
-                        object: "text",
-                        leaves: [
-                            {
-                                text: "Write your review here!"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
-    }
-};
-const starterValue = Value.fromJSON(databaseValue || initialValue);
+/** @type {Value} */ const starterValue = Value.fromJSON(databaseValue || initalValueAsJSON);
 
 /** @type {String} */ const DEFAULT_NODE = "paragraph";
 
@@ -97,6 +78,8 @@ function useTimeout(beforeTimeout, callback, delay, active) {
 
 /**
  * Defines the core editor component
+ *
+ * @returns {JSX.Element}
  */
 
 function Editor() {
@@ -208,20 +191,8 @@ function Editor() {
         const { value } = editor.current;
         const { document } = value;
 
-        // Handle everything but list buttons.
-        if (type !== "unordered list" && type !== "ordered list") {
-            const isActive = hasBlock(type);
-            const isList = hasBlock("list item");
-
-            if (isList) {
-                editor.current
-                    .setBlocks(isActive ? DEFAULT_NODE : type)
-                    .unwrapBlock("unordered list")
-                    .unwrapBlock("ordered list");
-            } else {
-                editor.current.setBlocks(isActive ? DEFAULT_NODE : type);
-            }
-        } else {
+        // Handle list blocks
+        if (type === "unordered list" && type === "ordered list") {
             // Handle the extra wrapping required for list buttons.
             const isList = hasBlock("list item");
             const isType = value.blocks.some(block => {
@@ -239,6 +210,43 @@ function Editor() {
                     .wrapBlock(type);
             } else {
                 editor.current.setBlocks("list item").wrapBlock(type);
+            }
+        } else if (type === "table") {
+            //Handle table blocks
+            const isTable = hasBlock("table-cell");
+            const isType = value.blocks.some(block => {
+                return !!document.getClosest(block.key, parent => parent.type === type);
+            });
+            if (isTable && isType) {
+                editor.current.setBlocks(DEFAULT_NODE).unwrapBlock("table");
+            } else {
+                let rows = parseInt(window.prompt("Enter the number of rows (horizontal axis)"));
+                let columns = parseInt(
+                    window.prompt("Enter the number of columns (vertical axis)")
+                );
+                console.log(rows, columns);
+                /*let table = [];
+                for (let i = 0; i < rows; i++) {
+                    //insert Row
+                    editor.current.insertBlock({ type: "table-row" });
+                    for (let k = 0; k < columns; k++) {
+                        //insert cell
+                        editor.current.insertBlock({ type: "table-cell" });
+                    }
+                }*/
+            }
+        } else {
+            //Handle every other block
+            const isActive = hasBlock(type);
+            const isList = hasBlock("list item");
+
+            if (isList) {
+                editor.current
+                    .setBlocks(isActive ? DEFAULT_NODE : type)
+                    .unwrapBlock("unordered list")
+                    .unwrapBlock("ordered list");
+            } else {
+                editor.current.setBlocks(isActive ? DEFAULT_NODE : type);
             }
         }
 
@@ -269,7 +277,7 @@ function Editor() {
                     let willReset = window.confirm(
                         "The editor has no child nodes. Will you reset to a default value? (Will remove previous history)"
                     );
-                    if (willReset) setValue(Value.fromJSON(initialValue));
+                    if (willReset) setValue(Value.fromJSON(initalValueAsJSON));
                 }
                 break;
             case "link":
@@ -353,6 +361,16 @@ function Editor() {
                         {children}
                     </pre>
                 );
+            case "table":
+                return (
+                    <table>
+                        <tbody {...attributes}>{children}</tbody>
+                    </table>
+                );
+            case "table-row":
+                return <tr {...attributes}>{children}</tr>;
+            case "table-cell":
+                return <td {...attributes}>{children}</td>;
             case "link": {
                 const { data } = node;
                 const href = data.get("href");
@@ -410,11 +428,6 @@ function Editor() {
         // Check to see if the document has changed before saving.
         if (value.document !== newValue.document) {
             setTimerActive(true);
-            //Unwrap all nodes if toolbar has options selected
-            if (newValue.document.text.length === 0) {
-                console.log(newValue.document.text.length);
-                editor.current.setBlocks(DEFAULT_NODE);
-            }
         }
 
         setValue(newValue);
@@ -505,5 +518,11 @@ function Editor() {
         </div>
     );
 }
+
+/**
+ * Export.
+ *
+ * @type {Editor}
+ */
 
 export default Editor;

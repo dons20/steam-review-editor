@@ -1,0 +1,24 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`converts an editor value to steam markup 1`] = `
+SteamMarkup {
+  "cruftNewline": [Function],
+  "defaultBlock": Object {
+    "type": "paragraph",
+  },
+  "parseMarkup": [Function],
+  "rules": Array [
+    Object {
+      "serialize": [Function],
+    },
+    Object {
+      "deserialize": [Function],
+      "serialize": [Function],
+    },
+  ],
+  "serialize": [Function],
+  "serializeLeaf": [Function],
+  "serializeNode": [Function],
+  "serializeString": [Function],
+}
+`;

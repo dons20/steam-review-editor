@@ -1,10 +1,10 @@
-import React, { Component, Suspense } from "react";
+import React, { Suspense } from "react";
 import classes from "./App.module.scss";
 import Header from "./Components/Header";
 import Content from "./Components/Content";
 import Footer from "./Components/Footer";
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { fab } from "@fortawesome/free-brands-svg-icons";
+import { faTwitterSquare, faGithubSquare } from "@fortawesome/free-brands-svg-icons";
 import { faListAlt, faQuestionCircle, faTimesCircle } from "@fortawesome/free-regular-svg-icons";
 import {
     faHeading,
@@ -26,7 +26,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
-    fab,
+    faTwitterSquare,
+    faGithubSquare,
     faHeading,
     faBold,
     faBan,
@@ -48,18 +49,16 @@ library.add(
     faTimesCircle
 );
 
-class App extends Component {
-    render() {
-        return (
-            <div className={classes.root}>
-                <Header />
-                <Suspense fallback={<div>Editor is now loading...</div>}>
-                    <Content />
-                </Suspense>
-                <Footer />
-            </div>
-        );
-    }
+function App() {
+    return (
+        <div className={classes.root}>
+            <Header />
+            <Suspense fallback={<div>Editor is now loading...</div>}>
+                <Content />
+            </Suspense>
+            <Footer />
+        </div>
+    );
 }
 
 export default App;

@@ -9,14 +9,13 @@
         "@fortawesome/free-solid-svg-icons": "^5.7.2",
         "@fortawesome/react-fontawesome": "^0.1.4",
         "image-extensions": "^1.1.0",
-        "immutable": "^4.0.0-rc.12",
         "is-url": "^1.2.4",
         "node-sass": "^4.11.0",
-        "react": "^16.8.3",
-        "react-dom": "^16.8.3",
-        "react-scripts": "^2.1.5",
-        "slate": "^0.44.10",
-        "slate-react": "^0.21.16"
+        "react": "^16.8.4",
+        "react-dom": "^16.8.4",
+        "react-scripts": "^2.1.8",
+        "slate": "^0.44.12",
+        "slate-react": "^0.21.18"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -34,6 +33,9 @@
         "not op_mini all"
     ],
     "devDependencies": {
-        "react-test-renderer": "^16.8.3"
+        "ajv": "^6.10.0",
+        "immutable": "3.8.1",
+        "typescript": "^3.3.3333",
+        "react-test-renderer": "^16.8.4"
     }
 }

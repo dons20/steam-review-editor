@@ -33,4 +33,4 @@ _Guidelines coming soon_
 
 ## License
 
-This application is licensed under the [MIT License](LICENSE).
+This application is licensed under the [Blue Oak License](LICENSE).
