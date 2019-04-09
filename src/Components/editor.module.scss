@@ -47,9 +47,8 @@
     border-bottom: 1px solid rgb(204, 204, 204);
     color: #555;
     display: flex;
-    height: 20%;
     justify-content: space-around;
-    padding: 1.5rem;
+    padding: 30px 10px;
     user-select: none;
 }
 
@@ -75,9 +74,9 @@
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.24);
     font-size: 18px;
+    grid-row: 2;
     margin-top: 20px;
     min-height: 20vh;
-
     width: 66.66%;
     &:focus {
         box-shadow: 0 3px 6px rgba(255, 255, 255, 0.5);

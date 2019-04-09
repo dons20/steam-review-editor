@@ -12,6 +12,7 @@
 .buttons {
     display: grid;
     font-size: 20px;
+    grid-row: 3;
     grid-row-gap: 10px;
     grid-template-rows: 1fr 1fr;
     justify-content: space-around;
@@ -46,12 +47,13 @@
 }
 
 .main {
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-around;
+    display: grid;
+    grid-template-rows: auto minmax(350px, 1fr) minmax(50px, 100px) auto;
+    grid-template-columns: 1fr;
+    justify-items: center;
     padding: 2% 0;
     position: relative;
+    row-gap: 40px;
 }
 
 .markupBtn,

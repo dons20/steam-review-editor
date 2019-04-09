@@ -75,8 +75,8 @@ class SteamMarkup {
      *
      * @param {Object} options
      *  @property {Array} rules
-     *   @property {String|Object|Block} defaultBlock
-     *   @property {Function} parseHtml
+     *  @property {String|Object|Block} defaultBlock
+     *  @property {Function} parseHtml
      */
     constructor(options = {}) {
         let { defaultBlock = "paragraph", parseMarkup = defaultParseHtml, rules = [] } = options;
@@ -93,19 +93,15 @@ class SteamMarkup {
      *
      * @param {Value} value
      * @param {Object} options
-     *   @property {Boolean} render
+     *  @property {Boolean} render
      * @return {String|Array}
      */
 
     serialize = (value, options = {}) => {
         const { document } = value;
         const elements = document.nodes.map(this.serializeNode).filter(el => el);
-        if (options.render === false) return elements;
 
-        //const html = renderToStaticMarkup(<body>{elements}</body>);
-        //const inner = html.slice(6, -7);
-        const inner = elements;
-        return inner;
+        return elements;
     };
 
     /**
@@ -127,7 +123,7 @@ class SteamMarkup {
             if (!rule.serialize) continue;
             const ret = rule.serialize(node, children);
             if (ret === null) return;
-            if (ret) return addKey(ret);
+            if (ret) return ret;
         }
 
         throw new Error(`No serializer defined for node of type "${node.type}".`);
@@ -136,64 +132,24 @@ class SteamMarkup {
     /**
      * Serialize a `leaf`.
      *
-     * @param {Leaf} leaf
+     * @param {import('slate').Leaf} leaf
      * @return {String}
      */
 
     serializeLeaf = leaf => {
-        const string = new String({ text: leaf.text });
-        const text = this.serializeString(string);
+        const text = new String(leaf.text);
 
         return leaf.marks.reduce((children, mark) => {
             for (const rule of this.rules) {
                 if (!rule.serialize) continue;
                 const ret = rule.serialize(mark, children);
                 if (ret === null) return;
-                if (ret) return addKey(ret);
+                if (ret) return ret;
             }
 
             throw new Error(`No serializer defined for mark of type "${mark.type}".`);
         }, text);
     };
-
-    /**
-     * Serialize a `string`.
-     *
-     * @param {String} string
-     * @return {String}
-     */
-
-    serializeString = string => {
-        for (const rule of this.rules) {
-            if (!rule.serialize) continue;
-            const ret = rule.serialize(string, string.text);
-            if (ret) return ret;
-        }
-    };
-
-    /**
-     * Filter out cruft newline nodes inserted by the DOM parser.
-     *
-     * @param {Object} element
-     * @return {Boolean}
-     */
-
-    cruftNewline = element => {
-        return !(element.nodeName === "#text" && element.nodeValue === "\n");
-    };
-}
-
-/**
- * Add a unique key to a React `element`.
- *
- * @param {Element} element
- * @return {Element}
- */
-
-let key = 0;
-
-function addKey(element) {
-    return React.cloneElement(element, { key: key++ });
 }
 
 /**

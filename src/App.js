@@ -5,7 +5,7 @@ import Content from "./Components/Content";
 import Footer from "./Components/Footer";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { faTwitterSquare, faGithubSquare } from "@fortawesome/free-brands-svg-icons";
-import { faListAlt, faQuestionCircle, faTimesCircle } from "@fortawesome/free-regular-svg-icons";
+import { faListAlt, faTimesCircle, faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import {
     faHeading,
     faBold,
@@ -22,7 +22,9 @@ import {
     faTable,
     faSpinner,
     faBan,
-    faImage
+    faImage,
+    faSquare,
+    faQuestion
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -45,6 +47,8 @@ library.add(
     faTable,
     faSpinner,
     faListAlt,
+    faSquare,
+    faQuestion,
     faQuestionCircle,
     faTimesCircle
 );
