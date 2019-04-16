@@ -3,19 +3,19 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
-        "@fortawesome/fontawesome-svg-core": "^1.2.15",
-        "@fortawesome/free-brands-svg-icons": "^5.7.2",
-        "@fortawesome/free-regular-svg-icons": "^5.7.2",
-        "@fortawesome/free-solid-svg-icons": "^5.7.2",
+        "@fortawesome/fontawesome-svg-core": "^1.2.17",
+        "@fortawesome/free-brands-svg-icons": "^5.8.1",
+        "@fortawesome/free-regular-svg-icons": "^5.8.1",
+        "@fortawesome/free-solid-svg-icons": "^5.8.1",
         "@fortawesome/react-fontawesome": "^0.1.4",
         "image-extensions": "^1.1.0",
         "is-url": "^1.2.4",
         "node-sass": "^4.11.0",
-        "react": "^16.8.4",
-        "react-dom": "^16.8.4",
+        "react": "^16.8.6",
+        "react-dom": "^16.8.6",
         "react-scripts": "^2.1.8",
-        "slate": "^0.44.12",
-        "slate-react": "^0.21.18"
+        "slate": "^0.45.0",
+        "slate-react": "^0.21.20"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -35,7 +35,7 @@
     "devDependencies": {
         "ajv": "^6.10.0",
         "immutable": "3.8.1",
-        "typescript": "^3.3.3333",
-        "react-test-renderer": "^16.8.4"
+        "typescript": "^3.4.3",
+        "react-test-renderer": "^16.8.6"
     }
 }

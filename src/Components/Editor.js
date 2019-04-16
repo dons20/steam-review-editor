@@ -1,7 +1,8 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { Editor as ReviewEditor } from "slate-react";
 import { Value } from "slate";
 import { isKeyHotkey } from "../Util/isHotkey";
+import { AppContext } from "./Content";
 import classes from "./editor.module.scss";
 import initalValueAsJSON from "./value.json";
 import Menu from "./Menu";
@@ -94,6 +95,8 @@ function Editor() {
 
     /** @type {{current: import('slate'.Editor)}} */
     const editor = useRef(null);
+    /** @type {Function} */
+    const context = useContext(AppContext);
 
     /**
      * Adds event listener to save editor content before refreshes/navigation changes
@@ -116,9 +119,12 @@ function Editor() {
      * @param {Value} value
      */
     const saveEditor = value => {
-        console.log(value.toJSON());
-        const content = JSON.stringify(value.toJSON());
+        let val = value.toJSON();
+        console.log(val);
+        const content = JSON.stringify(val);
         localStorage.setItem("content", content);
+        //consume context fn to convert editor value
+        context(val);
     };
 
     /**

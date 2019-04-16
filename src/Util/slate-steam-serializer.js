@@ -1,6 +1,5 @@
 import React from "react";
-import { renderToStaticMarkup } from "react-dom/server";
-import { Node, Value } from "slate";
+import { Node } from "slate";
 
 /**
  * A rule to (de)serialize text nodes. This is automatically added to the HTML
@@ -122,7 +121,7 @@ class SteamMarkup {
         for (const rule of this.rules) {
             if (!rule.serialize) continue;
             const ret = rule.serialize(node, children);
-            if (ret === null) return;
+            if (ret === null) return null;
             if (ret) return ret;
         }
 
@@ -137,13 +136,13 @@ class SteamMarkup {
      */
 
     serializeLeaf = leaf => {
-        const text = new String(leaf.text);
+        const text = leaf.text;
 
         return leaf.marks.reduce((children, mark) => {
             for (const rule of this.rules) {
                 if (!rule.serialize) continue;
                 const ret = rule.serialize(mark, children);
-                if (ret === null) return;
+                if (ret === null) return null;
                 if (ret) return ret;
             }
 

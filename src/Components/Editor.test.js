@@ -30,6 +30,11 @@ it("converts an editor value to steam markup", () => {
                             default:
                                 return;
                         }
+                    } else if (obj.object === "mark") {
+                        switch (obj.type) {
+                            case "underlined":
+                                return `[u]${obj.text}[/u]`;
+                        }
                     }
                 }
             }

@@ -3,7 +3,6 @@ $body-color: #acb2b8;
 $primary-font: "Motiva Sans", "Raleway", sans-serif;
 
 .avatar {
-    align-items: center;
     color: #fff;
     display: flex;
     font-size: 3.1em;
@@ -13,16 +12,18 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 .body {
     background-color: #111a24;
     display: grid;
+    flex: 1;
     grid-template-columns: 1fr 2fr;
     grid-template-rows: auto 1fr;
     grid-row-gap: 10px;
-    min-height: 100px;
     padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .content {
     grid-column: 2;
     grid-row: 2;
+    font-size: 15px;
 }
 
 .heading {
@@ -40,10 +41,18 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 
 .markup {
     color: $body-color;
+    display: flex;
+    flex-direction: column;
     font-family: $primary-font;
     font-size: 13px;
     line-height: 17px;
     white-space: pre-line;
+}
+
+.markupBody {
+    background-color: #111a24;
+    flex: 1;
+    padding: 0.5rem;
 }
 
 .middle {
@@ -76,7 +85,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     display: grid;
     font-size: 16px;
     font-weight: 500;
-    grid-template-columns: 10% 1fr 5%;
+    grid-template-columns: 9% 1fr 5%;
     &:hover {
         background-color: rgba(255, 255, 255, 0.1);
     }
@@ -91,4 +100,10 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 
 .store {
     @extend .markup;
+}
+
+.username {
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 3px;
 }
