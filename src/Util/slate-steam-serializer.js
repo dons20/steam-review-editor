@@ -1,5 +1,17 @@
 import React from "react";
 import { Node } from "slate";
+import { Record } from "immutable";
+
+/**
+ * String.
+ *
+ * @type {String}
+ */
+
+const String = new Record({
+    object: "string",
+    text: ""
+});
 
 /**
  * A rule to (de)serialize text nodes. This is automatically added to the HTML
@@ -90,7 +102,7 @@ class SteamMarkup {
     /**
      * Serialize a `value` object into a pre-formatted string with steam markup.
      *
-     * @param {Value} value
+     * @param {import('slate').Value} value
      * @param {Object} options
      *  @property {Boolean} render
      * @return {String|Array}
@@ -98,8 +110,7 @@ class SteamMarkup {
 
     serialize = (value, options = {}) => {
         const { document } = value;
-        const elements = document.nodes.map(this.serializeNode).filter(el => el);
-
+        const elements = document.nodes.map(node => this.serializeNode(node)).filter(el => el);
         return elements;
     };
 
@@ -113,10 +124,13 @@ class SteamMarkup {
     serializeNode = node => {
         if (node.object === "text") {
             const leaves = node.getLeaves();
-            return leaves.map(this.serializeLeaf);
+            if (node.text.length > 0) {
+                return leaves.map(this.serializeLeaf);
+            }
         }
 
-        const children = node.nodes.map(this.serializeNode);
+        /** @type {Node} */
+        const children = node.nodes.filter(x => x.text.length > 0).map(this.serializeNode);
 
         for (const rule of this.rules) {
             if (!rule.serialize) continue;
@@ -136,7 +150,8 @@ class SteamMarkup {
      */
 
     serializeLeaf = leaf => {
-        const text = leaf.text;
+        const string = String({ text: leaf.text });
+        const text = this.serializeString(string);
 
         return leaf.marks.reduce((children, mark) => {
             for (const rule of this.rules) {
@@ -148,6 +163,21 @@ class SteamMarkup {
 
             throw new Error(`No serializer defined for mark of type "${mark.type}".`);
         }, text);
+    };
+
+    /**
+     * Serialize a `string`.
+     *
+     * @param {String} string
+     * @return {String}
+     */
+
+    serializeString = string => {
+        for (const rule of this.rules) {
+            if (!rule.serialize) continue;
+            const ret = rule.serialize(string, string.text);
+            if (ret) return ret;
+        }
     };
 }
 

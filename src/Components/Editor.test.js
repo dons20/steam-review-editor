@@ -7,6 +7,7 @@ import { Value } from "slate";
 import Editor from "./Editor";
 import EditorValue from "./testValue.json";
 import SteamMarkup from "../Util/slate-steam-serializer";
+import rules from "./rules.js";
 
 it("renders the editor", () => {
     const div = document.createElement("div");
@@ -15,31 +16,7 @@ it("renders the editor", () => {
 });
 
 it("converts an editor value to steam markup", () => {
-    const toSteamMarkup = new SteamMarkup({
-        rules: [
-            {
-                /**
-                 * @param {import('slate').Document} obj
-                 * @param {Array<Object>} children
-                 */
-                serialize(obj, children) {
-                    if (obj.object === "block") {
-                        switch (obj.type) {
-                            case "heading":
-                                return `[h1]${obj.text}[/h1]`;
-                            default:
-                                return;
-                        }
-                    } else if (obj.object === "mark") {
-                        switch (obj.type) {
-                            case "underlined":
-                                return `[u]${obj.text}[/u]`;
-                        }
-                    }
-                }
-            }
-        ]
-    });
+    const toSteamMarkup = new SteamMarkup(rules);
     const newVal = toSteamMarkup.serialize(Value.fromJSON(EditorValue));
     expect(
         newVal.reduce((text, child) => {

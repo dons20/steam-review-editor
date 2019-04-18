@@ -1,78 +1,56 @@
 import React, { useState } from "react";
 import classes from "./preview.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Value } from "slate";
 import rec from "../thumbsUp.png";
 import notRec from "../thumbsDown.png";
 import steamLogo from "../icon_review_steam.png";
 import SteamMarkup from "../Util/slate-steam-serializer";
-import { Value } from "slate";
+import HTML from "../Util/slate-html-serializer";
+import markupRules from "./markupRules.js";
+import htmlRules from "./htmlRules.js";
 
-const toSteamMarkup = new SteamMarkup({
-    rules: [
-        {
-            /**
-             * @param {import('slate').Document} obj
-             * @param {Array<import('immutable').List>} children
-             */
-            serialize(obj, children) {
-                if (obj.object === "block") {
-                    let root = children.get(0).join("");
-                    switch (obj.type) {
-                        case "heading":
-                            return `[h1]${root}[/h1]\n`;
-                        case "paragraph":
-                            return `${root}\n` || null;
-                        default:
-                            return;
-                    }
-                } else if (obj.object === "mark") {
-                    switch (obj.type) {
-                        case "bold":
-                            return `[b]${children}[/b]`;
-                        case "underlined":
-                            return `[u]${children}[/u]`;
-                        case "italic":
-                            return `[i]${children}[/i]`;
-                        case "strikethrough":
-                            return `[strike]${children}[/strike]`;
-                        default:
-                            return;
-                    }
-                }
-            }
-        }
-    ]
-});
-
+const toSteamMarkup = new SteamMarkup(markupRules);
+const toHTMLMarkup = new HTML(htmlRules);
 const date = new Date();
-const randomize = () => {
-    return parseFloat(Math.random() * 51).toFixed(1);
-};
-let rand = randomize();
+const months = [
+    "JANUARY",
+    "FEBUARY",
+    "MARCH",
+    "APRIL",
+    "MAY",
+    "JUNE",
+    "JULY",
+    "AUGUST",
+    "SEPTEMBER",
+    "OCTOBER",
+    "NOVEMBER",
+    "DECEMBER"
+];
 
+/**
+ * Randomizes a number between 0 and max
+ * @param {Integer} max
+ */
+const randomize = max => {
+    return parseFloat(Math.random() * max).toFixed(1);
+};
+
+let rand = randomize(51);
+
+/**
+ * @typedef {Object} props
+ * @property {JSON} content
+ *
+ * @param {props} props
+ */
 function Preview(props) {
     const [isRecommended, setIsRecommended] = useState(true);
-    const months = [
-        "JANUARY",
-        "FEBUARY",
-        "MARCH",
-        "APRIL",
-        "MAY",
-        "JUNE",
-        "JULY",
-        "AUGUST",
-        "SEPTEMBER",
-        "OCTOBER",
-        "NOVEMBER",
-        "DECEMBER"
-    ];
 
     /** @type {String} */
-    const markup = toSteamMarkup.serialize(Value.fromJSON(props.content)).reduce((text, child) => {
-        return text + child;
-    });
-    const content = markup.replace(/\[/g, "<").replace(/\]/g, ">");
-
+    const markup = toSteamMarkup.serialize(Value.fromJSON(props.content)).join("");
+    const content = toHTMLMarkup.serialize(Value.fromJSON(props.content));
+    /** Flips between Recommended/Not Recommended and randomizes hours */
     const setReview = () => {
         setIsRecommended(!isRecommended);
         rand = randomize();

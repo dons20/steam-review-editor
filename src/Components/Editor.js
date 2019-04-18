@@ -96,7 +96,7 @@ function Editor() {
     /** @type {{current: import('slate'.Editor)}} */
     const editor = useRef(null);
     /** @type {Function} */
-    const context = useContext(AppContext);
+    const setPreviewContent = useContext(AppContext);
 
     /**
      * Adds event listener to save editor content before refreshes/navigation changes
@@ -123,8 +123,7 @@ function Editor() {
         console.log(val);
         const content = JSON.stringify(val);
         localStorage.setItem("content", content);
-        //consume context fn to convert editor value
-        context(val);
+        setPreviewContent(val);
     };
 
     /**
