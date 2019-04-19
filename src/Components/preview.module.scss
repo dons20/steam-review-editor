@@ -10,7 +10,8 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 }
 
 .body {
-    background-color: #111a24;
+    background: #111a24;
+    background: linear-gradient(to bottom, #111923, #17212e);
     display: grid;
     flex: 1;
     grid-template-columns: 1fr 2fr;
@@ -27,6 +28,13 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     & h1 {
         color: #5aa9d6;
         font-size: 18px;
+    }
+    & a {
+        color: #ebebeb;
+        text-decoration: underline;
+        &:hover {
+            color: #fff;
+        }
     }
 }
 
@@ -54,7 +62,8 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 }
 
 .markupBody {
-    background-color: #111a24;
+    background: #111a24;
+    background: linear-gradient(to bottom, #111923, #17212e);
     flex: 1;
     padding: 0.5rem 1rem;
 }
@@ -110,4 +119,15 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     font-size: 15px;
     font-weight: 500;
     margin-top: 3px;
+}
+
+/* Styles for Preview Elements */
+.spoiler {
+    background-color: #000;
+    color: #000;
+    display: inline-block;
+    padding: 0 3px;
+    &:hover {
+        color: #fff;
+    }
 }

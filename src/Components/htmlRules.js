@@ -1,4 +1,5 @@
 import React from "react";
+import classes from "./preview.module.scss";
 
 export default {
     rules: [
@@ -14,6 +15,24 @@ export default {
                             return React.createElement("h1", {}, children);
                         case "paragraph":
                             return React.createElement("p", {}, children);
+                        case "spoiler":
+                            return React.createElement(
+                                "div",
+                                { className: classes.spoiler },
+                                children
+                            );
+                        case "noparse":
+                            return React.createElement(
+                                "pre",
+                                { className: classes.noparse },
+                                children
+                            );
+                        case "quote":
+                            return React.createElement(
+                                "blockquote",
+                                { className: classes.quote },
+                                children
+                            );
                         default:
                             return;
                     }

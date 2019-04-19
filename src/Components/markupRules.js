@@ -12,12 +12,20 @@ export default {
                     if (typeof root === "object") {
                         root = root.join("");
                     }
+                    if (!root) root = "";
 
                     switch (obj.type) {
                         case "heading":
                             return `[h1]${root}[/h1]\n`;
                         case "paragraph":
                             return `${root}\n` || null;
+                        case "spoiler":
+                            return `[spoiler]${root}[/spoiler]\n`;
+                        case "noparse":
+                            return `[noparse]${root}[/noparse]\n`;
+                        case "quote":
+                            let author = obj.data.get("author");
+                            return `[quote${author ? `=${author}` : ""}]${root}[/quote]`;
                         default:
                             return;
                     }

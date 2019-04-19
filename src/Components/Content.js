@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Editor from "./Editor";
 import Preview from "./Preview";
@@ -6,14 +6,18 @@ import classes from "./content.module.scss";
 
 export const AppContext = React.createContext();
 
-function Content() {
+function Content(props) {
     /** @type {[Boolean, React.SetStateAction<Boolean>]} */
     const [showTip, setShowTip] = useState(JSON.parse(localStorage.getItem("showTip")));
     /** @type {[Boolean, React.SetStateAction<Boolean>]} */
     const [hideHelp, setHideHelp] = useState(false);
     /** @type {[Boolean, React.SetStateAction<Boolean>]} */
     const [showPreview, setShowPreview] = useState(false);
+    /** @type {[JSON, React.SetStateAction<JSON>]} */
     const [htmlContent, setHTMLContent] = useState("");
+    ///** @type {[JSON, React.SetStateAction<JSON>]} */
+    //const [markupContent, setMarkupContent] = useState("");
+    const markup = useRef(null);
 
     /**
      * Handles the visibility settings of the help tips
@@ -49,9 +53,17 @@ function Content() {
         localStorage.setItem("showTip", JSON.stringify(showTip));
     };
 
-    /**
-     * TODO: Deal with context across app
-     */
+    /** Copies the markup to clipboard */
+    const copyToClipboard = () => {
+        if (!markup.current) return;
+        const range = document.createRange();
+        const selection = window.getSelection();
+        range.selectNodeContents(markup.current);
+        selection.removeAllRanges();
+        selection.addRange(range);
+        document.execCommand("copy");
+        props.notify("Markup copied to clipboard!");
+    };
 
     return (
         <AppContext.Provider value={setHTMLContent}>
@@ -94,9 +106,11 @@ function Content() {
                     >
                         {showPreview ? "Hide " : "Show "} Preview
                     </button>
-                    <button className={classes.markupBtn}>Copy Markup to Clipboard</button>
+                    <button className={classes.markupBtn} onClick={copyToClipboard}>
+                        Copy Markup to Clipboard
+                    </button>
                 </div>
-                {showPreview === true && <Preview content={htmlContent} />}
+                {showPreview === true && <Preview content={htmlContent} markupRef={markup} />}
             </main>
         </AppContext.Provider>
     );

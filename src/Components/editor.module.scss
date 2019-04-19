@@ -83,6 +83,30 @@
     }
 }
 
+.spoiler {
+    background-color: #222;
+    color: #999;
+    display: block;
+    line-height: 2.5rem;
+    padding: 5px 10px;
+    position: relative;
+    margin: 5px 0;
+    &:hover {
+        color: #fff;
+    }
+    &::before {
+        background-color: #fff;
+        color: #fff;
+        content: "spoiler";
+        font-size: 11px;
+        left: 5px;
+        line-height: 0;
+        padding: 0;
+        position: absolute;
+        top: 10px;
+    }
+}
+
 @media only screen and (min-width: 769px) {
     .tooltip:before {
         right: inherit;

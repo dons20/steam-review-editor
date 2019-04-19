@@ -2,7 +2,7 @@ import React from "react";
 import classes from "./footer.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Footer() {
+function Footer(props) {
     const date = new Date().getFullYear();
 
     return (
@@ -34,10 +34,10 @@ function Footer() {
                         className={classes.icon}
                     />
                 </a>
-                <a
+                <button
+                    type="button"
                     className={classes.tooltip}
-                    href="#changelogModal"
-                    role="button"
+                    onClick={() => props.showModal(true)}
                     data-toggle="modal"
                     data-title="Changelog"
                 >
@@ -46,7 +46,7 @@ function Footer() {
                         size={"3x"}
                         className={classes.icon}
                     />
-                </a>
+                </button>
             </div>
             <p>
                 Copyright &copy; {date} | Keno Clayton, Licensed under the{" "}
@@ -54,8 +54,7 @@ function Footer() {
                     MIT License
                 </a>
                 <br />
-                This website is <strong>not</strong> associated with Valve
-                Corporation
+                This website is <strong>not</strong> associated with Valve Corporation
             </p>
         </footer>
     );

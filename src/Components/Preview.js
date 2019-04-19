@@ -92,7 +92,9 @@ function Preview(props) {
             </div>
             <div className={classes.markup}>
                 <h1 className={classes.heading}>Markup Preview</h1>
-                <div className={classes.markupBody}>{markup}</div>
+                <div className={classes.markupBody} ref={props.markupRef}>
+                    {markup}
+                </div>
             </div>
         </div>
     );
