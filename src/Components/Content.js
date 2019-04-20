@@ -19,19 +19,6 @@ function Content(props) {
     //const [markupContent, setMarkupContent] = useState("");
     const markup = useRef(null);
 
-    /**
-     * Handles the visibility settings of the help tips
-     */
-    useEffect(() => {
-        if (showTip === null) {
-            setShowTip(true);
-        }
-        window.addEventListener("beforeunload", saveState);
-        return function cleanup() {
-            window.removeEventListener("beforeunload", saveState);
-        };
-    });
-
     /** Shows the instructions */
     const showInstructions = () => {
         setShowTip(true);
@@ -48,11 +35,6 @@ function Content(props) {
         setHideHelp(true);
     };
 
-    /** Saves the visibility of the info bar to local storage */
-    const saveState = () => {
-        localStorage.setItem("showTip", JSON.stringify(showTip));
-    };
-
     /** Copies the markup to clipboard */
     const copyToClipboard = () => {
         if (!markup.current) return;
@@ -64,6 +46,25 @@ function Content(props) {
         document.execCommand("copy");
         props.notify("Markup copied to clipboard!");
     };
+
+    /**
+     * Handles the visibility settings of the help tips
+     */
+    useEffect(() => {
+        if (showTip === null) {
+            setShowTip(true);
+        }
+
+        /** Saves the visibility of the info bar to local storage */
+        const saveState = () => {
+            localStorage.setItem("showTip", JSON.stringify(showTip));
+        };
+
+        window.addEventListener("beforeunload", saveState);
+        return function cleanup() {
+            window.removeEventListener("beforeunload", saveState);
+        };
+    }, [showTip]);
 
     return (
         <AppContext.Provider value={setHTMLContent}>

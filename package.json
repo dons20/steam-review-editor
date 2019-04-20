@@ -13,10 +13,11 @@
         "node-sass": "^4.11.0",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
-        "react-scripts": "^2.1.8",
+        "react-scripts": "^3.0.0-next.68",
         "react-toastify": "^5.1.0",
         "slate": "^0.45.0",
-        "slate-react": "^0.21.20"
+        "slate-react": "^0.21.20",
+        "slate-tables": "^0.9.0"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -27,12 +28,18 @@
     "eslintConfig": {
         "extends": "react-app"
     },
-    "browserslist": [
-        ">0.2%",
-        "not dead",
-        "not ie <= 11",
-        "not op_mini all"
-    ],
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
     "devDependencies": {
         "ajv": "^6.10.0",
         "immutable": "3.8.1",

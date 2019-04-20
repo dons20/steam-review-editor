@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { Editor as ReviewEditor } from "slate-react";
 import { Value } from "slate";
+import Tables from "slate-tables";
 import { isKeyHotkey } from "../Util/isHotkey";
 import { AppContext } from "./Content";
 import classes from "./editor.module.scss";
@@ -21,6 +22,8 @@ import Menu from "./Menu";
 /** @type {Boolean} */ const isNewlineHotKey = isKeyHotkey("shift+enter");
 /** @type {Boolean} */ const isDeleteHotKey = isKeyHotkey("delete");
 /** @type {Boolean} */ const isSelectAllHotKey = isKeyHotkey("mod+a");
+
+const plugins = [Tables()];
 
 /**
  * A change helper to standardize wrapping links.
@@ -225,22 +228,11 @@ function Editor() {
             if (isTable && isType) {
                 editor.current.setBlocks(DEFAULT_NODE).unwrapBlock("table");
             } else {
-                let rows = parseInt(window.prompt("Enter the number of rows (horizontal axis)"));
+                let rows = parseInt(window.prompt("Enter the number of rows"));
                 if (!rows) return;
-                let columns = parseInt(
-                    window.prompt("Enter the number of columns (vertical axis)")
-                );
+                let columns = parseInt(window.prompt("Enter the number of columns"));
                 if (!columns) return;
-                console.log(rows, columns);
-                /*let table = [];
-                for (let i = 0; i < rows; i++) {
-                    //insert Row
-                    editor.current.insertBlock({ type: "table-row" });
-                    for (let k = 0; k < columns; k++) {
-                        //insert cell
-                        editor.current.insertBlock({ type: "table-cell" });
-                    }
-                }*/
+                editor.current.insertTable(columns, rows);
             }
         } else {
             //Handle every other block
@@ -530,6 +522,7 @@ function Editor() {
                     placeholder="Type your review here..."
                     ref={editor}
                     value={value}
+                    plugins={plugins}
                     onChange={onChange}
                     onSelect={onSelect}
                     onKeyDown={onKeyDown}
