@@ -8,6 +8,7 @@
     .tooltip {
         &:before,
         &:after {
+            display: none;
             visibility: hidden;
             opacity: 0;
             pointer-events: none;
@@ -15,6 +16,7 @@
 
         &:hover::before,
         &:hover::after {
+            display: block;
             visibility: visible;
             opacity: 1;
         }

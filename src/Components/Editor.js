@@ -226,9 +226,11 @@ function Editor() {
                 editor.current.setBlocks(DEFAULT_NODE).unwrapBlock("table");
             } else {
                 let rows = parseInt(window.prompt("Enter the number of rows (horizontal axis)"));
+                if (!rows) return;
                 let columns = parseInt(
                     window.prompt("Enter the number of columns (vertical axis)")
                 );
+                if (!columns) return;
                 console.log(rows, columns);
                 /*let table = [];
                 for (let i = 0; i < rows; i++) {
@@ -244,14 +246,23 @@ function Editor() {
             //Handle every other block
             const isActive = hasBlock(type);
             const isList = hasBlock("list item");
+            let author = null;
+
+            if (type === "quote" && !isActive) {
+                author = window.prompt("(Optional) Enter the author name:");
+            }
 
             if (isList) {
                 editor.current
-                    .setBlocks(isActive ? DEFAULT_NODE : type)
+                    .setBlocks({ type: isActive ? DEFAULT_NODE : type })
                     .unwrapBlock("unordered list")
                     .unwrapBlock("ordered list");
+                if (author) editor.current.setBlocks({ data: { author } });
             } else {
-                editor.current.setBlocks(isActive ? DEFAULT_NODE : type);
+                editor.current.setBlocks({
+                    type: isActive ? DEFAULT_NODE : type
+                });
+                if (author) editor.current.setBlocks({ data: { author } });
             }
         }
 
@@ -341,7 +352,13 @@ function Editor() {
             case "heading":
                 return <h1 {...attributes}>{children}</h1>;
             case "quote":
-                return <blockquote {...attributes}>{children}</blockquote>;
+                const { data } = node;
+                const author = data.get("author");
+                return (
+                    <blockquote className={classes.quote} data-author={author} {...attributes}>
+                        {children}
+                    </blockquote>
+                );
             case "unordered list":
                 return <ul {...attributes}>{children}</ul>;
             case "list item":

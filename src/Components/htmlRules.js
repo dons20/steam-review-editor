@@ -33,6 +33,12 @@ export default {
                                 { className: classes.quote },
                                 children
                             );
+                        case "code":
+                            return React.createElement(
+                                "pre",
+                                { className: classes.code },
+                                children
+                            );
                         default:
                             return;
                     }

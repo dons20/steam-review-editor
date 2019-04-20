@@ -11,7 +11,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 
 .body {
     background: #111a24;
-    background: linear-gradient(to bottom, #111923, #17212e);
+    background: linear-gradient(to bottom, #111923, #17212e 50%);
     display: grid;
     flex: 1;
     grid-template-columns: 1fr 2fr;
@@ -63,7 +63,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 
 .markupBody {
     background: #111a24;
-    background: linear-gradient(to bottom, #111923, #17212e);
+    background: linear-gradient(to bottom, #111923, #17212e 50%);
     flex: 1;
     padding: 0.5rem 1rem;
 }
