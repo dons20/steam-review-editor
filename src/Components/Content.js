@@ -13,10 +13,8 @@ function Content(props) {
     const [hideHelp, setHideHelp] = useState(false);
     /** @type {[Boolean, React.SetStateAction<Boolean>]} */
     const [showPreview, setShowPreview] = useState(false);
-    /** @type {[JSON, React.SetStateAction<JSON>]} */
-    const [htmlContent, setHTMLContent] = useState("");
-    ///** @type {[JSON, React.SetStateAction<JSON>]} */
-    //const [markupContent, setMarkupContent] = useState("");
+    /** @type {[import('slate').Value, React.SetStateAction<import('slate').Value>]} */
+    const [htmlContent, setHTMLContent] = useState(null);
     const markup = useRef(null);
 
     /** Shows the instructions */
@@ -111,7 +109,9 @@ function Content(props) {
                         Copy Markup to Clipboard
                     </button>
                 </div>
-                {showPreview === true && <Preview content={htmlContent} markupRef={markup} />}
+                {showPreview === true && htmlContent && (
+                    <Preview content={htmlContent} markupRef={markup} />
+                )}
             </main>
         </AppContext.Provider>
     );

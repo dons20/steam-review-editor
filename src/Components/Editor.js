@@ -23,7 +23,12 @@ import Menu from "./Menu";
 /** @type {Boolean} */ const isDeleteHotKey = isKeyHotkey("delete");
 /** @type {Boolean} */ const isSelectAllHotKey = isKeyHotkey("mod+a");
 
-const plugins = [Tables()];
+const plugins = [
+    Tables({
+        typeRow: "table-row",
+        typeCell: "table-cell"
+    })
+];
 
 /**
  * A change helper to standardize wrapping links.
@@ -54,30 +59,24 @@ function unwrapLink(editor) {
 /**
  * Hook to trigger a timeout
  *
- * @param {Function} callback
- * @param {Function} beforeTimeout
+ * @param {Function} closeTimer
+ * @param {Function} saveEditor
+ * @param {Value} value
  * @param {Number} delay
  * @param {Boolean} active
  */
-function useTimeout(beforeTimeout, callback, delay, active) {
-    const savedCallback = useRef();
-
-    // Remember the latest callback and run initial function
-    useEffect(() => {
-        savedCallback.current = callback;
-        beforeTimeout();
-    });
-
+function useTimeout(closeTimer, saveEditor, value, delay, active) {
     // Set up the interval.
     useEffect(() => {
         function save() {
-            savedCallback.current();
+            saveEditor(value);
+            closeTimer();
         }
-        if (delay !== null) {
+        if (delay !== null && active) {
             let id = setTimeout(save, delay);
             return () => clearInterval(id);
         }
-    }, [active, delay]);
+    }, [active, delay, closeTimer, saveEditor, value]);
 }
 
 /**
@@ -91,13 +90,14 @@ function Editor() {
     const [value, setValue] = useState(starterValue);
 
     /** @type {[Boolean, React.SetStateAction<Boolean>]} */
-    const [timerActive, setTimerActive] = useState(false);
+    const [timerActive, setTimerActive] = useState(true);
 
     /** @type {[Boolean, React.SetStateAction<Boolean>]} */
     const [isAllSelected, shouldSelectAll] = useState(false);
 
     /** @type {{current: import('slate'.Editor)}} */
     const editor = useRef(null);
+
     /** @type {Function} */
     const setPreviewContent = useContext(AppContext);
 
@@ -105,16 +105,15 @@ function Editor() {
      * Adds event listener to save editor content before refreshes/navigation changes
      */
     useEffect(() => {
-        window.addEventListener("beforeunload", saveEditor.bind(this, value));
+        function runBeforeExit() {
+            saveEditor(value);
+        }
+
+        window.addEventListener("beforeunload", runBeforeExit);
         return function cleanup() {
-            window.removeEventListener("beforeunload", saveEditor);
+            window.removeEventListener("beforeunload", runBeforeExit);
         };
     });
-
-    /**
-     * Auto-saves editor content after delay.
-     */
-    useTimeout(() => setTimerActive(false), () => saveEditor(value), 1000, timerActive);
 
     /**
      * Saves the content of the editor to localStorage
@@ -123,11 +122,16 @@ function Editor() {
      */
     const saveEditor = value => {
         let val = value.toJSON();
-        console.log(val);
         const content = JSON.stringify(val);
         localStorage.setItem("content", content);
-        setPreviewContent(val);
+        setPreviewContent(value);
+        setTimerActive(false);
     };
+
+    /**
+     * Auto-saves editor content after delay.
+     */
+    useTimeout(() => setTimerActive(false), saveEditor, value, 1500, timerActive);
 
     /**
      * Check if the current selection has a mark with `type` in it.
@@ -198,9 +202,8 @@ function Editor() {
 
         const { value } = editor.current;
         const { document } = value;
-
         // Handle list blocks
-        if (type === "unordered list" && type === "ordered list") {
+        if (type === "unordered list" || type === "ordered list") {
             // Handle the extra wrapping required for list buttons.
             const isList = hasBlock("list item");
             const isType = value.blocks.some(block => {
@@ -221,16 +224,13 @@ function Editor() {
             }
         } else if (type === "table") {
             //Handle table blocks
-            const isTable = hasBlock("table-cell");
-            const isType = value.blocks.some(block => {
-                return !!document.getClosest(block.key, parent => parent.type === type);
-            });
-            if (isTable && isType) {
-                editor.current.setBlocks(DEFAULT_NODE).unwrapBlock("table");
+            const isTable = editor.current.isSelectionInTable();
+            if (isTable) {
+                editor.current.removeTable();
             } else {
-                let rows = parseInt(window.prompt("Enter the number of rows"));
+                let rows = parseInt(window.prompt("Enter the number of rows:"));
                 if (!rows) return;
-                let columns = parseInt(window.prompt("Enter the number of columns"));
+                let columns = parseInt(window.prompt("Enter the number of columns:"));
                 if (!columns) return;
                 editor.current.insertTable(columns, rows);
             }
@@ -238,10 +238,14 @@ function Editor() {
             //Handle every other block
             const isActive = hasBlock(type);
             const isList = hasBlock("list item");
-            let author = null;
+            let author = null,
+                img = null;
 
             if (type === "quote" && !isActive) {
                 author = window.prompt("(Optional) Enter the author name:");
+            } else if (type === "image" && !isActive) {
+                img = window.prompt("Please enter the image url:");
+                if (!img) return;
             }
 
             if (isList) {
@@ -250,11 +254,13 @@ function Editor() {
                     .unwrapBlock("unordered list")
                     .unwrapBlock("ordered list");
                 if (author) editor.current.setBlocks({ data: { author } });
+                if (img) editor.current.setBlocks({ data: { img } });
             } else {
                 editor.current.setBlocks({
                     type: isActive ? DEFAULT_NODE : type
                 });
                 if (author) editor.current.setBlocks({ data: { author } });
+                if (img) editor.current.setBlocks({ data: { img } });
             }
         }
 
@@ -353,10 +359,10 @@ function Editor() {
                 );
             case "unordered list":
                 return <ul {...attributes}>{children}</ul>;
-            case "list item":
-                return <li {...attributes}>{children}</li>;
             case "ordered list":
                 return <ol {...attributes}>{children}</ol>;
+            case "list item":
+                return <li {...attributes}>{children}</li>;
             case "code":
                 return (
                     <pre className={classes.code} {...attributes}>
@@ -377,7 +383,7 @@ function Editor() {
                 );
             case "table":
                 return (
-                    <table>
+                    <table className={classes.table}>
                         <tbody {...attributes}>{children}</tbody>
                     </table>
                 );
@@ -392,6 +398,16 @@ function Editor() {
                     <a {...attributes} href={href}>
                         {children}
                     </a>
+                );
+            }
+            case "image": {
+                const { data } = node;
+                const img = data.get("img");
+                return (
+                    <div {...attributes}>
+                        <img src={img} alt={"Image Link: " + img} />
+                        {children}
+                    </div>
                 );
             }
             default:

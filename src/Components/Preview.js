@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import classes from "./preview.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Value } from "slate";
 import rec from "../thumbsUp.png";
 import notRec from "../thumbsDown.png";
 import steamLogo from "../icon_review_steam.png";
@@ -48,8 +47,8 @@ function Preview(props) {
     const [isRecommended, setIsRecommended] = useState(true);
 
     /** @type {String} */
-    const markup = toSteamMarkup.serialize(Value.fromJSON(props.content)).join("");
-    const content = toHTMLMarkup.serialize(Value.fromJSON(props.content));
+    const markup = toSteamMarkup.serialize(props.content);
+    const content = toHTMLMarkup.serialize(props.content);
     /** Flips between Recommended/Not Recommended and randomizes hours */
     const setReview = () => {
         setIsRecommended(!isRecommended);
@@ -92,9 +91,9 @@ function Preview(props) {
             </div>
             <div className={classes.markup}>
                 <h1 className={classes.heading}>Markup Preview</h1>
-                <div className={classes.markupBody} ref={props.markupRef}>
+                <pre className={classes.markupBody} ref={props.markupRef}>
                     {markup}
-                </div>
+                </pre>
             </div>
         </div>
     );

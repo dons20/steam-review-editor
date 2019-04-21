@@ -25,10 +25,6 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     grid-column: 2;
     grid-row: 2;
     font-size: 15px;
-    & h1 {
-        color: #5aa9d6;
-        font-size: 18px;
-    }
     & a {
         color: #ebebeb;
         text-decoration: underline;
@@ -36,6 +32,52 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
             color: #fff;
         }
     }
+    & blockquote {
+        border: 1px solid #56707f;
+        border-radius: 3px;
+        display: grid;
+        margin: 20px;
+        padding: 20px 12px;
+        position: relative;
+        word-break: break-word;
+        &[data-author]::before {
+            content: "Originally posted by ";
+            font-size: 11px;
+            font-style: italic;
+            text-align: right;
+            margin-right: 5px;
+            grid-column: 1/2;
+            position: absolute;
+            top: 5px;
+        }
+        &[data-author]::after {
+            content: attr(data-author) ": ";
+            font-size: 11px;
+            font-weight: bold;
+            position: absolute;
+            margin-left: 23%;
+            top: 5px;
+        }
+    }
+    & h1 {
+        color: #5aa9d6;
+        font-size: 18px;
+    }
+    & table {
+        border-collapse: collapse;
+        & td {
+            border: 1px solid #4d4d4d;
+            padding: 5px;
+        }
+    }
+}
+
+.code {
+    border: 1px solid #535354;
+    border-radius: 3px;
+    margin: 20px;
+    padding: 12px;
+    white-space: pre-wrap;
 }
 
 .heading {
@@ -65,6 +107,8 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     background: #111a24;
     background: linear-gradient(to bottom, #111923, #17212e 50%);
     flex: 1;
+    font-family: inherit;
+    margin: 0;
     padding: 0.5rem 1rem;
 }
 

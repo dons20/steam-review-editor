@@ -28,6 +28,23 @@ export default {
                             return `[quote${author ? `=${author}` : ""}]${root}[/quote]\n`;
                         case "code":
                             return `[code]${root}[/code]\n`;
+                        case "image":
+                            let img = obj.data.get("img");
+                            return `[img]${img}[/img]\n`;
+                        case "ordered list":
+                            return `[olist]\n${children.join("")}[/olist]\n`;
+                        case "unordered list":
+                            return `[list]\n${children.join("")}[/list]\n`;
+                        case "list item":
+                            return `\t[*]${root}\n`;
+                        case "table":
+                            return `[table]${root}[/table]`;
+                        case "table-header":
+                            return `\n\t[th]${children.join("")}\n\t[/th]\n`;
+                        case "table-row":
+                            return `\n\t[tr]${children.join("")}\n\t[/tr]\n`;
+                        case "table-cell":
+                            return `\n\t\t[td]${children.join("").replace(/\n/g, "")}[/td]`;
                         default:
                             return;
                     }

@@ -28,9 +28,10 @@ export default {
                                 children
                             );
                         case "quote":
+                            let author = obj.data.get("author");
                             return React.createElement(
                                 "blockquote",
-                                { className: classes.quote },
+                                { className: classes.quote, "data-author": author },
                                 children
                             );
                         case "code":
@@ -39,6 +40,23 @@ export default {
                                 { className: classes.code },
                                 children
                             );
+                        case "image":
+                            let img = obj.data.get("img");
+                            return React.createElement("img", { src: img });
+                        case "ordered list":
+                            return React.createElement("ol", {}, children);
+                        case "unordered list":
+                            return React.createElement("ul", {}, children);
+                        case "list item":
+                            return React.createElement("li", {}, children);
+                        case "table":
+                            return React.createElement("table", {}, children);
+                        case "table-header":
+                            return React.createElement("th", {}, children);
+                        case "table-row":
+                            return React.createElement("tr", { className: classes.code }, children);
+                        case "table-cell":
+                            return React.createElement("td", {}, children);
                         default:
                             return;
                     }

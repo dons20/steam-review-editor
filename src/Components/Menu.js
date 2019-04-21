@@ -152,7 +152,11 @@ function Menu({
                             value: { document, blocks }
                         } = editor.current;
 
-                        if (["ordered list", "unordered list"].includes(item.name)) {
+                        if (item.name === "table" && editor.current.isSelectionInTable()) {
+                            active = true;
+                        }
+
+                        if (item.name === "ordered list" || item.name === "unordered list") {
                             if (blocks.size > 0) {
                                 const parent = document.getParent(blocks.first().key);
                                 active =

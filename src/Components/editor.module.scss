@@ -107,6 +107,15 @@
     }
 }
 
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    & td {
+        border: 1px solid #696969;
+        padding: 2px;
+    }
+}
+
 .quote {
     background-color: #d1f3fc;
     border-left: 5px solid #26a5c5;
