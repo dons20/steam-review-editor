@@ -1,6 +1,6 @@
 ---
 deployment:
   tasks:
-    - export DEPLOYPATH=/home/claytoni/projects.claytoninnnovations.com/steam-review-editor
+    - export DEPLOYPATH=/home/claytoni/projects.claytoninnovations.com/steam-review-editor/
     - /bin/cp -R assets $DEPLOYPATH
     - /bin/cp -R index.html $DEPLOYPATH
