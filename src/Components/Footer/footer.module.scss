@@ -1,4 +1,4 @@
-@import "./_utils.module.scss";
+@import "../_utils.module.scss";
 
 .root {
     align-items: center;
@@ -15,7 +15,8 @@
     & .iconRow {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        width: 18%;
+        width: 30%;
+        max-width: 400px;
     }
 
     & .icon {

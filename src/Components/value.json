@@ -1,20 +1,6 @@
-{
-    "document": {
-        "nodes": [
-            {
-                "object": "block",
-                "type": "paragraph",
-                "nodes": [
-                    {
-                        "object": "text",
-                        "leaves": [
-                            {
-                                "text": "Write your review here!"
-                            }
-                        ]
-                    }
-                ]
-            }
-        ]
+[
+    {
+        "type": "paragraph",
+        "children": [{ "text": "Write your review here!" }]
     }
-}
+]

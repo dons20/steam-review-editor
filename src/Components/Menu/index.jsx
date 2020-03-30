@@ -90,25 +90,26 @@ const items = [
 /**
  * Renders a div with custom props to behave like a button
  *
- * @typedef {Object} props
+ * @typedef {Object} Button
+ * @property {Boolean=} reset - Object containing styles
+ * @property {Boolean=} active - Denotes active state of button
  * @property {Object<string, any>} item - Reference to current item
- * @property {Boolean} active - Denotes active state of button
- * @property {Function} onClick - Click handler function
  * @property {Object<string, any>} classes - Object containing styles
- * @property {Boolean} reset - Object containing styles
- *
- * @param {props} props
+ * @property {(event: React.MouseEvent) => void} onClick - Click handler function
  */
 
-const Button = ({ item, active, onClick, classes, reset }) => {
+/**
+ * @param {Button} props
+ */
+export const Button = ({ item, active, onClick, classes, reset }) => {
     return (
         <div
             className={`${classes.tooltip} ${classes.custom}`}
             data-active={active || null}
             data-title={item.name}
             data-type={item.type}
+            data-reset={reset ? "" : null}
             onClick={onClick}
-            reset={reset ? "" : null}
         >
             {item.value}
         </div>
@@ -118,28 +119,21 @@ const Button = ({ item, active, onClick, classes, reset }) => {
 /**
  * Populates editor toolbar buttons
  *
- * @typedef {Object} MenuProps
+ * @typedef {Object} Menu
  * @property {import('slate').Editor} editor
  * @property {Object<string, any>} classes
- * @property {Boolean} hasMark
- * @property {Boolean} hasBlock
- * @property {Boolean} hasLinks
+ * @property {(value) => Boolean} hasMark
+ * @property {(value) => Boolean} hasBlock
+ * @property {(value) => Boolean} hasLinks
  * @property {Function} onClickBlock
  * @property {Function} onClickMark
  * @property {Function} onClickCustom
- *
- * @param {MenuProps} props
  */
-function Menu({
-    editor,
-    classes,
-    hasMark,
-    hasBlock,
-    hasLinks,
-    onClickBlock,
-    onClickMark,
-    onClickCustom
-}) {
+
+/**
+ * @param {Menu} props
+ */
+function Menu({ editor, classes, hasMark, hasBlock, hasLinks, onClickBlock, onClickMark, onClickCustom }) {
     const listItems = useMemo(
         () =>
             items.map(item => {
@@ -159,8 +153,7 @@ function Menu({
                         if (item.name === "ordered list" || item.name === "unordered list") {
                             if (blocks.size > 0) {
                                 const parent = document.getParent(blocks.first().key);
-                                active =
-                                    hasBlock("list item") && parent && parent.type === item.name;
+                                active = hasBlock("list item") && parent && parent.type === item.name;
                             }
                         }
                     }
@@ -213,7 +206,7 @@ function Menu({
         [editor, classes, hasMark, hasBlock, hasLinks, onClickBlock, onClickMark, onClickCustom]
     );
 
-    return listItems;
+    return <>{listItems}</>;
 }
 
 export default Menu;

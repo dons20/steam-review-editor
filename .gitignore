@@ -23,3 +23,5 @@ yarn-error.log*
 # local optionals
 .env
 .vscode
+*.ts
+tsconfig.json

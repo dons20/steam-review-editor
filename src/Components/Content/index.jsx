@@ -1,20 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Editor from "./Editor";
-import Preview from "./Preview";
+import ReviewEditor from "../Editor";
+import Preview from "../Preview";
 import classes from "./content.module.scss";
 
-export const AppContext = React.createContext();
+export const AppContext = React.createContext(null);
 
 function Content(props) {
-    /** @type {[Boolean, React.SetStateAction<Boolean>]} */
+    /** @type {[Boolean, React.SetStateAction<any>]} */
     const [showTip, setShowTip] = useState(JSON.parse(localStorage.getItem("showTip")));
-    /** @type {[Boolean, React.SetStateAction<Boolean>]} */
+    /** @type {[Boolean, React.SetStateAction<any>]} */
     const [hideHelp, setHideHelp] = useState(false);
-    /** @type {[Boolean, React.SetStateAction<Boolean>]} */
+    /** @type {[Boolean, React.SetStateAction<any>]} */
     const [showPreview, setShowPreview] = useState(false);
-    /** @type {[import('slate').Value, React.SetStateAction<import('slate').Value>]} */
+    /** @type {[Object, React.SetStateAction<any>]} */
     const [htmlContent, setHTMLContent] = useState(null);
+
     const markup = useRef(null);
 
     /** Shows the instructions */
@@ -67,16 +68,15 @@ function Content(props) {
     return (
         <AppContext.Provider value={setHTMLContent}>
             <main className={classes.main}>
-                {showTip === true && (
+                {showTip && (
                     <div
                         className={`${classes.instructions} ${hideHelp ? classes.hiding : null}`}
                         onAnimationEnd={hideInstructions}
                     >
                         <p>
-                            Steam Review Editor allows you to easily create and modify your reviews
-                            in real-time without having to manually apply steam markup tags. Simply
-                            type your review, click "Copy Markup to Clipboard", and paste it in
-                            Steam!
+                            Steam Review Editor allows you to easily create and modify your reviews in real-time without
+                            having to manually apply steam markup tags. Simply type your review, click "Copy Markup to
+                            Clipboard", and paste it in Steam!
                         </p>
                         <div className={classes.tooltip} data-title="Close">
                             <FontAwesomeIcon
@@ -90,28 +90,19 @@ function Content(props) {
                 )}
                 {showTip === false && (
                     <div className={`${classes.tooltip} ${classes.showHelp}`} data-title="Help">
-                        <FontAwesomeIcon
-                            icon={["far", "question-circle"]}
-                            size={"4x"}
-                            onClick={showInstructions}
-                        />
+                        <FontAwesomeIcon icon={["far", "question-circle"]} size={"4x"} onClick={showInstructions} />
                     </div>
                 )}
-                <Editor />
+                <ReviewEditor />
                 <div className={classes.buttons}>
-                    <button
-                        className={classes.previewBtn}
-                        onClick={() => setShowPreview(!showPreview)}
-                    >
+                    <button className={classes.previewBtn} onClick={() => setShowPreview(!showPreview)}>
                         {showPreview ? "Hide " : "Show "} Preview
                     </button>
                     <button className={classes.markupBtn} onClick={copyToClipboard}>
                         Copy Markup to Clipboard
                     </button>
                 </div>
-                {showPreview === true && htmlContent && (
-                    <Preview content={htmlContent} markupRef={markup} />
-                )}
+                {showPreview && htmlContent && <Preview content={htmlContent} markupRef={markup} />}
             </main>
         </AppContext.Provider>
     );

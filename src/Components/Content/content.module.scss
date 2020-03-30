@@ -1,4 +1,4 @@
-@import "./utils.module.scss";
+@import "../_utils.module.scss";
 
 @keyframes hide {
     0% {
@@ -31,12 +31,14 @@
     background-color: #fff;
     border-radius: 10px;
     display: grid;
-    grid-template-columns: 1fr 10%;
     font-size: 20px;
+    grid-template-columns: 1fr 8%;
+    gap: 1rem;
     line-height: 1.95rem;
+    max-width: 1200px;
     padding: 1.5rem;
     text-align: center;
-    width: 66.66%;
+    width: 100%;
     will-change: opacity;
     &.hiding {
         animation-name: hide;
@@ -51,7 +53,7 @@
     grid-template-rows: auto minmax(350px, 1fr) minmax(50px, 100px) auto;
     grid-template-columns: 1fr;
     justify-items: center;
-    padding: 2% 0;
+    padding: 2rem;
     position: relative;
     row-gap: 40px;
 }

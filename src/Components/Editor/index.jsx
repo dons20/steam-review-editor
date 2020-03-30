@@ -1,39 +1,34 @@
-import React, { useEffect, useState, useRef, useContext } from "react";
-import { Editor as ReviewEditor } from "slate-react";
-import { Value } from "slate";
-import Tables from "slate-tables";
-import { isKeyHotkey } from "../Util/isHotkey";
-import { AppContext } from "./Content";
+import React, { useEffect, useState, useContext, useMemo, useCallback } from "react";
+import { Slate, Editable, withReact } from "slate-react";
+import { isKeyHotkey } from "../../Util/isHotkey";
+import initialJSONValue from "../value.json";
+import { AppContext } from "../Content";
+import Menu from "../Menu";
+
+//eslint-disable-next-line
+import { createEditor, Editor } from "slate";
+
 import classes from "./editor.module.scss";
-import initalValueAsJSON from "./value.json";
-import Menu from "./Menu";
 
 /** @type {JSON} */ const databaseValue = JSON.parse(localStorage.getItem("content"));
-/** @type {Value} */ const starterValue = Value.fromJSON(databaseValue || initalValueAsJSON);
+/** @type {Object} */ const starterValue = databaseValue || initialJSONValue;
 
 /** @type {String} */ const DEFAULT_NODE = "paragraph";
 
-/** @type {Boolean} */ const isHeadingHotkey = isKeyHotkey("mod+h");
-/** @type {Boolean} */ const isBoldHotkey = isKeyHotkey("mod+b");
-/** @type {Boolean} */ const isUnderlinedHotkey = isKeyHotkey("mod+u");
-/** @type {Boolean} */ const isItalicHotkey = isKeyHotkey("mod+i");
-/** @type {Boolean} */ const isStrikethroughHotkey = isKeyHotkey("mod+-");
-/** @type {Boolean} */ const isCodeHotkey = isKeyHotkey("mod+`");
-/** @type {Boolean} */ const isNewlineHotKey = isKeyHotkey("shift+enter");
-/** @type {Boolean} */ const isDeleteHotKey = isKeyHotkey("delete");
-/** @type {Boolean} */ const isSelectAllHotKey = isKeyHotkey("mod+a");
-
-const plugins = [
-    Tables({
-        typeRow: "table-row",
-        typeCell: "table-cell"
-    })
-];
+/** @type {(value) => Boolean} */ const isHeadingHotkey = isKeyHotkey("mod+h");
+/** @type {(value) => Boolean} */ const isBoldHotkey = isKeyHotkey("mod+b");
+/** @type {(value) => Boolean} */ const isUnderlinedHotkey = isKeyHotkey("mod+u");
+/** @type {(value) => Boolean} */ const isItalicHotkey = isKeyHotkey("mod+i");
+/** @type {(value) => Boolean} */ const isStrikethroughHotkey = isKeyHotkey("mod+-");
+/** @type {(value) => Boolean} */ const isCodeHotkey = isKeyHotkey("mod+`");
+/** @type {(value) => Boolean} */ const isNewlineHotKey = isKeyHotkey("shift+enter");
+/** @type {(value) => Boolean} */ const isDeleteHotKey = isKeyHotkey("delete");
+/** @type {(value) => Boolean} */ const isSelectAllHotKey = isKeyHotkey("mod+a");
 
 /**
  * A change helper to standardize wrapping links.
  *
- * @param {ReviewEditor} editor
+ * @param {Editor} editor
  * @param {String} href
  */
 
@@ -49,7 +44,7 @@ function wrapLink(editor, href) {
 /**
  * A change helper to standardize unwrapping links.
  *
- * @param {ReviewEditor} editor
+ * @param {Editor} editor
  */
 
 function unwrapLink(editor) {
@@ -61,7 +56,7 @@ function unwrapLink(editor) {
  *
  * @param {Function} closeTimer
  * @param {Function} saveEditor
- * @param {Value} value
+ * @param {Object} value
  * @param {Number} delay
  * @param {Boolean} active
  */
@@ -85,18 +80,17 @@ function useTimeout(closeTimer, saveEditor, value, delay, active) {
  * @returns {JSX.Element}
  */
 
-function Editor() {
-    /** @type {[import('slate'.Value) | React.SetStateAction<Value>]} */
+function ReviewEditor() {
+    const editor = useMemo(() => withReact(createEditor()), []);
+
+    /** @type {[Object, React.SetStateAction<any>]} */
     const [value, setValue] = useState(starterValue);
 
-    /** @type {[Boolean, React.SetStateAction<Boolean>]} */
+    /** @type {[Boolean, React.SetStateAction<any>]} */
     const [timerActive, setTimerActive] = useState(true);
 
-    /** @type {[Boolean, React.SetStateAction<Boolean>]} */
+    /** @type {[Boolean, React.SetStateAction<any>]} */
     const [isAllSelected, shouldSelectAll] = useState(false);
-
-    /** @type {{current: import('slate'.Editor)}} */
-    const editor = useRef(null);
 
     /** @type {Function} */
     const setPreviewContent = useContext(AppContext);
@@ -117,12 +111,10 @@ function Editor() {
 
     /**
      * Saves the content of the editor to localStorage
-     *
-     * @param {Value} value
      */
-    const saveEditor = value => {
-        let val = value.toJSON();
-        const content = JSON.stringify(val);
+    const saveEditor = () => {
+        //let val = value.toJSON();
+        const content = JSON.stringify(value);
         localStorage.setItem("content", content);
         setPreviewContent(value);
         setTimerActive(false);
@@ -193,7 +185,7 @@ function Editor() {
     /**
      * When a block button is clicked, toggle the block type.
      *
-     * @param {Event} event
+     * @param {React.KeyboardEvent} event
      * @param {String} type
      */
 
@@ -279,7 +271,7 @@ function Editor() {
     const onClickCustom = (event, type) => {
         event.preventDefault();
 
-        /** @type {import('slate'.Editor)}*/
+        /** @type {Editor}*/
         const { value: currentValue } = editor.current;
 
         switch (type) {
@@ -291,7 +283,7 @@ function Editor() {
                     let willReset = window.confirm(
                         "The editor has no child nodes. Will you reset to a default value? (Will remove previous history)"
                     );
-                    if (willReset) setValue(Value.fromJSON(initalValueAsJSON));
+                    if (willReset) setValue(initialJSONValue);
                 }
                 break;
             case "link":
@@ -340,17 +332,17 @@ function Editor() {
      *
      * @param {Object} props
      * @param {ReviewEditor} editor
-     * @return {Element}
+     * @return {JSX.Element}
      */
 
-    const renderNode = (props, editor, next) => {
-        const { attributes, children, node } = props;
+    const renderElement = useCallback(props => {
+        const { attributes, children, element } = props;
 
-        switch (node.type) {
+        switch (element.type) {
             case "heading":
                 return <h1 {...attributes}>{children}</h1>;
             case "quote":
-                const { data } = node;
+                const { data } = element;
                 const author = data.get("author");
                 return (
                     <blockquote className={classes.quote} data-author={author} {...attributes}>
@@ -392,7 +384,7 @@ function Editor() {
             case "table-cell":
                 return <td {...attributes}>{children}</td>;
             case "link": {
-                const { data } = node;
+                const { data } = element;
                 const href = data.get("href");
                 return (
                     <a {...attributes} href={href}>
@@ -401,7 +393,7 @@ function Editor() {
                 );
             }
             case "image": {
-                const { data } = node;
+                const { data } = element;
                 const img = data.get("img");
                 return (
                     <div {...attributes}>
@@ -411,50 +403,39 @@ function Editor() {
                 );
             }
             default:
-                return next();
+                return <p {...attributes}>{children}</p>;
         }
-    };
+    }, []);
 
     /**
-     * Render a Slate mark.
+     * Render a Slate leaf.
      *
      * @param {Object} props
-     * @return {Element}
+     * @return {JSX.Element}
      */
 
-    const renderMark = (props, editor, next) => {
-        const { children, mark, attributes } = props;
+    const renderLeaf = useCallback(props => {
+        const { children, leaf, attributes } = props;
 
-        switch (mark.type) {
-            case "bold":
-                return <strong {...attributes}>{children}</strong>;
-            case "italic":
-                return <em {...attributes}>{children}</em>;
-            case "underlined":
-                return <u {...attributes}>{children}</u>;
-            case "strikethrough":
-                return <s {...attributes}>{children}</s>;
-            case "image":
-                return (
-                    <img alt="" {...attributes}>
-                        {children}
-                    </img>
-                );
-            default:
-                return next();
+        if (leaf.bold) return <strong {...attributes}>{children}</strong>;
+        if (leaf.italic) return <em {...attributes}>{children}</em>;
+        if (leaf.underlined) return <u {...attributes}>{children}</u>;
+        if (leaf.strikethrough) return <s {...attributes}>{children}</s>;
+        if (leaf.image) {
+            return (
+                <img alt="" {...attributes}>
+                    {children}
+                </img>
+            );
         }
-    };
+        return <span {...attributes}>{children}</span>;
+    }, []);
 
     /**
      * On change, save the new `value`.
-     *
-     * @typedef {Object} props
-     * @property {import('slate').Value} value
-     *
-     * @param {props} props
      */
 
-    const onChange = ({ value: newValue }) => {
+    const onChange = newValue => {
         // Check to see if the document has changed before saving.
         if (value.document !== newValue.document) {
             setTimerActive(true);
@@ -466,9 +447,9 @@ function Editor() {
     /**
      * On key down, if it's a formatting command toggle a mark.
      *
-     * @param {Event} event
-     * @param {ReviewEditor} editor
-     * @return {Change}
+     * @param {React.KeyboardEvent} event
+     * @param {Editor} editor
+     * @param {() => any} next
      */
 
     const onKeyDown = (event, editor, next) => {
@@ -532,28 +513,21 @@ function Editor() {
                 />
             </div>
             <div className={classes.editor}>
-                <ReviewEditor
-                    spellCheck
-                    autoFocus
-                    placeholder="Type your review here..."
-                    ref={editor}
+                <Slate
+                    editor={editor}
                     value={value}
-                    plugins={plugins}
                     onChange={onChange}
-                    onSelect={onSelect}
-                    onKeyDown={onKeyDown}
-                    renderNode={renderNode}
-                    renderMark={renderMark}
-                />
+                    //spellCheck
+                    //autoFocus
+                    //placeholder="Type your review here..."
+                    //defaultValue={value}
+                    //onSelect={onSelect}
+                >
+                    <Editable onKeyDown={onKeyDown} renderElement={renderElement} renderLeaf={renderLeaf} />
+                </Slate>
             </div>
         </div>
     );
 }
 
-/**
- * Export.
- *
- * @type {Editor}
- */
-
-export default Editor;
+export default ReviewEditor;

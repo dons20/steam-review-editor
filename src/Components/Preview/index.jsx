@@ -1,16 +1,18 @@
 import React, { useState } from "react";
-import classes from "./preview.module.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import rec from "../thumbsUp.png";
-import notRec from "../thumbsDown.png";
-import steamLogo from "../icon_review_steam.png";
-import SteamMarkup from "../Util/slate-steam-serializer";
-import HTML from "../Util/slate-html-serializer";
-import markupRules from "./markupRules.js";
-import htmlRules from "./htmlRules.js";
+import steamLogo from "../../assets/img/icon_review_steam.png";
+import SteamMarkup from "../../Util/slate-steam-serializer";
+import notRec from "../../assets/img/thumbsDown.png";
+import HTML from "../../Util/slate-html-serializer";
+import rec from "../../assets/img/thumbsUp.png";
+import value from "../value.json";
+import markupRules from "../markupRules.js";
+import htmlRules from "../htmlRules.js";
 
-const toSteamMarkup = new SteamMarkup(markupRules);
-const toHTMLMarkup = new HTML(htmlRules);
+import classes from "./preview.module.scss";
+
+//const toSteamMarkup = SteamMarkup(value);
+//const toHTMLMarkup = HTML(value);
 const date = new Date();
 const months = [
     "JANUARY",
@@ -29,10 +31,10 @@ const months = [
 
 /**
  * Randomizes a number between 0 and max
- * @param {Integer} max
+ * @param {number} max
  */
-const randomize = max => {
-    return parseFloat(Math.random() * max).toFixed(1);
+const randomize = (max = 1) => {
+    return parseInt((Math.random() * Math.floor(max)).toFixed(1));
 };
 
 let rand = randomize(51);
@@ -40,6 +42,7 @@ let rand = randomize(51);
 /**
  * @typedef {Object} props
  * @property {JSON} content
+ * @property {React.MutableRefObject<any>} markupRef
  *
  * @param {props} props
  */
@@ -47,12 +50,12 @@ function Preview(props) {
     const [isRecommended, setIsRecommended] = useState(true);
 
     /** @type {String} */
-    const markup = toSteamMarkup.serialize(props.content);
-    const content = toHTMLMarkup.serialize(props.content);
+    //const markup = toSteamMarkup.serialize(props.content);
+    //const content = toHTMLMarkup.serialize(props.content);
     /** Flips between Recommended/Not Recommended and randomizes hours */
     const setReview = () => {
         setIsRecommended(!isRecommended);
-        rand = randomize();
+        rand = randomize(51);
     };
 
     return (
@@ -85,14 +88,14 @@ function Preview(props) {
                         <p className={classes.subtext}>
                             POSTED: {date.getDate()} {months[date.getMonth()]}
                         </p>
-                        <div dangerouslySetInnerHTML={{ __html: content }} />
+                        {/* <div dangerouslySetInnerHTML={{ __html: content }} /> */}
                     </div>
                 </div>
             </div>
             <div className={classes.markup}>
                 <h1 className={classes.heading}>Markup Preview</h1>
                 <pre className={classes.markupBody} ref={props.markupRef}>
-                    {markup}
+                    {/* {markup} */}
                 </pre>
             </div>
         </div>

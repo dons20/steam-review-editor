@@ -12,9 +12,9 @@ Coming soon...
 
 ## How to test locally
 
-This web app requires that you have [Node.JS](https://nodejs.org/en/) (v10+) installed on your development machine.
+Be sure to have [Node.JS](https://nodejs.org/en/) on your development machine.
 
-1. Clone or download the source code in the [main branch](#)
+1. Clone or download the source code in the [main branch](https://github.com/dons20/steam-review-editor)
 2. Open a terminal inside the cloned directory.
 3. Type `npm run start` to start a local development server
 4. Type `npm run build` to build the files for production.
@@ -34,3 +34,7 @@ _Guidelines coming soon_
 ## License
 
 This application is licensed under the [Blue Oak License](LICENSE).
+
+## Attribution
+
+> Respository Image / Social Preview - <a href="http://www.freepik.com">Designed by slidesgo / Freepik</a>

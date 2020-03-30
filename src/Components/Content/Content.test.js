@@ -1,7 +1,7 @@
-import "../__mocks__/getSelection";
+import "../../__mocks__/getSelection";
 import React from "react";
 import ReactDOM from "react-dom";
-import Content from "./Content";
+import Content from ".";
 
 it("renders without crashing", () => {
     const div = document.createElement("div");

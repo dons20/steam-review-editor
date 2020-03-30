@@ -1,5 +1,5 @@
 import React from "react";
-import classes from "./preview.module.scss";
+import classes from "./Preview/preview.module.scss";
 
 export default {
     rules: [
@@ -16,17 +16,9 @@ export default {
                         case "paragraph":
                             return React.createElement("p", {}, children);
                         case "spoiler":
-                            return React.createElement(
-                                "div",
-                                { className: classes.spoiler },
-                                children
-                            );
+                            return React.createElement("div", { className: classes.spoiler }, children);
                         case "noparse":
-                            return React.createElement(
-                                "pre",
-                                { className: classes.noparse },
-                                children
-                            );
+                            return React.createElement("pre", { className: classes.noparse }, children);
                         case "quote":
                             let author = obj.data.get("author");
                             return React.createElement(
@@ -35,11 +27,7 @@ export default {
                                 children
                             );
                         case "code":
-                            return React.createElement(
-                                "pre",
-                                { className: classes.code },
-                                children
-                            );
+                            return React.createElement("pre", { className: classes.code }, children);
                         case "image":
                             let img = obj.data.get("img");
                             return React.createElement("img", { src: img });
@@ -77,8 +65,7 @@ export default {
                     switch (obj.type) {
                         case "link":
                             /** @type {String} */ let link = obj.data.get("href");
-                            if (!link.startsWith("http://") && !link.startsWith("https://"))
-                                link = "http://" + link;
+                            if (!link.startsWith("http://") && !link.startsWith("https://")) link = "http://" + link;
                             return React.createElement(
                                 "a",
                                 { href: link, target: "_blank", rel: "noopener noreferrer" },

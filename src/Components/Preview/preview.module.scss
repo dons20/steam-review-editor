@@ -68,6 +68,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
         & td {
             border: 1px solid #4d4d4d;
             padding: 5px;
+            text-align: center;
         }
     }
 }
@@ -81,7 +82,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 }
 
 .heading {
-    background-image: url("../rule.png");
+    background-image: url("../../assets/img/rule.png");
     background-position: bottom left;
     background-repeat: no-repeat;
     color: #fff;
@@ -117,7 +118,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 }
 
 .notRec {
-    background-image: url("../thumbsDown.png");
+    background-image: url("../../assets/img/thumbsDown.png");
     background-repeat: no-repeat;
 }
 
@@ -131,7 +132,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 }
 
 .rec {
-    background-image: url("../thumbsUp.png");
+    background-image: url("../../assets/img/thumbsUp.png");
     background-repeat: no-repeat;
 }
 

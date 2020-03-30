@@ -1,12 +1,12 @@
-import "../__mocks__/getSelection";
+import "../../__mocks__/getSelection";
 
 import React from "react";
 import ReactDOM from "react-dom";
 import { Value } from "slate";
 
-import Editor from "./Editor";
+import Editor from ".";
 import EditorValue from "./testValue.json";
-import SteamMarkup from "../Util/slate-steam-serializer";
+import SteamMarkup from "../../Util/slate-steam-serializer";
 import rules from "./rules.js";
 
 it("renders the editor", () => {
