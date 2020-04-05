@@ -128,7 +128,9 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     grid-row: 4;
     grid-template-columns: 1fr 1fr;
     margin-top: 2vh;
-    width: 90%;
+    width: 100%;
+    max-width: 1200px;
+    grid-template-columns: repeat(auto-fit, minmax(50%, auto));
 }
 
 .rec {
@@ -143,10 +145,9 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     display: grid;
     font-size: 16px;
     font-weight: 500;
-    grid-template-columns: 9% 1fr 5%;
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-    }
+    column-gap: 1rem;
+    grid-template-columns: auto 1fr auto;
+    padding-right: 1rem;
 }
 
 .subtext {
@@ -174,5 +175,13 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     padding: 0 3px;
     &:hover {
         color: #fff;
+    }
+}
+
+@media only screen and (min-width: 768px) {
+    .stats {
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
     }
 }

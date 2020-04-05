@@ -16,6 +16,9 @@ function Content(props) {
     /** @type {[Object, React.SetStateAction<any>]} */
     const [htmlContent, setHTMLContent] = useState(null);
 
+    /** @type {[Number, React.SetStateAction<any>]} */
+    const [width, setWidth] = useState(document.body.getBoundingClientRect().width);
+
     const markup = useRef(null);
 
     /** Shows the instructions */
@@ -46,6 +49,20 @@ function Content(props) {
         props.notify("Markup copied to clipboard!");
     };
 
+    useEffect(() => {
+        function checkWidth() {
+            setWidth(document.body.getBoundingClientRect().width);
+        }
+
+        window.addEventListener("resize", checkWidth);
+        window.addEventListener("orientationchange", checkWidth);
+
+        return function cleanup() {
+            window.removeEventListener("resize", checkWidth);
+            window.removeEventListener("orientationchange", checkWidth);
+        };
+    }, []);
+
     /**
      * Handles the visibility settings of the help tips
      */
@@ -70,7 +87,9 @@ function Content(props) {
             <main className={classes.main}>
                 {showTip && (
                     <div
-                        className={`${classes.instructions} ${hideHelp ? classes.hiding : null}`}
+                        className={`${classes.instructions} ${hideHelp ? classes.hiding : ""} ${
+                            width >= 1200 ? classes.wide : ""
+                        }`}
                         onAnimationEnd={hideInstructions}
                     >
                         <p>
@@ -78,13 +97,16 @@ function Content(props) {
                             having to manually apply steam markup tags. Simply type your review, click "Copy Markup to
                             Clipboard", and paste it in Steam!
                         </p>
-                        <div className={classes.tooltip} data-title="Close">
-                            <FontAwesomeIcon
-                                icon={["far", "times-circle"]}
-                                size={"2x"}
-                                className={classes.close}
-                                onClick={startHide}
-                            />
+                        <div
+                            className={`${width >= 1200 ? "tooltip " : ""}${classes.close}`}
+                            onClick={startHide}
+                            data-title="Close"
+                        >
+                            {width >= 1200 ? (
+                                <FontAwesomeIcon icon={["far", "times-circle"]} size={"2x"} className={classes.close} />
+                            ) : (
+                                "Close"
+                            )}
                         </div>
                     </div>
                 )}

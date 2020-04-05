@@ -1,8 +1,12 @@
+@import "../../assets/styles/master";
+
 .main {
     background-color: #171a21;
     color: #eee;
     cursor: default;
     font-variant: small-caps;
+    font-size: 1.5rem;
+    padding: 2rem 0.5rem;
     text-shadow: 1px 1px 10px #222;
     text-align: center;
 }
@@ -10,10 +14,14 @@
 .title {
     align-items: center;
     display: flex;
-    font-size: 3.5rem;
     font-weight: bold;
-    height: 100%;
     justify-content: center;
     letter-spacing: 5px;
-    line-height: 3.5rem;
+    line-height: 100%;
+}
+
+@media only screen and (min-width: $breakpoint-small) {
+    .main {
+        font-size: 3rem;
+    }
 }

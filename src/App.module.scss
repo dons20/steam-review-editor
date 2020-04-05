@@ -1,6 +1,8 @@
+@import "./assets/styles/master";
+
 .root {
     display: grid;
-    grid-template-rows: 150px auto minmax(150px, 180px);
+    grid-template-rows: auto 1fr minmax(150px, 180px);
     width: 100%;
     min-height: 101vh;
 }

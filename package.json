@@ -8,7 +8,7 @@
         "@fortawesome/free-regular-svg-icons": "^5.13.0",
         "@fortawesome/free-solid-svg-icons": "^5.13.0",
         "@fortawesome/react-fontawesome": "^0.1.9",
-        "image-extensions": "^1.1.0",
+        "is-image": "^3.0.0",
         "is-url": "^1.2.4",
         "node-sass": "^4.13.1",
         "react": "^16.13.1",
@@ -16,6 +16,7 @@
         "react-scripts": "^3.4.1",
         "react-toastify": "^5.5.0",
         "slate": "^0.57.1",
+        "slate-history": "^0.57.1",
         "slate-react": "^0.57.1",
         "slate-tables": "^0.9.0"
     },

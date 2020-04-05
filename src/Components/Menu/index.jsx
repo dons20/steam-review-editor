@@ -8,32 +8,32 @@ const items = [
     {
         name: "heading",
         type: "block",
-        value: <FontAwesomeIcon icon="heading" />
+        value: <FontAwesomeIcon icon="heading" />,
     },
     {
         name: "bold",
         type: "mark",
-        value: <FontAwesomeIcon icon="bold" />
+        value: <FontAwesomeIcon icon="bold" />,
     },
     {
         name: "underlined",
         type: "mark",
-        value: <FontAwesomeIcon icon="underline" />
+        value: <FontAwesomeIcon icon="underline" />,
     },
     {
         name: "italic",
         type: "mark",
-        value: <FontAwesomeIcon icon="italic" />
+        value: <FontAwesomeIcon icon="italic" />,
     },
     {
         name: "strikethrough",
         type: "mark",
-        value: <FontAwesomeIcon icon="strikethrough" />
+        value: <FontAwesomeIcon icon="strikethrough" />,
     },
     {
         name: "spoiler",
         type: "block",
-        value: <FontAwesomeIcon icon="eye-slash" />
+        value: <FontAwesomeIcon icon="eye-slash" />,
     },
     {
         name: "noparse",
@@ -43,48 +43,48 @@ const items = [
                 <FontAwesomeIcon icon="code" />
                 <FontAwesomeIcon icon="ban" color="rgba(255, 99, 71, 0.5)" size="2x" />
             </span>
-        )
+        ),
     },
     {
         name: "link",
         type: "inline",
-        value: <FontAwesomeIcon icon="link" />
+        value: <FontAwesomeIcon icon="link" />,
     },
     {
         name: "unordered list",
         type: "block",
-        value: <FontAwesomeIcon icon="list-ul" />
+        value: <FontAwesomeIcon icon="list-ul" />,
     },
     {
         name: "ordered list",
         type: "block",
-        value: <FontAwesomeIcon icon="list-ol" />
+        value: <FontAwesomeIcon icon="list-ol" />,
     },
     {
         name: "quote",
         type: "block",
-        value: <FontAwesomeIcon icon="comment" />
+        value: <FontAwesomeIcon icon="comment" />,
     },
     {
         name: "code",
         type: "block",
-        value: <FontAwesomeIcon icon="code" />
+        value: <FontAwesomeIcon icon="code" />,
     },
     {
         name: "table",
         type: "block",
-        value: <FontAwesomeIcon icon="table" />
+        value: <FontAwesomeIcon icon="table" />,
     },
     {
         name: "image",
         type: "block",
-        value: <FontAwesomeIcon icon="image" />
+        value: <FontAwesomeIcon icon="image" />,
     },
     {
         name: "reset to default",
         type: null,
-        value: <FontAwesomeIcon icon="spinner" />
-    }
+        value: <FontAwesomeIcon icon="spinner" />,
+    },
 ];
 
 /**
@@ -104,7 +104,7 @@ const items = [
 export const Button = ({ item, active, onClick, classes, reset }) => {
     return (
         <div
-            className={`${classes.tooltip} ${classes.custom}`}
+            className={`tooltip ${classes.custom}`}
             data-active={active || null}
             data-title={item.name}
             data-type={item.type}
@@ -136,14 +136,14 @@ export const Button = ({ item, active, onClick, classes, reset }) => {
 function Menu({ editor, classes, hasMark, hasBlock, hasLinks, onClickBlock, onClickMark, onClickCustom }) {
     const listItems = useMemo(
         () =>
-            items.map(item => {
+            items.map((item) => {
                 let active;
                 if (item.type === "block") {
                     active = hasBlock(item.name);
 
                     if (editor.current) {
                         const {
-                            value: { document, blocks }
+                            value: { document, blocks },
                         } = editor.current;
 
                         if (item.name === "table" && editor.current.isSelectionInTable()) {
@@ -163,7 +163,7 @@ function Menu({ editor, classes, hasMark, hasBlock, hasLinks, onClickBlock, onCl
                             key={item.name}
                             item={item}
                             active={active}
-                            onClick={e => onClickBlock(e, item.name)}
+                            onClick={(e) => onClickBlock(e, item.name)}
                             classes={classes}
                         />
                     );
@@ -175,7 +175,7 @@ function Menu({ editor, classes, hasMark, hasBlock, hasLinks, onClickBlock, onCl
                             key={item.name}
                             item={item}
                             active={active}
-                            onClick={e => onClickMark(e, item.name)}
+                            onClick={(e) => onClickMark(e, item.name)}
                             classes={classes}
                         />
                     );
@@ -187,7 +187,7 @@ function Menu({ editor, classes, hasMark, hasBlock, hasLinks, onClickBlock, onCl
                             key={item.name}
                             item={item}
                             active={active}
-                            onClick={e => onClickCustom(e, item.name)}
+                            onClick={(e) => onClickCustom(e, item.name)}
                             classes={classes}
                         />
                     );
@@ -197,7 +197,7 @@ function Menu({ editor, classes, hasMark, hasBlock, hasLinks, onClickBlock, onCl
                             reset={true}
                             key={item.name}
                             item={item}
-                            onClick={e => onClickCustom(e, item.name)}
+                            onClick={(e) => onClickCustom(e, item.name)}
                             classes={classes}
                         />
                     );
@@ -209,4 +209,8 @@ function Menu({ editor, classes, hasMark, hasBlock, hasLinks, onClickBlock, onCl
     return <>{listItems}</>;
 }
 
-export default Menu;
+function Toolbar(props) {
+    return <div className="menu" {...props} />;
+}
+
+export { Menu, Toolbar };
