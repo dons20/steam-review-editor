@@ -12,7 +12,7 @@ function useEnableHover() {
 
             function enableHover() {
                 // discard emulated mouseMove events coming from touch events
-                if (Math.abs(date?.getTime() - lastTouchTime?.getTime()) < 500) return;
+                if (date?.getTime() - lastTouchTime?.getTime() < 300) return;
                 if (hasHoverClass) return;
 
                 container.classList.add("enableHover");

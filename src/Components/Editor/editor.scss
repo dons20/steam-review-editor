@@ -3,10 +3,10 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.24);
     font-size: 18px;
     grid-row: 2;
-    margin-top: 20px;
-    min-height: 20vh;
     max-width: 1200px;
+    height: 100%;
     width: 100%;
+
     &:focus {
         box-shadow: 0 3px 6px rgba(255, 255, 255, 0.5);
     }
@@ -47,6 +47,8 @@
     }
 
     .editor {
+        min-height: 20vh;
+        height: 100%;
         padding: 1.5rem;
     }
 
@@ -54,9 +56,11 @@
         align-items: center;
         border-bottom: 1px solid rgb(204, 204, 204);
         color: #555;
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+        gap: 2rem 1rem;
         justify-content: space-around;
-        padding: 30px 10px;
+        padding: 2rem 0.5rem;
         user-select: none;
     }
 

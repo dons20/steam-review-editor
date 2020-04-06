@@ -111,8 +111,8 @@ function Content(props) {
                     </div>
                 )}
                 {showTip === false && (
-                    <div className={`${classes.tooltip} ${classes.showHelp}`} data-title="Help">
-                        <FontAwesomeIcon icon={["far", "question-circle"]} size={"4x"} onClick={showInstructions} />
+                    <div className={`tooltip ${classes.showHelp}`} data-title="Help">
+                        <FontAwesomeIcon icon={["far", "question-circle"]} size={"3x"} onClick={showInstructions} />
                     </div>
                 )}
                 <ReviewEditor />

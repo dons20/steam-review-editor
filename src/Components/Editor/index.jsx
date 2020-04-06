@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from "react";
-import { withImages, withLinks, Element, Leaf, BlockButton, MarkButton, LinkButton } from "./Helpers";
+import { withImages, withLinks, Element, Leaf, BlockButton, MarkButton, LinkButton, EraseButton } from "./Helpers";
 import { Slate, Editable, withReact } from "slate-react";
 import { createEditor, Transforms, Text } from "slate";
 import { isKeyHotkey } from "../../Util/isHotkey";
@@ -12,8 +12,7 @@ import "./editor.scss";
 
 /** @type {JSON} */ const databaseValue = JSON.parse(localStorage.getItem("content"));
 /** @type {Object} */ const starterValue = databaseValue || initialJSONValue;
-
-/** @type {String} */ const DEFAULT_NODE = "paragraph";
+/** @type {Object} */ const blankSlateValue = [{ type: "paragraph", children: [{ text: "" }] }];
 
 /** @type {(value) => Boolean} */ const isHeadingHotkey = isKeyHotkey("mod+h");
 /** @type {(value) => Boolean} */ const isBoldHotkey = isKeyHotkey("mod+b");
@@ -72,6 +71,16 @@ function ReviewEditor() {
     const setPreviewContent = useContext(AppContext);
 
     /**
+     * Saves the content of the editor to localStorage
+     */
+    const saveEditor = useCallback(() => {
+        const content = JSON.stringify(value);
+        localStorage.setItem("content", content);
+        setPreviewContent(value);
+        setTimerActive(false);
+    }, [setPreviewContent, value]);
+
+    /**
      * Adds event listener to save editor content before refreshes/navigation changes
      */
     useEffect(() => {
@@ -83,22 +92,12 @@ function ReviewEditor() {
         return function cleanup() {
             window.removeEventListener("beforeunload", runBeforeExit);
         };
-    });
-
-    /**
-     * Saves the content of the editor to localStorage
-     */
-    const saveEditor = () => {
-        const content = JSON.stringify(value);
-        localStorage.setItem("content", content);
-        setPreviewContent(value);
-        setTimerActive(false);
-    };
+    }, [saveEditor]);
 
     /**
      * Auto-saves editor content after delay.
      */
-    useTimeout(() => setTimerActive(false), saveEditor, value, 1500, timerActive);
+    useTimeout(() => setTimerActive(false), saveEditor, value, 3000, timerActive);
 
     /**
      * On change, save the new `value`.
@@ -140,31 +139,34 @@ function ReviewEditor() {
             Transforms.setNodes(editor, { strikethrough: true }, { match: (n) => Text.isText(n), split: true });
         } else if (isNewlineHotKey(event)) {
             return editor.insertText("\n");
-        } else if (isSelectAllHotKey(event)) {
-            shouldSelectAll(!isAllSelected);
         } else if (isDeleteHotKey(event)) {
             if (isAllSelected) {
-                editor.setBlocks(DEFAULT_NODE);
+                Transforms.delete(editor);
+                Transforms.setNodes(editor, { type: "paragraph" });
                 shouldSelectAll(false);
+                return;
             }
+        }
+
+        if (isSelectAllHotKey(event)) {
+            shouldSelectAll(!isAllSelected);
         } else {
-            if (isAllSelected) shouldSelectAll(false);
+            shouldSelectAll(false);
         }
     };
 
-    const onSelect = (event) => {
+    const onSelect = () => {
         if (isAllSelected) shouldSelectAll(false);
         return;
     };
 
+    const clearEditor = () => {
+        setValue(blankSlateValue);
+    };
+
     return (
         <div className="editor__root">
-            <Slate
-                editor={editor}
-                value={value}
-                onChange={onChange}
-                //onSelect={onSelect}
-            >
+            <Slate editor={editor} value={value} onChange={onChange} onSelect={onSelect}>
                 <Toolbar>
                     <BlockButton format="heading" icon="heading" />
                     <MarkButton format="bold" icon="bold" />
@@ -180,6 +182,7 @@ function ReviewEditor() {
                     <BlockButton format="code" icon="code" />
                     <BlockButton format="table" icon="table" />
                     <BlockButton format="image" icon="image" />
+                    <EraseButton clearFunction={clearEditor} />
                 </Toolbar>
 
                 <div className="editor">

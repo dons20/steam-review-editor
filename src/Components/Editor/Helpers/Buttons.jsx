@@ -114,6 +114,25 @@ const LinkButton = () => {
     );
 };
 
+const EraseButton = ({ clearFunction }) => {
+    const editor = useSlate();
+    const handleClick = (e, clearFn) => {
+        e.preventDefault();
+        clearFn();
+
+        //Small hack to allow correct editor reference to be focused
+        setTimeout(() => {
+            ReactEditor.focus(editor);
+        }, 100);
+    };
+
+    return (
+        <div className={`tooltip custom`} data-title={"Erase"} onMouseDown={(e) => handleClick(e, clearFunction)}>
+            <FontAwesomeIcon icon="eraser" />
+        </div>
+    );
+};
+
 const isBlockActive = (editor, format) => {
     const [match] = Editor.nodes(editor, {
         match: (n) => n.type === format,
@@ -132,4 +151,4 @@ const isLinkActive = (editor) => {
     return !!link;
 };
 
-export { MarkButton, BlockButton, LinkButton };
+export { MarkButton, BlockButton, LinkButton, EraseButton };

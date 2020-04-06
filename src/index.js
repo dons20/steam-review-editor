@@ -25,7 +25,8 @@ import {
     faBan,
     faImage,
     faSquare,
-    faQuestion
+    faQuestion,
+    faEraser,
 } from "@fortawesome/free-solid-svg-icons";
 
 library.add(
@@ -51,7 +52,8 @@ library.add(
     faSquare,
     faQuestion,
     faQuestionCircle,
-    faTimesCircle
+    faTimesCircle,
+    faEraser
 );
 
 ReactDOM.render(<App />, document.getElementById("root"));

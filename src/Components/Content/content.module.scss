@@ -8,13 +8,14 @@
 }
 
 .buttons {
+    align-items: center;
     display: grid;
     font-size: 20px;
     grid-row: 3;
-    grid-row-gap: 10px;
-    grid-template-rows: 1fr 1fr;
-    justify-content: space-around;
-    width: 66.6%;
+    grid-gap: 2rem 10rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    width: 100%;
+    max-width: 1200px;
 }
 
 .close {
@@ -58,10 +59,10 @@
 .main {
     display: grid;
     grid-template-rows: auto minmax(350px, 1fr) minmax(50px, 100px) auto;
-    grid-template-columns: 1fr;
+    grid-template-columns: 100%;
     justify-items: center;
     position: relative;
-    row-gap: 40px;
+    row-gap: 1rem;
     padding: 2rem 1rem;
 }
 
@@ -96,6 +97,10 @@
     top: 2%;
     right: 2%;
     position: absolute;
+    justify-self: right;
+    display: grid;
+    grid-template-columns: minmax(90px, 100%);
+    justify-items: center;
 }
 
 body.enableHover {
@@ -122,5 +127,9 @@ body.enableHover {
     & .close {
         border: 2px solid #fff;
         padding: 5px 10px;
+    }
+
+    & .tooltip:before {
+        min-width: 90px;
     }
 }

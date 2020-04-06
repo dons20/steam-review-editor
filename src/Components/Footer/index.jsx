@@ -37,8 +37,10 @@ function Footer({ showModal }) {
                 </button>
             </div>
             <p>
-                Copyright &copy; {date} | Keno Clayton, Licensed under the{" "}
-                <a href="https://github.com/dons20/steam-review-editor/blob/gh-pages/LICENSE">MIT License</a>
+                Copyright &copy; {date} | Keno Clayton.
+                <br />
+                Licensed under the{" "}
+                <a href="https://github.com/dons20/steam-review-editor/LICENSE">{" Blue Oak License."}</a>
                 <br />
                 This website is <strong>not</strong> associated with Valve Corporation
             </p>

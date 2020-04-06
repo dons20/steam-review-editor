@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Element({ attributes, children, element, classes }) {
+export default function Element({ attributes, children, element }) {
     switch (element.type) {
         case "heading":
             return <h1 {...attributes}>{children}</h1>;
