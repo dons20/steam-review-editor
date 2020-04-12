@@ -1,6 +1,32 @@
-import { insertLink, withImages, withLinks } from "./wrappers";
+import { insertLink, insertImage, insertTable, withImages, withLinks, withTables } from "./wrappers";
+import {
+    BlockButton,
+    MarkButton,
+    LinkButton,
+    TableButton,
+    EraseButton,
+    ImageButton,
+    toggleBlock,
+    toggleMark,
+} from "./Buttons";
 import Element from "./Element";
 import Leaf from "./Leaf";
-import { BlockButton, MarkButton, LinkButton, EraseButton } from "./Buttons";
 
-export { insertLink, withImages, withLinks, Element, Leaf, BlockButton, MarkButton, LinkButton, EraseButton };
+export {
+    insertLink,
+    insertImage,
+    insertTable,
+    withImages,
+    withLinks,
+    withTables,
+    Element,
+    Leaf,
+    BlockButton,
+    MarkButton,
+    LinkButton,
+    TableButton,
+    ImageButton,
+    EraseButton,
+    toggleBlock,
+    toggleMark,
+};

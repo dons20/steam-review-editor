@@ -39,7 +39,7 @@ function Footer({ showModal }) {
             <p>
                 Copyright &copy; {date} | Keno Clayton.
                 <br />
-                Licensed under the{" "}
+                Licensed under the
                 <a href="https://github.com/dons20/steam-review-editor/LICENSE">{" Blue Oak License."}</a>
                 <br />
                 This website is <strong>not</strong> associated with Valve Corporation

@@ -1,40 +1,46 @@
 import React from "react";
+import { useSelected, useFocused } from "slate-react";
 
 export default function Element({ attributes, children, element }) {
+    const selected = useSelected();
+    const focused = useFocused();
+
     switch (element.type) {
         case "heading":
             return <h1 {...attributes}>{children}</h1>;
         case "quote":
-            const { data } = element;
-            const author = data.get("author");
             return (
-                <blockquote className="quote" data-author={author} {...attributes}>
+                <blockquote
+                    className={`quote${selected && focused ? " isFocused" : ""}`}
+                    data-author={element.author}
+                    {...attributes}
+                >
                     {children}
                 </blockquote>
             );
-        case "unordered list":
+        case "UList":
             return <ul {...attributes}>{children}</ul>;
-        case "ordered list":
+        case "OList":
             return <ol {...attributes}>{children}</ol>;
-        case "list item":
+        case "list-item":
             return <li {...attributes}>{children}</li>;
         case "code":
             return (
-                <pre className="code" {...attributes}>
+                <pre className={`code${selected && focused ? " isFocused" : ""}`} {...attributes}>
+                    {children}
+                </pre>
+            );
+        case "noparse":
+            return (
+                <pre className={`noparse${selected && focused ? " isFocused" : ""}`} {...attributes}>
                     {children}
                 </pre>
             );
         case "spoiler":
             return (
-                <div className="spoiler" {...attributes}>
+                <div className={`spoiler${selected && focused ? " isFocused" : ""}`} {...attributes}>
                     {children}
                 </div>
-            );
-        case "noparse":
-            return (
-                <pre className="noparse" {...attributes}>
-                    {children}
-                </pre>
             );
         case "table":
             return (
@@ -47,20 +53,22 @@ export default function Element({ attributes, children, element }) {
         case "table-cell":
             return <td {...attributes}>{children}</td>;
         case "link": {
-            const { data } = element;
-            const href = data.get("href");
             return (
-                <a {...attributes} href={href}>
+                <a {...attributes} href={element.url}>
                     {children}
                 </a>
             );
         }
         case "image": {
-            const { data } = element;
-            const img = data.get("img");
             return (
                 <div {...attributes}>
-                    <img src={img} alt={"Image Link: " + img} />
+                    <div contentEditable={false}>
+                        <img
+                            src={element.url}
+                            alt={"Image Link: " + element.url}
+                            className={`image ${selected && focused ? "isFocused" : undefined}`}
+                        />
+                    </div>
                     {children}
                 </div>
             );

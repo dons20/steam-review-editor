@@ -2,6 +2,8 @@ $background-color: #111a24;
 $body-color: #acb2b8;
 $primary-font: "Motiva Sans", "Raleway", sans-serif;
 
+@import "../../assets/styles/master";
+
 .avatar {
     color: #fff;
     display: flex;
@@ -129,7 +131,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     grid-template-columns: 1fr 1fr;
     margin-top: 2vh;
     width: 100%;
-    max-width: 1200px;
+    max-width: $breakpoint-large;
     grid-template-columns: repeat(auto-fit, minmax(50%, auto));
 }
 

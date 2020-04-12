@@ -1,4 +1,5 @@
-import withImages from "./withImages";
+import withImages, { insertImage } from "./withImages";
 import withLinks, { insertLink } from "./withLinks";
+import withTables, { insertTable } from "./withTables";
 
-export { withImages, withLinks, insertLink };
+export { withImages, withLinks, withTables, insertLink, insertImage, insertTable };

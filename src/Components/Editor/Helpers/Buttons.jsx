@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSlate, ReactEditor } from "slate-react";
-import { insertLink } from "./";
+import { insertLink, insertImage, insertTable } from "./";
 import { Editor, Transforms } from "slate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -11,7 +11,7 @@ const toggleBlock = (editor, format) => {
     const isList = LIST_TYPES.includes(format);
 
     Transforms.unwrapNodes(editor, {
-        match: (n) => LIST_TYPES.includes(n.type),
+        match: n => LIST_TYPES.includes(n.type),
         split: true,
     });
 
@@ -27,7 +27,7 @@ const toggleBlock = (editor, format) => {
 
 const BlockButton = ({ format, icon }) => {
     const editor = useSlate();
-    const handleClick = (e) => {
+    const handleClick = e => {
         e.preventDefault();
         toggleBlock(editor, format);
         //Small hack to allow correct editor reference to be focused
@@ -43,7 +43,14 @@ const BlockButton = ({ format, icon }) => {
             data-title={format}
             onMouseDown={handleClick}
         >
-            <FontAwesomeIcon icon={icon} />
+            {icon === "noparse" ? (
+                <span className="fa-layers fa-fw static">
+                    <FontAwesomeIcon icon="code" />
+                    <FontAwesomeIcon icon="ban" color="rgba(255, 99, 71, 0.5)" size="2x" />
+                </span>
+            ) : (
+                <FontAwesomeIcon icon={icon} />
+            )}
         </div>
     );
 };
@@ -60,7 +67,7 @@ const toggleMark = (editor, format) => {
 
 const MarkButton = ({ format, icon }) => {
     const editor = useSlate();
-    const handleClick = (e) => {
+    const handleClick = e => {
         e.preventDefault();
         toggleMark(editor, format);
         //Small hack to allow correct editor reference to be focused
@@ -76,25 +83,16 @@ const MarkButton = ({ format, icon }) => {
             data-title={format}
             onMouseDown={handleClick}
         >
-            {icon === "noparse" ? (
-                <span className="fa-layers fa-fw static">
-                    <FontAwesomeIcon icon="code" />
-                    <FontAwesomeIcon icon="ban" color="rgba(255, 99, 71, 0.5)" size="2x" />
-                </span>
-            ) : (
-                <FontAwesomeIcon icon={icon} />
-            )}
+            <FontAwesomeIcon icon={icon} />
         </div>
     );
 };
 
 const LinkButton = () => {
     const editor = useSlate();
-    const handleClick = (e) => {
+    const handleClick = e => {
         e.preventDefault();
-        const url = window.prompt("Enter the URL of the link:");
-        if (!url) return;
-        insertLink(editor, url);
+        insertLink(editor);
 
         //Small hack to allow correct editor reference to be focused
         setTimeout(() => {
@@ -114,11 +112,91 @@ const LinkButton = () => {
     );
 };
 
+const TableButton = ({ format, icon }) => {
+    const editor = useSlate();
+    const [showDropdown, enableDropdown] = useState(false);
+
+    const showMenu = e => {
+        e.preventDefault();
+        if (!showDropdown) {
+            enableDropdown(true);
+
+            setTimeout(() => {
+                document.addEventListener("click", hideMenu);
+            }, 300);
+        } else {
+            enableDropdown(false);
+        }
+    };
+
+    const hideMenu = () => {
+        enableDropdown(false);
+        document.removeEventListener("click", hideMenu);
+    };
+
+    const handleCreateTable = e => {
+        e.preventDefault();
+        const rows = window.prompt("Enter the number of rows:");
+        if (!rows) return;
+        const columns = window.prompt("Enter the number of columns:");
+        if (!columns) return;
+        insertTable(editor, rows, columns);
+        //Small hack to allow correct editor reference to be focused
+        setTimeout(() => {
+            ReactEditor.focus(editor);
+        }, 100);
+    };
+
+    return (
+        <div
+            className={`tooltip custom table-button`}
+            data-active={showDropdown || isBlockActive(editor, format) || undefined}
+            data-title={format}
+            onMouseDown={showMenu}
+        >
+            <FontAwesomeIcon icon={icon} />
+            <div className={`table-dropdown${showDropdown ? " show" : ""}`}>
+                <button type="button" className="size-selector" onClick={handleCreateTable}>
+                    Choose custom size
+                </button>
+            </div>
+        </div>
+    );
+};
+
+const ImageButton = ({ format, icon }) => {
+    const editor = useSlate();
+    const handleClick = e => {
+        e.preventDefault();
+        const url = window.prompt("Enter the URL of the image:");
+        if (!url) return;
+        insertImage(editor, url);
+        //Small hack to allow correct editor reference to be focused
+        setTimeout(() => {
+            ReactEditor.focus(editor);
+        }, 100);
+    };
+
+    return (
+        <div
+            className={`tooltip custom`}
+            data-active={isBlockActive(editor, format) || null}
+            data-title={format}
+            onMouseDown={handleClick}
+        >
+            <FontAwesomeIcon icon={icon} />
+        </div>
+    );
+};
+
 const EraseButton = ({ clearFunction }) => {
     const editor = useSlate();
     const handleClick = (e, clearFn) => {
         e.preventDefault();
-        clearFn();
+        Transforms.select(
+            editor,
+            Editor.start(editor, { anchor: { path: [0, 0], offset: 0 }, focus: { path: [], offset: 1 } })
+        );
 
         //Small hack to allow correct editor reference to be focused
         setTimeout(() => {
@@ -127,7 +205,7 @@ const EraseButton = ({ clearFunction }) => {
     };
 
     return (
-        <div className={`tooltip custom`} data-title={"Erase"} onMouseDown={(e) => handleClick(e, clearFunction)}>
+        <div className={`tooltip custom`} data-title={"Erase"} onMouseDown={e => handleClick(e, clearFunction)}>
             <FontAwesomeIcon icon="eraser" />
         </div>
     );
@@ -135,7 +213,7 @@ const EraseButton = ({ clearFunction }) => {
 
 const isBlockActive = (editor, format) => {
     const [match] = Editor.nodes(editor, {
-        match: (n) => n.type === format,
+        match: n => n.type === format,
     });
 
     return !!match;
@@ -146,9 +224,9 @@ const isMarkActive = (editor, format) => {
     return marks ? marks[format] === true : false;
 };
 
-const isLinkActive = (editor) => {
-    const [link] = Editor.nodes(editor, { match: (n) => n.type === "link" });
+const isLinkActive = editor => {
+    const [link] = Editor.nodes(editor, { match: n => n.type === "link" });
     return !!link;
 };
 
-export { MarkButton, BlockButton, LinkButton, EraseButton };
+export { MarkButton, BlockButton, LinkButton, ImageButton, TableButton, EraseButton, toggleBlock, toggleMark };

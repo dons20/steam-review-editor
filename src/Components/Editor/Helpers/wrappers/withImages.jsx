@@ -2,14 +2,14 @@ import { Transforms } from "slate";
 import isImage from "is-image";
 import isUrl from "is-url";
 
-const withImages = (editor) => {
+const withImages = editor => {
     const { insertData, isVoid } = editor;
 
-    editor.isVoid = (element) => {
+    editor.isVoid = element => {
         return element.type === "image" ? true : isVoid(element);
     };
 
-    editor.insertData = (data) => {
+    editor.insertData = data => {
         const text = data.getData("text/plain");
         const { files } = data;
 
@@ -43,10 +43,11 @@ const insertImage = (editor, url) => {
     Transforms.insertNodes(editor, image);
 };
 
-const isImageUrl = (url) => {
+const isImageUrl = url => {
     if (!url) return false;
     if (!isUrl(url)) return false;
     return isImage(new URL(url).pathname);
 };
 
 export default withImages;
+export { insertImage };

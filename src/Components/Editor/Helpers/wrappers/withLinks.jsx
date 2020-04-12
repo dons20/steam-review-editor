@@ -1,28 +1,31 @@
-import { Transforms, Editor } from "slate";
+import { Transforms, Editor, Range } from "slate";
 import isUrl from "is-url";
 
-export const insertLink = (editor, url) => {
+const insertLink = editor => {
     if (editor.selection) {
-        wrapLink(editor, url);
+        wrapLink(editor);
     }
 };
 
-const isLinkActive = (editor) => {
-    const [link] = Editor.nodes(editor, { match: (n) => n.type === "link" });
+const isLinkActive = editor => {
+    const [link] = Editor.nodes(editor, { match: n => n.type === "link" });
     return !!link;
 };
 
-const unwrapLink = (editor) => {
-    Transforms.unwrapNodes(editor, { match: (n) => n.type === "link" });
+const unwrapLink = editor => {
+    Transforms.unwrapNodes(editor, { match: n => n.type === "link" });
 };
 
-const wrapLink = (editor, url) => {
+const wrapLink = editor => {
     if (isLinkActive(editor)) {
         unwrapLink(editor);
+        return;
     }
 
+    const url = window.prompt("Enter the URL of the link:");
+    if (!url) return;
+
     const { selection } = editor;
-    // @ts-ignore
     const isCollapsed = selection && Range.isCollapsed(selection);
     const link = {
         type: "link",
@@ -38,26 +41,26 @@ const wrapLink = (editor, url) => {
     }
 };
 
-const withLinks = (editor) => {
+const withLinks = editor => {
     const { insertData, insertText, isInline } = editor;
 
-    editor.isInline = (element) => {
+    editor.isInline = element => {
         return element.type === "link" ? true : isInline(element);
     };
 
-    editor.insertText = (text) => {
+    editor.insertText = text => {
         if (text && isUrl(text)) {
-            wrapLink(editor, text);
+            wrapLink(editor);
         } else {
             insertText(text);
         }
     };
 
-    editor.insertData = (data) => {
+    editor.insertData = data => {
         const text = data.getData("text/plain");
 
         if (text && isUrl(text)) {
-            wrapLink(editor, text);
+            wrapLink(editor);
         } else {
             insertData(data);
         }
@@ -67,3 +70,4 @@ const withLinks = (editor) => {
 };
 
 export default withLinks;
+export { insertLink };

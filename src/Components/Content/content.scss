@@ -1,0 +1,153 @@
+@import "../../assets/styles/master";
+
+@keyframes hide {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+$primary-color: rgba(2, 117, 216, 0.7);
+$secondary-color: rgba(0, 0, 0, 1);
+$tertiary-color: rgba(255, 255, 255, 1);
+
+body.enableHover {
+    & .markupBtn {
+        &:hover {
+            background: $tertiary-color center/15000%;
+            color: #333;
+        }
+    }
+
+    & .previewBtn {
+        &:hover {
+            background: lighten($primary-color, 20%);
+            //color: rgba(2, 117, 216, 1);
+        }
+    }
+
+    & .close {
+        border: none;
+        padding: 0;
+    }
+
+    & .tooltip:before {
+        min-width: 90px;
+    }
+}
+
+.content-root {
+    display: grid;
+    grid-template-rows: auto minmax(350px, 1fr) minmax(50px, auto) auto;
+    grid-template-columns: 100%;
+    justify-items: center;
+    position: relative;
+    row-gap: 1rem;
+    padding: 2rem 1rem;
+
+    .buttons {
+        align-items: center;
+        display: grid;
+        font-size: 1.25rem;
+        grid-row: 3;
+        grid-gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        justify-items: center;
+        max-width: $breakpoint-large;
+        width: 100%;
+    }
+
+    .close {
+        border: 2px solid #fff;
+        cursor: pointer;
+        font-weight: bolder;
+        padding: 5px 10px;
+    }
+
+    .instructions {
+        align-items: center;
+        box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+        background: #e3eaef;
+        //background: linear-gradient(180deg, #e3eaef 5%, #c7d5e0 95%);
+        background: linear-gradient(180deg, #095ea9 5%, #1984e1 95%);
+        border-radius: 10px;
+        color: #fff;
+        display: grid;
+        font-size: 1.25rem;
+        gap: 1rem;
+        grid-template-rows: 1fr auto;
+        justify-items: right;
+        line-height: 2rem;
+        max-width: $breakpoint-large;
+        padding: 1.5rem;
+        width: 100%;
+        will-change: opacity;
+        &.wide {
+            grid-template-rows: 1fr;
+            grid-template-columns: 1fr;
+            grid-template-columns: 1fr 8%;
+            justify-items: center;
+        }
+
+        &.hiding {
+            animation-name: hide;
+            animation-fill-mode: forwards;
+            animation-duration: 0.3s;
+            animation-timing-function: ease-in;
+        }
+    }
+
+    .markupBtn,
+    .previewBtn {
+        border: 1px solid rgba(2, 117, 216, 0.7);
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bolder;
+        margin-top: 1%;
+        max-width: 450px;
+        outline: 0;
+        padding: 10px 15px;
+        transition: background-color 0.15s ease-out;
+        will-change: background-color;
+        height: 100%;
+        width: 100%;
+    }
+
+    .markupBtn {
+        background: rgba(0, 0, 0, 0);
+        border-color: #fff;
+        color: #fff;
+        justify-self: flex-end;
+        &:active {
+            background: $tertiary-color;
+        }
+    }
+
+    .previewBtn {
+        background: $primary-color;
+        color: #fff;
+        justify-self: flex-start;
+        &:active {
+            background: lighten($primary-color, 10%);
+        }
+    }
+
+    .showHelp {
+        color: #fff;
+        cursor: pointer;
+        top: 2%;
+        right: 2%;
+        justify-self: right;
+        display: grid;
+        grid-template-columns: minmax(90px, 100%);
+        justify-items: center;
+    }
+}
+
+@media only screen and (max-width: $breakpoint-small) {
+    .main {
+        row-gap: 3rem;
+    }
+}

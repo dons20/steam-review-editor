@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ReviewEditor from "../Editor";
 import Preview from "../Preview";
-import classes from "./content.module.scss";
+import "./content.scss";
 
 export const AppContext = React.createContext(null);
 
@@ -84,12 +84,10 @@ function Content(props) {
 
     return (
         <AppContext.Provider value={setHTMLContent}>
-            <main className={classes.main}>
+            <main className={"content-root"}>
                 {showTip && (
                     <div
-                        className={`${classes.instructions} ${hideHelp ? classes.hiding : ""} ${
-                            width >= 1200 ? classes.wide : ""
-                        }`}
+                        className={`instructions ${hideHelp && "hiding"} ${width >= 1200 && "wide"}`}
                         onAnimationEnd={hideInstructions}
                     >
                         <p>
@@ -98,12 +96,12 @@ function Content(props) {
                             Clipboard", and paste it in Steam!
                         </p>
                         <div
-                            className={`${width >= 1200 ? "tooltip " : ""}${classes.close}`}
+                            className={`${width >= 1200 ? "tooltip " : ""} close`}
                             onClick={startHide}
                             data-title="Close"
                         >
                             {width >= 1200 ? (
-                                <FontAwesomeIcon icon={["far", "times-circle"]} size={"2x"} className={classes.close} />
+                                <FontAwesomeIcon icon={["far", "times-circle"]} size={"2x"} className="close" />
                             ) : (
                                 "Close"
                             )}
@@ -111,16 +109,19 @@ function Content(props) {
                     </div>
                 )}
                 {showTip === false && (
-                    <div className={`tooltip ${classes.showHelp}`} data-title="Help">
-                        <FontAwesomeIcon icon={["far", "question-circle"]} size={"3x"} onClick={showInstructions} />
+                    <div className={`tooltip showHelp`} data-title="Help" onClick={showInstructions}>
+                        <span style={{ display: "flex", alignItems: "center" }}>
+                            <FontAwesomeIcon icon={["far", "question-circle"]} size={"2x"} />
+                            &nbsp; Show Help
+                        </span>
                     </div>
                 )}
                 <ReviewEditor />
-                <div className={classes.buttons}>
-                    <button className={classes.previewBtn} onClick={() => setShowPreview(!showPreview)}>
-                        {showPreview ? "Hide " : "Show "} Preview
+                <div className="buttons">
+                    <button className="previewBtn ripple" onClick={() => setShowPreview(!showPreview)}>
+                        {`${showPreview ? "Hide" : "Show"} Preview`}
                     </button>
-                    <button className={classes.markupBtn} onClick={copyToClipboard}>
+                    <button className="markupBtn ripple" onClick={copyToClipboard}>
                         Copy Markup to Clipboard
                     </button>
                 </div>

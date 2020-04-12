@@ -1,7 +1,21 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback } from "react";
-import { withImages, withLinks, Element, Leaf, BlockButton, MarkButton, LinkButton, EraseButton } from "./Helpers";
+import {
+    withImages,
+    withLinks,
+    withTables,
+    Element,
+    Leaf,
+    BlockButton,
+    MarkButton,
+    LinkButton,
+    TableButton,
+    ImageButton,
+    EraseButton,
+    toggleBlock,
+    toggleMark,
+} from "./Helpers";
 import { Slate, Editable, withReact } from "slate-react";
-import { createEditor, Transforms, Text } from "slate";
+import { createEditor, Transforms } from "slate";
 import { isKeyHotkey } from "../../Util/isHotkey";
 import initialJSONValue from "../value.json";
 import { withHistory } from "slate-history";
@@ -14,15 +28,26 @@ import "./editor.scss";
 /** @type {Object} */ const starterValue = databaseValue || initialJSONValue;
 /** @type {Object} */ const blankSlateValue = [{ type: "paragraph", children: [{ text: "" }] }];
 
-/** @type {(value) => Boolean} */ const isHeadingHotkey = isKeyHotkey("mod+h");
-/** @type {(value) => Boolean} */ const isBoldHotkey = isKeyHotkey("mod+b");
-/** @type {(value) => Boolean} */ const isUnderlinedHotkey = isKeyHotkey("mod+u");
-/** @type {(value) => Boolean} */ const isItalicHotkey = isKeyHotkey("mod+i");
-/** @type {(value) => Boolean} */ const isStrikethroughHotkey = isKeyHotkey("mod+-");
-/** @type {(value) => Boolean} */ const isCodeHotkey = isKeyHotkey("mod+`");
-/** @type {(value) => Boolean} */ const isNewlineHotKey = isKeyHotkey("shift+enter");
-/** @type {(value) => Boolean} */ const isDeleteHotKey = isKeyHotkey("delete");
-/** @type {(value) => Boolean} */ const isSelectAllHotKey = isKeyHotkey("mod+a");
+const HOTKEYS = {
+    heading: { isHotkey: isKeyHotkey("mod+h"), type: "block", formatType: "heading" },
+    bold: { isHotkey: isKeyHotkey("mod+b"), type: "mark", formatType: "bold" },
+    underline: { isHotkey: isKeyHotkey("mod+u"), type: "mark", formatType: "underline" },
+    italic: { isHotkey: isKeyHotkey("mod+i"), type: "mark", formatType: "italic" },
+    strikethrough: { isHotkey: isKeyHotkey("mod+-"), type: "mark", formatType: "strikethrough" },
+    spoiler: { isHotkey: isKeyHotkey("mod+1"), type: "block", formatType: "spoiler" },
+    noparse: { isHotkey: isKeyHotkey("mod+\\"), type: "block", formatType: "noparse" },
+    link: { isHotkey: isKeyHotkey("mod+l"), type: "mark", formatType: "link" },
+    olist: { isHotkey: isKeyHotkey("mod+2"), type: "block", formatType: "OList" },
+    ulist: { isHotkey: isKeyHotkey("mod+3"), type: "block", formatType: "UList" },
+    quote: { isHotkey: isKeyHotkey("mod+q"), type: "block", formatType: "quote" },
+    code: { isHotkey: isKeyHotkey("mod+`"), type: "block", formatType: "code" },
+    table: { isHotkey: isKeyHotkey("mod+t"), type: "block", formatType: "table" },
+    image: { isHotkey: isKeyHotkey("mod+y"), type: "block", formatType: "image" },
+    erase: { isHotkey: isKeyHotkey("mod+e"), type: "format", formatType: "erase" },
+    softbreak: { isHotkey: isKeyHotkey("shift+enter"), type: "format", formatType: "softbreak" },
+    delete: { isHotkey: isKeyHotkey("delete"), type: "format", formatType: "delete" },
+    selectall: { isHotkey: isKeyHotkey("mod+a"), type: "format", formatType: "selectall" },
+};
 
 /**
  * Hook to trigger a timeout
@@ -54,9 +79,9 @@ function useTimeout(closeTimer, saveEditor, value, delay, active) {
  */
 
 function ReviewEditor() {
-    const editor = useMemo(() => withImages(withLinks(withHistory(withReact(createEditor())))), []);
-    const renderElement = useCallback((props) => <Element {...props} />, []);
-    const renderLeaf = useCallback((props) => <Leaf {...props} />, []);
+    const editor = useMemo(() => withTables(withImages(withLinks(withHistory(withReact(createEditor()))))), []);
+    const renderElement = useCallback(props => <Element {...props} />, []);
+    const renderLeaf = useCallback(props => <Leaf {...props} />, []);
 
     /** @type {[Object, React.SetStateAction<any>]} */
     const [value, setValue] = useState(starterValue);
@@ -103,7 +128,7 @@ function ReviewEditor() {
      * On change, save the new `value`.
      */
 
-    const onChange = (newValue) => {
+    const onChange = newValue => {
         // Check to see if the document has changed before saving.
         if (value.document !== newValue.document) {
             setTimerActive(true);
@@ -118,40 +143,35 @@ function ReviewEditor() {
      * @param {React.KeyboardEvent} event
      */
 
-    const onKeyDown = (event) => {
-        if (!event.ctrlKey) {
-            return;
-        }
-
-        if (isBoldHotkey(event)) {
-            event.preventDefault();
-
-            Transforms.setNodes(editor, { bold: true }, { match: (n) => Text.isText(n), split: true });
-        } else if (isItalicHotkey(event)) {
-            Transforms.setNodes(editor, { italic: true }, { match: (n) => Text.isText(n), split: true });
-        } else if (isUnderlinedHotkey(event)) {
-            Transforms.setNodes(editor, { underline: true }, { match: (n) => Text.isText(n), split: true });
-        } else if (isCodeHotkey(event)) {
-            Transforms.setNodes(editor, { code: true }, { match: (n) => Text.isText(n), split: true });
-        } else if (isHeadingHotkey(event)) {
-            Transforms.setNodes(editor, { heading: true }, { match: (n) => Text.isText(n), split: true });
-        } else if (isStrikethroughHotkey(event)) {
-            Transforms.setNodes(editor, { strikethrough: true }, { match: (n) => Text.isText(n), split: true });
-        } else if (isNewlineHotKey(event)) {
-            return editor.insertText("\n");
-        } else if (isDeleteHotKey(event)) {
-            if (isAllSelected) {
-                Transforms.delete(editor);
-                Transforms.setNodes(editor, { type: "paragraph" });
-                shouldSelectAll(false);
-                return;
+    const onKeyDown = event => {
+        if (event.shiftKey || event.ctrlKey) {
+            for (const [, value] of Object.entries(HOTKEYS)) {
+                if (value.isHotkey(event)) {
+                    if (value.type === "mark") {
+                        event.preventDefault();
+                        toggleMark(editor, value.formatType);
+                    } else if (value.type === "block") {
+                        event.preventDefault();
+                        toggleBlock(editor, value.formatType);
+                    } else {
+                        if (value.formatType === "softbreak") {
+                            event.preventDefault();
+                            Transforms.insertText(editor, "\n");
+                        } else if (value.formatType === "delete") {
+                            if (isAllSelected) {
+                                event.preventDefault();
+                                Transforms.delete(editor);
+                                Transforms.setNodes(editor, { type: "paragraph" });
+                                shouldSelectAll(false);
+                            }
+                        } else if (value.formatType === "selectall") {
+                            shouldSelectAll(!isAllSelected);
+                        } else {
+                            shouldSelectAll(false);
+                        }
+                    }
+                }
             }
-        }
-
-        if (isSelectAllHotKey(event)) {
-            shouldSelectAll(!isAllSelected);
-        } else {
-            shouldSelectAll(false);
         }
     };
 
@@ -174,14 +194,14 @@ function ReviewEditor() {
                     <MarkButton format="italic" icon="italic" />
                     <MarkButton format="strikethrough" icon="strikethrough" />
                     <BlockButton format="spoiler" icon="eye-slash" />
-                    <MarkButton format="noparse" icon="noparse" />
+                    <BlockButton format="noparse" icon="noparse" />
                     <LinkButton />
                     <BlockButton format="UList" icon="list-ul" />
                     <BlockButton format="OList" icon="list-ol" />
                     <BlockButton format="quote" icon="comment" />
                     <BlockButton format="code" icon="code" />
-                    <BlockButton format="table" icon="table" />
-                    <BlockButton format="image" icon="image" />
+                    <TableButton format="table" icon="table" />
+                    <ImageButton format="image" icon="image" />
                     <EraseButton clearFunction={clearEditor} />
                 </Toolbar>
 
