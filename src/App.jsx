@@ -13,10 +13,11 @@ function App() {
     const [showModal, setShowModal] = useState(false);
     useEnableHover();
 
-    const notify = (text) => {
+    const notify = text => {
         toast.success(text, {
             position: toast.POSITION.BOTTOM_RIGHT,
             className: classes.toast,
+            toastId: "SRE_success",
         });
     };
 

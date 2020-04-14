@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useContext, useMemo, useCallback, useRef } from "react";
 import {
     withImages,
     withLinks,
@@ -36,7 +36,7 @@ const HOTKEYS = {
     strikethrough: { isHotkey: isKeyHotkey("mod+-"), type: "mark", formatType: "strikethrough" },
     spoiler: { isHotkey: isKeyHotkey("mod+1"), type: "block", formatType: "spoiler" },
     noparse: { isHotkey: isKeyHotkey("mod+\\"), type: "block", formatType: "noparse" },
-    link: { isHotkey: isKeyHotkey("mod+l"), type: "mark", formatType: "link" },
+    link: { isHotkey: isKeyHotkey("mod+L"), type: "mark", formatType: "link" },
     olist: { isHotkey: isKeyHotkey("mod+2"), type: "block", formatType: "OList" },
     ulist: { isHotkey: isKeyHotkey("mod+3"), type: "block", formatType: "UList" },
     quote: { isHotkey: isKeyHotkey("mod+q"), type: "block", formatType: "quote" },
@@ -92,8 +92,10 @@ function ReviewEditor() {
     /** @type {[Boolean, React.SetStateAction<any>]} */
     const [isAllSelected, shouldSelectAll] = useState(false);
 
-    /** @type {Function} */
-    const setPreviewContent = useContext(AppContext);
+    /** @type {{ setHTMLContent: React.Dispatch<import("react").SetStateAction<any>>, notify: Function }} */
+    const { setHTMLContent, notify } = useContext(AppContext);
+
+    const currentValue = useRef(value);
 
     /**
      * Saves the content of the editor to localStorage
@@ -101,9 +103,10 @@ function ReviewEditor() {
     const saveEditor = useCallback(() => {
         const content = JSON.stringify(value);
         localStorage.setItem("content", content);
-        setPreviewContent(value);
+        setHTMLContent(value);
         setTimerActive(false);
-    }, [setPreviewContent, value]);
+        notify("Latest changes saved ✅");
+    }, [setHTMLContent, value, notify]);
 
     /**
      * Adds event listener to save editor content before refreshes/navigation changes
@@ -114,6 +117,8 @@ function ReviewEditor() {
         }
 
         window.addEventListener("beforeunload", runBeforeExit);
+
+        saveEditor();
         return function cleanup() {
             window.removeEventListener("beforeunload", runBeforeExit);
         };
@@ -122,7 +127,7 @@ function ReviewEditor() {
     /**
      * Auto-saves editor content after delay.
      */
-    useTimeout(() => setTimerActive(false), saveEditor, value, 3000, timerActive);
+    useTimeout(() => setTimerActive(false), saveEditor, value, 10000, timerActive);
 
     /**
      * On change, save the new `value`.
@@ -130,8 +135,9 @@ function ReviewEditor() {
 
     const onChange = newValue => {
         // Check to see if the document has changed before saving.
-        if (value.document !== newValue.document) {
+        if (currentValue.current !== newValue) {
             setTimerActive(true);
+            currentValue.current = newValue;
         }
 
         setValue(newValue);

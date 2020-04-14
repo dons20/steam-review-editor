@@ -101,18 +101,21 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     display: flex;
     flex-direction: column;
     font-family: $primary-font;
-    font-size: 13px;
-    line-height: 17px;
+    font-size: 1rem;
+    line-height: 1.7rem;
     white-space: pre-line;
+    overflow: hidden;
 }
 
 .markupBody {
     background: #111a24;
     background: linear-gradient(to bottom, #111923, #17212e 50%);
+    color: #f4f4f4;
     flex: 1;
-    font-family: inherit;
+    font-family: monospace;
     margin: 0;
-    padding: 0.5rem 1rem;
+    padding: 1.5rem;
+    white-space: pre-wrap;
 }
 
 .middle {
@@ -128,11 +131,10 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     display: grid;
     grid-gap: 30px;
     grid-row: 4;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(550px, auto));
     margin-top: 2vh;
-    width: 100%;
     max-width: $breakpoint-large;
-    grid-template-columns: repeat(auto-fit, minmax(50%, auto));
+    width: 100%;
 }
 
 .rec {

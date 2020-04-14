@@ -1,18 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { AppContext } from "../Content";
 import steamLogo from "../../assets/img/icon_review_steam.png";
-import SteamMarkup from "../../Util/slate-steam-serializer";
 import notRec from "../../assets/img/thumbsDown.png";
-import HTML from "../../Util/slate-html-serializer";
 import rec from "../../assets/img/thumbsUp.png";
-import value from "../value.json";
-import markupRules from "../markupRules.js";
-import htmlRules from "../htmlRules.js";
 
 import classes from "./preview.module.scss";
 
-//const toSteamMarkup = SteamMarkup(value);
-//const toHTMLMarkup = HTML(value);
+const Markup = React.lazy(() => import("./Markup"));
+
 const date = new Date();
 const months = [
     "JANUARY",
@@ -26,7 +22,7 @@ const months = [
     "SEPTEMBER",
     "OCTOBER",
     "NOVEMBER",
-    "DECEMBER"
+    "DECEMBER",
 ];
 
 /**
@@ -39,18 +35,13 @@ const randomize = (max = 1) => {
 
 let rand = randomize(51);
 
-/**
- * @typedef {Object} props
- * @property {JSON} content
- * @property {React.MutableRefObject<any>} markupRef
- *
- * @param {props} props
- */
-function Preview(props) {
+function Preview({ markupRef }) {
+    /** @type {[boolean, import("react").Dispatch<import("react").SetStateAction<any>>]} */
     const [isRecommended, setIsRecommended] = useState(true);
 
-    /** @type {String} */
-    //const markup = toSteamMarkup.serialize(props.content);
+    /** @type {{markup: JSON, preview: JSON}} */
+    const { /**preview,*/ markup } = useContext(AppContext);
+
     //const content = toHTMLMarkup.serialize(props.content);
     /** Flips between Recommended/Not Recommended and randomizes hours */
     const setReview = () => {
@@ -88,14 +79,20 @@ function Preview(props) {
                         <p className={classes.subtext}>
                             POSTED: {date.getDate()} {months[date.getMonth()]}
                         </p>
-                        {/* <div dangerouslySetInnerHTML={{ __html: content }} /> */}
+                        {/* <Markup value={preview} /> */}
                     </div>
                 </div>
             </div>
             <div className={classes.markup}>
                 <h1 className={classes.heading}>Markup Preview</h1>
-                <pre className={classes.markupBody} ref={props.markupRef}>
-                    {/* {markup} */}
+                <pre className={classes.markupBody} ref={markupRef}>
+                    {markup ? (
+                        <React.Suspense fallback={<>Loading...</>}>
+                            <Markup value={markup} />
+                        </React.Suspense>
+                    ) : (
+                        <FontAwesomeIcon icon="spinner" size="4x" style={{ width: "100%" }} spin pulse />
+                    )}
                 </pre>
             </div>
         </div>

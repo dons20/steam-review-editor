@@ -112,6 +112,26 @@ const LinkButton = () => {
     );
 };
 
+const HoverTable = () => {
+    const grid = React.useMemo(() => {
+        let boxes = [];
+        for (let rows = 0; rows < 10; rows++) {
+            for (let columns = 0; columns < 10; columns++) {
+                boxes.push(<div role="button" className="box" key={`${rows}-${columns}`}></div>);
+            }
+        }
+
+        return boxes;
+    }, []);
+
+    return (
+        <div className="grid-container">
+            <div className="items">{grid}</div>
+            <div className="dimensions"></div>
+        </div>
+    );
+};
+
 const TableButton = ({ format, icon }) => {
     const editor = useSlate();
     const [showDropdown, enableDropdown] = useState(false);
@@ -129,13 +149,17 @@ const TableButton = ({ format, icon }) => {
         }
     };
 
-    const hideMenu = () => {
-        enableDropdown(false);
-        document.removeEventListener("click", hideMenu);
+    const hideMenu = e => {
+        e.preventDefault();
+        if (e.target.className !== "size-selector") {
+            enableDropdown(false);
+            document.removeEventListener("click", hideMenu);
+        }
     };
 
     const handleCreateTable = e => {
         e.preventDefault();
+        e.stopPropagation();
         const rows = window.prompt("Enter the number of rows:");
         if (!rows) return;
         const columns = window.prompt("Enter the number of columns:");
@@ -156,7 +180,8 @@ const TableButton = ({ format, icon }) => {
         >
             <FontAwesomeIcon icon={icon} />
             <div className={`table-dropdown${showDropdown ? " show" : ""}`}>
-                <button type="button" className="size-selector" onClick={handleCreateTable}>
+                <button type="button" className="size-selector" onMouseDown={handleCreateTable}>
+                    <HoverTable />
                     Choose custom size
                 </button>
             </div>
@@ -195,7 +220,7 @@ const EraseButton = ({ clearFunction }) => {
         e.preventDefault();
         Transforms.select(
             editor,
-            Editor.start(editor, { anchor: { path: [0, 0], offset: 0 }, focus: { path: [], offset: 1 } })
+            Editor.start(editor, { anchor: { path: [0, 0], offset: 0 }, focus: { path: [0, 0], offset: 1 } })
         );
 
         //Small hack to allow correct editor reference to be focused

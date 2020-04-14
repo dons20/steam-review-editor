@@ -1,25 +1,36 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import serializeMarkup from "../../Util/slate-steam-serializer";
+//import HTML from "../../Util/slate-html-serializer";
 import ReviewEditor from "../Editor";
 import Preview from "../Preview";
 import "./content.scss";
 
-export const AppContext = React.createContext(null);
+const AppContext = React.createContext(null);
 
-function Content(props) {
-    /** @type {[Boolean, React.SetStateAction<any>]} */
+function Content({ notify }) {
+    /** @type {[Boolean, React.Dispatch<import("react").SetStateAction<any>>]} */
     const [showTip, setShowTip] = useState(JSON.parse(localStorage.getItem("showTip")));
-    /** @type {[Boolean, React.SetStateAction<any>]} */
+
+    /** @type {[Boolean, React.Dispatch<import("react").SetStateAction<any>>]} */
     const [hideHelp, setHideHelp] = useState(false);
-    /** @type {[Boolean, React.SetStateAction<any>]} */
+
+    /** @type {[Boolean, React.Dispatch<import("react").SetStateAction<any>>]} */
     const [showPreview, setShowPreview] = useState(false);
-    /** @type {[Object, React.SetStateAction<any>]} */
+
+    /** @type {[Object, React.Dispatch<import("react").SetStateAction<any>>]} */
     const [htmlContent, setHTMLContent] = useState(null);
 
-    /** @type {[Number, React.SetStateAction<any>]} */
+    /** @type {[Object, React.Dispatch<import("react").SetStateAction<any>>]} */
+    const [markup, setMarkup] = useState(null);
+
+    /** @type {[Object, React.Dispatch<import("react").SetStateAction<any>>]} */
+    const [previewContent, setPreviewContent] = useState(null);
+
+    /** @type {[Number, React.Dispatch<import("react").SetStateAction<any>>]} */
     const [width, setWidth] = useState(document.body.getBoundingClientRect().width);
 
-    const markup = useRef(null);
+    const markupAreaRef = useRef(null);
 
     /** Shows the instructions */
     const showInstructions = () => {
@@ -39,14 +50,14 @@ function Content(props) {
 
     /** Copies the markup to clipboard */
     const copyToClipboard = () => {
-        if (!markup.current) return;
+        if (!markupAreaRef.current) return;
         const range = document.createRange();
         const selection = window.getSelection();
-        range.selectNodeContents(markup.current);
+        range.selectNodeContents(markupAreaRef.current);
         selection.removeAllRanges();
         selection.addRange(range);
         document.execCommand("copy");
-        props.notify("Markup copied to clipboard!");
+        notify("Markup copied to clipboard!");
     };
 
     useEffect(() => {
@@ -82,12 +93,22 @@ function Content(props) {
         };
     }, [showTip]);
 
+    /** Serializes the editor content before preview is rendered */
+    useEffect(() => {
+        async function handleSerialization() {
+            setMarkup(await serializeMarkup(htmlContent));
+            //setPreviewContent(await serializeHTML(htmlContent));
+        }
+
+        if (htmlContent) handleSerialization();
+    }, [htmlContent]);
+
     return (
-        <AppContext.Provider value={setHTMLContent}>
+        <AppContext.Provider value={{ setHTMLContent, markup, previewContent, notify }}>
             <main className={"content-root"}>
                 {showTip && (
                     <div
-                        className={`instructions ${hideHelp && "hiding"} ${width >= 1200 && "wide"}`}
+                        className={`instructions${hideHelp ? " hiding" : ""}${width >= 1200 ? " wide" : ""}`}
                         onAnimationEnd={hideInstructions}
                     >
                         <p>
@@ -125,10 +146,11 @@ function Content(props) {
                         Copy Markup to Clipboard
                     </button>
                 </div>
-                {showPreview && htmlContent && <Preview content={htmlContent} markupRef={markup} />}
+                {showPreview && <Preview markupRef={markupAreaRef} />}
             </main>
         </AppContext.Provider>
     );
 }
 
 export default Content;
+export { AppContext };

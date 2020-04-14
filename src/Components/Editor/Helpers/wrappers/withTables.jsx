@@ -1,6 +1,44 @@
-import { Range, Editor, Point } from "slate";
+import { Range, Editor, Point, Transforms } from "slate";
 
-const insertTable = (editor, rows, columns) => {};
+const insertTable = (editor, rows, columns) => {
+    if (editor.selection) {
+        wrapTable(editor, rows, columns);
+    }
+};
+
+const isTableActive = editor => {
+    const [match] = Editor.nodes(editor, {
+        match: n => n.type === "table",
+    });
+
+    return !!match;
+};
+
+const unwrapTable = editor => {
+    const isActive = isTableActive(editor);
+
+    Transforms.unwrapNodes(editor, {
+        match: n => n.type === "table",
+        split: true,
+    });
+
+    Transforms.setNodes(editor, {
+        type: isActive ? "paragraph" : "table",
+    });
+};
+
+const wrapTable = (editor, rows, columns) => {
+    if (isTableActive(editor)) {
+        unwrapTable(editor);
+        return;
+    }
+
+    const text = { text: "" };
+    const cell = { type: "table-cell", children: [{ text: text }] };
+    const row = { type: "table-row", children: [{ text: Array(columns).fill(cell, 0) }] };
+    const table = { type: "table", children: [{ text: Array(rows).fill(row, 0) }] };
+    Transforms.insertNodes(editor, table);
+};
 
 const withTables = editor => {
     const { deleteBackward, deleteForward, insertBreak } = editor;

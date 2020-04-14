@@ -75,7 +75,7 @@
         border-bottom: 1px solid rgb(204, 204, 204);
         color: #555;
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
         gap: 2rem 1rem;
         justify-content: space-around;
         padding: 2rem 0.5rem;
@@ -152,10 +152,17 @@
             transition: opacity 0.3s ease-in-out;
             will-change: opacity;
             width: 30vw;
-            max-width: 500px;
+            max-width: 300px;
 
             .size-selector {
-                cursor: pointer;
+                background-color: $primary-color;
+                border-radius: 10px;
+                box-shadow: $box-shadow-small;
+                color: #fff;
+                padding: 0.5rem 1rem;
+            }
+
+            .grid-container {
             }
 
             &.show {
