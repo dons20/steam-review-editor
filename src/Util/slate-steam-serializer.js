@@ -2,7 +2,6 @@ import { Text } from "slate";
 
 const serialize = value => {
     if (Text.isText(value)) {
-        console.log(value, "TEXT");
         let markValue = value.text;
         if (value.hasOwnProperty("strikethrough")) {
             markValue = `[strike]${markValue}[/strike]`;
@@ -20,8 +19,6 @@ const serialize = value => {
         //return escapeHtml(value.text);
         return markValue;
     }
-
-    console.log(value);
 
     let children = value;
     if (value.children) {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useSlate, ReactEditor } from "slate-react";
 import { insertLink, insertImage, insertTable } from "./";
-import { Editor, Transforms } from "slate";
+import { Editor, Transforms, Range } from "slate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /** @type {Array} */ const LIST_TYPES = ["OList", "UList"];
@@ -44,7 +44,7 @@ const BlockButton = ({ format, icon }) => {
             onMouseDown={handleClick}
         >
             {icon === "noparse" ? (
-                <span className="fa-layers fa-fw static">
+                <span className="fa-layers fa-fw max-width">
                     <FontAwesomeIcon icon="code" />
                     <FontAwesomeIcon icon="ban" color="rgba(255, 99, 71, 0.5)" size="2x" />
                 </span>
@@ -110,6 +110,55 @@ const LinkButton = () => {
             <FontAwesomeIcon icon="link" />
         </div>
     );
+};
+
+const QuoteButton = ({ format, icon }) => {
+    const editor = useSlate();
+    const handleClick = e => {
+        e.preventDefault();
+        toggleQuote(editor, format);
+        //Small hack to allow correct editor reference to be focused
+        setTimeout(() => {
+            ReactEditor.focus(editor);
+        }, 100);
+    };
+
+    return (
+        <div
+            className={`tooltip custom`}
+            data-active={isBlockActive(editor, format) || null}
+            data-title={format}
+            onMouseDown={handleClick}
+        >
+            <FontAwesomeIcon icon={icon} />
+        </div>
+    );
+};
+
+const toggleQuote = (editor, format) => {
+    if (!editor.selection) return;
+
+    if (isBlockActive(editor, format)) {
+        Transforms.unwrapNodes(editor, { match: n => n.type === "quote" });
+        return;
+    }
+
+    let author = window.prompt("Please enter the author's name if any...");
+
+    const { selection } = editor;
+    const isCollapsed = selection && Range.isCollapsed(selection);
+    const quote = {
+        type: format,
+        author,
+        children: isCollapsed ? [{ text: "Enter quote..." }] : [],
+    };
+
+    if (isCollapsed) {
+        Transforms.insertNodes(editor, quote);
+    } else {
+        Transforms.wrapNodes(editor, quote, { split: true });
+        Transforms.collapse(editor, { edge: "end" });
+    }
 };
 
 const HoverTable = () => {
@@ -254,4 +303,14 @@ const isLinkActive = editor => {
     return !!link;
 };
 
-export { MarkButton, BlockButton, LinkButton, ImageButton, TableButton, EraseButton, toggleBlock, toggleMark };
+export {
+    MarkButton,
+    BlockButton,
+    LinkButton,
+    QuoteButton,
+    ImageButton,
+    TableButton,
+    EraseButton,
+    toggleBlock,
+    toggleMark,
+};

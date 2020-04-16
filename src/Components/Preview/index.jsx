@@ -5,7 +5,7 @@ import steamLogo from "../../assets/img/icon_review_steam.png";
 import notRec from "../../assets/img/thumbsDown.png";
 import rec from "../../assets/img/thumbsUp.png";
 
-import classes from "./preview.module.scss";
+import "./preview.scss";
 
 const Markup = React.lazy(() => import("./Markup"));
 
@@ -39,8 +39,8 @@ function Preview({ markupRef }) {
     /** @type {[boolean, import("react").Dispatch<import("react").SetStateAction<any>>]} */
     const [isRecommended, setIsRecommended] = useState(true);
 
-    /** @type {{markup: JSON, preview: JSON}} */
-    const { /**preview,*/ markup } = useContext(AppContext);
+    /** @type {{markup: JSON, previewContent: JSON}} */
+    const { previewContent, markup } = useContext(AppContext);
 
     //const content = toHTMLMarkup.serialize(props.content);
     /** Flips between Recommended/Not Recommended and randomizes hours */
@@ -50,18 +50,18 @@ function Preview({ markupRef }) {
     };
 
     return (
-        <div className={classes.preview}>
-            <div className={classes.store}>
-                <h1 className={classes.heading}>Store Preview</h1>
-                <div className={classes.body}>
-                    <div className={classes.avatar}>
+        <div className={"preview"}>
+            <div className={"store"}>
+                <h1 className={"heading"}>Store Preview</h1>
+                <div className={"body"}>
+                    <div className={"avatar"}>
                         <span className="fa-layers fa-fw">
                             <FontAwesomeIcon icon="square" color="rgba(255,255,255,0.2)" />
                             <FontAwesomeIcon icon="question" transform="shrink-7" />
                         </span>
-                        <div className={classes.username}>Your Username</div>
+                        <div className={"username"}>Your Username</div>
                     </div>
-                    <div className={classes.stats} onClick={setReview}>
+                    <div className={"stats"} onClick={setReview}>
                         <img
                             src={isRecommended ? rec : notRec}
                             alt={isRecommended ? "Recommended" : "Not Recommended"}
@@ -69,23 +69,23 @@ function Preview({ markupRef }) {
                         <div>
                             {isRecommended ? "Recommended" : "Not Recommended"}
                             <br />
-                            <span className={classes.subtext}>{rand} hrs on record</span>
+                            <span className={"subtext"}>{rand} hrs on record</span>
                         </div>
-                        <div className={classes.middle}>
+                        <div className={"middle"}>
                             <img src={steamLogo} alt="Steam Logo" />
                         </div>
                     </div>
-                    <div className={classes.content}>
-                        <p className={classes.subtext}>
+                    <div className={"content"}>
+                        <p className={"subtext"}>
                             POSTED: {date.getDate()} {months[date.getMonth()]}
                         </p>
-                        {/* <Markup value={preview} /> */}
+                        <Markup value={previewContent} />
                     </div>
                 </div>
             </div>
-            <div className={classes.markup}>
-                <h1 className={classes.heading}>Markup Preview</h1>
-                <pre className={classes.markupBody} ref={markupRef}>
+            <div className={"markup"}>
+                <h1 className={"heading"}>Markup Preview</h1>
+                <pre className={"markupBody"} ref={markupRef}>
                     {markup ? (
                         <React.Suspense fallback={<>Loading...</>}>
                             <Markup value={markup} />

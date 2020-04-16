@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import serializeMarkup from "../../Util/slate-steam-serializer";
-//import HTML from "../../Util/slate-html-serializer";
+import serializeHTML from "../../Util/slate-html-serializer";
 import ReviewEditor from "../Editor";
 import Preview from "../Preview";
 import "./content.scss";
@@ -9,25 +9,25 @@ import "./content.scss";
 const AppContext = React.createContext(null);
 
 function Content({ notify }) {
-    /** @type {[Boolean, React.Dispatch<import("react").SetStateAction<any>>]} */
+    /** @type {[Boolean, React.Dispatch<React.SetStateAction<any>>]} */
     const [showTip, setShowTip] = useState(JSON.parse(localStorage.getItem("showTip")));
 
-    /** @type {[Boolean, React.Dispatch<import("react").SetStateAction<any>>]} */
+    /** @type {[Boolean, React.Dispatch<React.SetStateAction<any>>]} */
     const [hideHelp, setHideHelp] = useState(false);
 
-    /** @type {[Boolean, React.Dispatch<import("react").SetStateAction<any>>]} */
+    /** @type {[Boolean, React.Dispatch<React.SetStateAction<any>>]} */
     const [showPreview, setShowPreview] = useState(false);
 
-    /** @type {[Object, React.Dispatch<import("react").SetStateAction<any>>]} */
+    /** @type {[Object, React.Dispatch<React.SetStateAction<any>>]} */
     const [htmlContent, setHTMLContent] = useState(null);
 
-    /** @type {[Object, React.Dispatch<import("react").SetStateAction<any>>]} */
+    /** @type {[Object, React.Dispatch<React.SetStateAction<any>>]} */
     const [markup, setMarkup] = useState(null);
 
-    /** @type {[Object, React.Dispatch<import("react").SetStateAction<any>>]} */
+    /** @type {[Object, React.Dispatch<React.SetStateAction<any>>]} */
     const [previewContent, setPreviewContent] = useState(null);
 
-    /** @type {[Number, React.Dispatch<import("react").SetStateAction<any>>]} */
+    /** @type {[Number, React.Dispatch<React.SetStateAction<any>>]} */
     const [width, setWidth] = useState(document.body.getBoundingClientRect().width);
 
     const markupAreaRef = useRef(null);
@@ -97,7 +97,7 @@ function Content({ notify }) {
     useEffect(() => {
         async function handleSerialization() {
             setMarkup(await serializeMarkup(htmlContent));
-            //setPreviewContent(await serializeHTML(htmlContent));
+            setPreviewContent(await serializeHTML(htmlContent));
         }
 
         if (htmlContent) handleSerialization();

@@ -8,6 +8,7 @@ import {
     BlockButton,
     MarkButton,
     LinkButton,
+    QuoteButton,
     TableButton,
     ImageButton,
     EraseButton,
@@ -20,7 +21,7 @@ import { isKeyHotkey } from "../../Util/isHotkey";
 import initialJSONValue from "../value.json";
 import { withHistory } from "slate-history";
 import { AppContext } from "../Content";
-import { Toolbar } from "../Menu";
+import Menu from "../Menu";
 
 import "./editor.scss";
 
@@ -83,17 +84,20 @@ function ReviewEditor() {
     const renderElement = useCallback(props => <Element {...props} />, []);
     const renderLeaf = useCallback(props => <Leaf {...props} />, []);
 
-    /** @type {[Object, React.SetStateAction<any>]} */
+    /** @type {[Object, React.Dispatch<React.SetStateAction<any>>]} */
     const [value, setValue] = useState(starterValue);
 
-    /** @type {[Boolean, React.SetStateAction<any>]} */
+    /** @type {[Boolean, React.Dispatch<React.SetStateAction<any>>]} */
     const [timerActive, setTimerActive] = useState(true);
 
-    /** @type {[Boolean, React.SetStateAction<any>]} */
+    /** @type {[Boolean, React.Dispatch<React.SetStateAction<any>>]} */
     const [isAllSelected, shouldSelectAll] = useState(false);
 
-    /** @type {{ setHTMLContent: React.Dispatch<import("react").SetStateAction<any>>, notify: Function }} */
+    /** @type {{ setHTMLContent: React.Dispatch<React.SetStateAction<any>>, notify: Function }} */
     const { setHTMLContent, notify } = useContext(AppContext);
+
+    /** @type {{current: Boolean}} */
+    const shouldBreakout = useRef(false);
 
     const currentValue = useRef(value);
 
@@ -106,6 +110,7 @@ function ReviewEditor() {
         setHTMLContent(value);
         setTimerActive(false);
         notify("Latest changes saved ✅");
+        currentValue.current = value;
     }, [setHTMLContent, value, notify]);
 
     /**
@@ -116,13 +121,14 @@ function ReviewEditor() {
             saveEditor();
         }
 
+        setHTMLContent(value);
+
         window.addEventListener("beforeunload", runBeforeExit);
 
-        saveEditor();
         return function cleanup() {
             window.removeEventListener("beforeunload", runBeforeExit);
         };
-    }, [saveEditor]);
+    }, [saveEditor, setHTMLContent, value]);
 
     /**
      * Auto-saves editor content after delay.
@@ -134,10 +140,9 @@ function ReviewEditor() {
      */
 
     const onChange = newValue => {
-        // Check to see if the document has changed before saving.
-        if (currentValue.current !== newValue) {
+        // Check to see if the value has changed before saving.
+        if (!Object.is(currentValue.current, newValue)) {
             setTimerActive(true);
-            currentValue.current = newValue;
         }
 
         setValue(newValue);
@@ -150,7 +155,25 @@ function ReviewEditor() {
      */
 
     const onKeyDown = event => {
-        if (event.shiftKey || event.ctrlKey) {
+        if (event.shiftKey || event.ctrlKey || event.keyCode === 13) {
+            if (event.keyCode === 13) {
+                if (shouldBreakout.current) {
+                    event.preventDefault();
+                    let { selection } = editor;
+                    Transforms.setNodes(editor, { type: "paragraph" });
+                    if (selection?.anchor?.path.length > 2) {
+                        Transforms.liftNodes(editor);
+                    }
+                    shouldBreakout.current = false;
+                    return;
+                } else {
+                    shouldBreakout.current = true;
+                    return;
+                }
+            } else {
+                shouldBreakout.current = false;
+            }
+
             for (const [, value] of Object.entries(HOTKEYS)) {
                 if (value.isHotkey(event)) {
                     if (value.type === "mark") {
@@ -178,6 +201,8 @@ function ReviewEditor() {
                     }
                 }
             }
+        } else {
+            shouldBreakout.current = false;
         }
     };
 
@@ -193,7 +218,7 @@ function ReviewEditor() {
     return (
         <div className="editor__root">
             <Slate editor={editor} value={value} onChange={onChange} onSelect={onSelect}>
-                <Toolbar>
+                <Menu>
                     <BlockButton format="heading" icon="heading" />
                     <MarkButton format="bold" icon="bold" />
                     <MarkButton format="underline" icon="underline" />
@@ -204,12 +229,12 @@ function ReviewEditor() {
                     <LinkButton />
                     <BlockButton format="UList" icon="list-ul" />
                     <BlockButton format="OList" icon="list-ol" />
-                    <BlockButton format="quote" icon="comment" />
+                    <QuoteButton format="quote" icon="comment" />
                     <BlockButton format="code" icon="code" />
                     <TableButton format="table" icon="table" />
                     <ImageButton format="image" icon="image" />
                     <EraseButton clearFunction={clearEditor} />
-                </Toolbar>
+                </Menu>
 
                 <div className="editor">
                     <Editable
