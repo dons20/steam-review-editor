@@ -50,42 +50,47 @@ function Preview({ markupRef }) {
     };
 
     return (
-        <div className={"preview"}>
-            <div className={"store"}>
-                <h1 className={"heading"}>Store Preview</h1>
-                <div className={"body"}>
-                    <div className={"avatar"}>
+        <div className="preview">
+            <div className="store">
+                <h1 className="heading">Store Preview</h1>
+                <div className="body">
+                    <div className="profile">
                         <span className="fa-layers fa-fw">
                             <FontAwesomeIcon icon="square" color="rgba(255,255,255,0.2)" />
                             <FontAwesomeIcon icon="question" transform="shrink-7" />
                         </span>
-                        <div className={"username"}>Your Username</div>
+                        <div className="details">
+                            <p className="username">Your Username</p>
+                            <p className="sampleDetail">{0} products in account</p>
+                            <p className="sampleDetail">{0} reviews</p>
+                        </div>
                     </div>
-                    <div className={"stats"} onClick={setReview}>
+                    <div className="stats" onClick={setReview}>
                         <img
                             src={isRecommended ? rec : notRec}
                             alt={isRecommended ? "Recommended" : "Not Recommended"}
                         />
                         <div>
-                            {isRecommended ? "Recommended" : "Not Recommended"}
-                            <br />
-                            <span className={"subtext"}>{rand} hrs on record</span>
+                            <span className="recTitle">{isRecommended ? "Recommended" : "Not Recommended"}</span>
+                            <span className="subtext">
+                                {rand} hrs on record ({rand} hrs at review time)
+                            </span>
                         </div>
-                        <div className={"middle"}>
+                        <div className="middle">
                             <img src={steamLogo} alt="Steam Logo" />
                         </div>
                     </div>
-                    <div className={"content"}>
-                        <p className={"subtext"}>
+                    <div className="content">
+                        <p className="subtext">
                             POSTED: {date.getDate()} {months[date.getMonth()]}
                         </p>
                         <Markup value={previewContent} />
                     </div>
                 </div>
             </div>
-            <div className={"markup"}>
-                <h1 className={"heading"}>Markup Preview</h1>
-                <pre className={"markupBody"} ref={markupRef}>
+            <div className="markup">
+                <h1 className="heading">Markup Preview</h1>
+                <pre className="markupBody" ref={markupRef}>
                     {markup ? (
                         <React.Suspense fallback={<>Loading...</>}>
                             <Markup value={markup} />

@@ -4,7 +4,7 @@ import Footer from "./Footer";
 import Header from "./Header";
 //import HoverMenu from "./HoverMenu";
 //import Menu from "./Menu";
-import Modal from "./Modal";
+import Changelog from "./Changelog";
 import Preview from "./Preview";
 
-export { Content, Editor, Footer, Header, Modal, Preview };
+export { Content, Editor, Footer, Header, Changelog, Preview };

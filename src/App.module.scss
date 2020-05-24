@@ -1,13 +1,65 @@
 @import "./assets/styles/master";
 
 .root {
-    display: grid;
-    grid-template-columns: 100%;
-    grid-template-rows: auto 1fr minmax(150px, 180px);
-    width: 100%;
-    min-height: 101vh;
+	display: grid;
+	grid-template-columns: 100%;
+	grid-template-rows: auto 1fr minmax(150px, 180px);
+	width: 100%;
 }
 
 .toast {
-    background: #047a08 !important;
+	background: #047a08 !important;
+}
+
+.modalOverlay {
+	align-items: center;
+	background-color: rgba(0, 0, 0, 0.75);
+	display: grid;
+	justify-items: center;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	padding: 2rem;
+	position: fixed;
+	z-index: 2000;
+	opacity: 0;
+	transition: opacity 0.3s ease-in-out;
+
+	&.afterOpen {
+		opacity: 1;
+	}
+
+	&.beforeClose {
+		opacity: 0;
+	}
+
+	.modal {
+		background-color: #fff;
+		border-radius: 10px;
+		margin: auto;
+		padding: 1rem;
+		max-height: 800px;
+		max-width: 800px;
+		overflow: auto;
+		height: 100%;
+		width: 100%;
+
+		.close {
+			background-color: #333;
+			border-radius: 50%;
+			color: #fff;
+			font-size: 2.5em;
+			font-weight: bolder;
+			position: absolute;
+			width: 1.3em;
+			height: 1.3em;
+			top: 2vw;
+			right: 2vw;
+			transition: background-color 0.1s ease-in-out;
+			&:hover {
+				background-color: #555;
+			}
+		}
+	}
 }

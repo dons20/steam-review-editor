@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "es2019",
+		"checkJs": true,
+		"jsx": "react",
+		"allowSyntheticDefaultImports": true
+	},
+	"typeAcquisition": { "enable": true },
+	"exclude": ["node_modules", "**/node_modules/*"]
+}
