@@ -1,4 +1,11 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback, useRef } from "react";
+import { Slate, Editable, withReact } from "slate-react";
+import { createEditor, Transforms } from "slate";
+import { AppContext } from "Components/Content";
+import initialJSONValue from "../value.json";
+import { isKeyHotkey } from "Util/isHotkey";
+import { withHistory } from "slate-history";
+import Menu from "../Menu";
 import {
 	withImages,
 	withLinks,
@@ -15,13 +22,6 @@ import {
 	toggleBlock,
 	toggleMark,
 } from "./Helpers";
-import { Slate, Editable, withReact } from "slate-react";
-import { createEditor, Transforms } from "slate";
-import { isKeyHotkey } from "../../Util/isHotkey";
-import initialJSONValue from "../value.json";
-import { withHistory } from "slate-history";
-import { AppContext } from "../Content";
-import Menu from "../Menu";
 
 import "./editor.scss";
 

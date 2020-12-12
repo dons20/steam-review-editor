@@ -5,7 +5,7 @@ import * as serviceWorker from "./serviceWorker";
 import "./index.scss";
 
 import { library } from "@fortawesome/fontawesome-svg-core";
-import { faTwitterSquare, faGithubSquare } from "@fortawesome/free-brands-svg-icons";
+import { faTwitterSquare, faGithubSquare, faSteam } from "@fortawesome/free-brands-svg-icons";
 import { faListAlt, faTimesCircle, faQuestionCircle } from "@fortawesome/free-regular-svg-icons";
 import {
 	faHeading,
@@ -53,7 +53,8 @@ library.add(
 	faQuestion,
 	faQuestionCircle,
 	faTimesCircle,
-	faEraser
+	faEraser,
+	faSteam
 );
 
 ReactDOM.render(<App />, document.getElementById("root"));

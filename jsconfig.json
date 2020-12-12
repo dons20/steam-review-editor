@@ -1,10 +1,12 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es2019",
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
 		"checkJs": true,
-		"jsx": "react",
-		"allowSyntheticDefaultImports": true
+		"jsx": "preserve",
+		"target": "es2018",
+		"module": "commonJS",
+		"baseUrl": "src"
 	},
 	"typeAcquisition": { "enable": true },
 	"exclude": ["node_modules", "**/node_modules/*"]
