@@ -26,3 +26,8 @@ yarn-error.log*
 *.ts
 tsconfig.json
 .eslintcache
+
+# cypress
+cypress.env.json
+cypress/screenshots
+cypress/videos
