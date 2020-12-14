@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext, useMemo, useCallback, useRef } from "react";
 import { Slate, Editable, withReact } from "slate-react";
+import initialJSONValue from "Components/value.json";
 import { createEditor, Transforms } from "slate";
 import { AppContext } from "Components/Content";
-import initialJSONValue from "../value.json";
 import { isKeyHotkey } from "Util/isHotkey";
 import { withHistory } from "slate-history";
-import Menu from "../Menu";
+import Menu from "Components/Menu";
 import {
 	withImages,
 	withLinks,

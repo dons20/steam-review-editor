@@ -13,6 +13,10 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 	max-width: $breakpoint-large;
 	width: 100%;
 
+	&.hidden {
+		display: none;
+	}
+
 	.body {
 		align-items: center;
 		background: #111a24;

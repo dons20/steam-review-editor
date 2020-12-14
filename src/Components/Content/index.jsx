@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import serializeMarkup from "../../Util/slate-steam-serializer";
-import serializeHTML from "../../Util/slate-html-serializer";
-import ReviewEditor from "../Editor";
-import Preview from "../Preview";
+import serializeMarkup from "Util/slate-steam-serializer";
+import serializeHTML from "Util/slate-html-serializer";
+import ReviewEditor from "Components/Editor";
+import Preview from "Components/Preview";
 import "./content.scss";
 
 const AppContext = React.createContext(null);
@@ -142,7 +142,9 @@ function Content({ notify }) {
 						Copy Markup to Clipboard
 					</button>
 				</div>
-				{showPreview && <Preview markupRef={markupAreaRef} />}
+				<React.Suspense fallback={<></>}>
+					<Preview markupRef={markupAreaRef} visible={showPreview} />
+				</React.Suspense>
 			</main>
 		</AppContext.Provider>
 	);

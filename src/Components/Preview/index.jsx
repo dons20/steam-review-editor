@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import notRec from "../../assets/img/thumbsDown.png";
-import rec from "../../assets/img/thumbsUp.png";
+import notRec from "assets/img/thumbsDown.png";
+import rec from "assets/img/thumbsUp.png";
 import { AppContext } from "../Content";
 
 import "./preview.scss";
@@ -34,7 +34,13 @@ const randomize = (max = 1) => {
 
 let rand = randomize(51);
 
-function Preview({ markupRef }) {
+/**
+ *
+ * @param {Object} props
+ * @param {React.MutableRefObject<*>} props.markupRef
+ * @param {Boolean} props.visible
+ */
+function Preview({ markupRef, visible }) {
 	/** @type {[boolean, import("react").Dispatch<import("react").SetStateAction<any>>]} */
 	const [isRecommended, setIsRecommended] = useState(true);
 
@@ -49,7 +55,7 @@ function Preview({ markupRef }) {
 	};
 
 	return (
-		<div className="preview">
+		<div className={`preview ${visible ? "" : "hidden"}`}>
 			<div className="store">
 				<h1 className="heading">Store Preview</h1>
 				<div className="body">
