@@ -94,9 +94,7 @@ function Preview({ markupRef, visible }) {
 				<h1 className="heading">Markup Preview</h1>
 				<pre className="markupBody" ref={markupRef}>
 					{markup ? (
-						<React.Suspense fallback={<>Loading...</>}>
-							<Markup value={markup} />
-						</React.Suspense>
+						<React.Suspense fallback={<>Loading...</>}>{/* <Markup value={markup} /> */}Test</React.Suspense>
 					) : (
 						<FontAwesomeIcon icon="spinner" size="4x" style={{ width: "100%" }} spin pulse />
 					)}

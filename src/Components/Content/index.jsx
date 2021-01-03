@@ -94,14 +94,14 @@ function Content({ notify }) {
 	}, [showTip]);
 
 	/** Serializes the editor content before preview is rendered */
-	useEffect(() => {
-		async function handleSerialization() {
-			setMarkup(await serializeMarkup(htmlContent));
-			setPreviewContent(await serializeHTML(htmlContent));
-		}
+	// useEffect(() => {
+	// 	async function handleSerialization() {
+	// 		setMarkup(await serializeMarkup(htmlContent));
+	// 		setPreviewContent(await serializeHTML(htmlContent));
+	// 	}
 
-		if (htmlContent) handleSerialization();
-	}, [htmlContent]);
+	// 	if (htmlContent) handleSerialization();
+	// }, [htmlContent]);
 
 	return (
 		<AppContext.Provider value={{ setHTMLContent, markup, previewContent, notify }}>

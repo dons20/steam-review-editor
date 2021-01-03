@@ -1,15 +1,11 @@
-import React, { useEffect, useState, useContext, useMemo, useCallback, useRef } from "react";
-import { Slate, Editable, withReact } from "slate-react";
+import React, { useEffect, useState, useContext, useCallback, useRef } from "react";
 import initialJSONValue from "Components/value.json";
-import { createEditor, Transforms } from "slate";
+import { EDITOR_JS_TOOLS } from "./Helpers/tools";
 import { AppContext } from "Components/Content";
 import { isKeyHotkey } from "Util/isHotkey";
-import { withHistory } from "slate-history";
+import EditorJs from "react-editor-js";
 import Menu from "Components/Menu";
 import {
-	withImages,
-	withLinks,
-	withTables,
 	Element,
 	Leaf,
 	BlockButton,
@@ -25,9 +21,9 @@ import {
 
 import "./editor.scss";
 
-/** @type {JSON} */ const databaseValue = JSON.parse(localStorage.getItem("content"));
-/** @type {Object} */ const starterValue = databaseValue || initialJSONValue;
-/** @type {Object} */ const blankSlateValue = [{ type: "paragraph", children: [{ text: "" }] }];
+// /** @type {JSON} */ const databaseValue = JSON.parse(localStorage.getItem("content"));
+// /** @type {Object} */ const starterValue = databaseValue || initialJSONValue;
+// /** @type {Object} */ const blankSlateValue = [{ type: "paragraph", children: [{ text: "" }] }];
 
 const HOTKEYS = {
 	heading: { isHotkey: isKeyHotkey("mod+h"), type: "block", formatType: "heading" },
@@ -80,38 +76,32 @@ function useTimeout(closeTimer, saveEditor, value, delay, active) {
  */
 
 function ReviewEditor() {
-	const editor = useMemo(() => withTables(withImages(withLinks(withHistory(withReact(createEditor()))))), []);
-	const renderElement = useCallback(props => <Element {...props} />, []);
-	const renderLeaf = useCallback(props => <Leaf {...props} />, []);
+	const editorRef = useRef(null);
 
 	/** @type {[Object, React.Dispatch<React.SetStateAction<any>>]} */
-	const [value, setValue] = useState(starterValue);
+	const [data, setData] = useState();
 
 	/** @type {[Boolean, React.Dispatch<React.SetStateAction<any>>]} */
 	const [timerActive, setTimerActive] = useState(true);
 
-	/** @type {[Boolean, React.Dispatch<React.SetStateAction<any>>]} */
-	const [isAllSelected, shouldSelectAll] = useState(false);
-
 	/** @type {{ setHTMLContent: React.Dispatch<React.SetStateAction<any>>, notify: Function }} */
 	const { setHTMLContent, notify } = useContext(AppContext);
 
-	/** @type {{current: Boolean}} */
-	const shouldBreakout = useRef(false);
-
-	const currentValue = useRef(value);
+	const currentValue = useRef(data);
 
 	/**
 	 * Saves the content of the editor to localStorage
 	 */
-	const saveEditor = useCallback(() => {
-		const content = JSON.stringify(value);
+	const saveEditor = useCallback(async () => {
+		const savedData = await editorRef.current.save();
+		const content = JSON.stringify(savedData);
 		localStorage.setItem("content", content);
-		setHTMLContent(value);
+		//setHTMLContent(data);
+		console.log(savedData);
 		setTimerActive(false);
 		notify("Latest changes saved ✅");
-		currentValue.current = value;
-	}, [setHTMLContent, value, notify]);
+		currentValue.current = data;
+	}, [data, notify]);
 
 	/**
 	 * Adds event listener to save editor content before refreshes/navigation changes
@@ -121,19 +111,19 @@ function ReviewEditor() {
 			saveEditor();
 		}
 
-		setHTMLContent(value);
+		//setHTMLContent(data);
 
 		window.addEventListener("beforeunload", runBeforeExit);
 
 		return function cleanup() {
 			window.removeEventListener("beforeunload", runBeforeExit);
 		};
-	}, [saveEditor, setHTMLContent, value]);
+	}, [saveEditor, setHTMLContent, data]);
 
 	/**
 	 * Auto-saves editor content after delay.
 	 */
-	useTimeout(() => setTimerActive(false), saveEditor, value, 10000, timerActive);
+	useTimeout(() => setTimerActive(false), saveEditor, data, 10000, timerActive);
 
 	/**
 	 * On change, save the new `value`.
@@ -145,7 +135,7 @@ function ReviewEditor() {
 			setTimerActive(true);
 		}
 
-		setValue(newValue);
+		setData(newValue);
 	};
 
 	/**
@@ -155,7 +145,7 @@ function ReviewEditor() {
 	 */
 
 	const onKeyDown = event => {
-		if (event.shiftKey || event.ctrlKey || event.keyCode === 13) {
+		/* if (event.shiftKey || event.ctrlKey || event.keyCode === 13) {
 			if (event.keyCode === 13) {
 				if (shouldBreakout.current) {
 					event.preventDefault();
@@ -203,22 +193,19 @@ function ReviewEditor() {
 			}
 		} else {
 			shouldBreakout.current = false;
-		}
-	};
-
-	const onSelect = () => {
-		if (isAllSelected) shouldSelectAll(false);
-		return;
-	};
-
-	const clearEditor = () => {
-		setValue(blankSlateValue);
+		} */
 	};
 
 	return (
 		<div className="editor__root">
-			<Slate editor={editor} value={value} onChange={onChange} onSelect={onSelect}>
-				<Menu>
+			<EditorJs
+				data={data}
+				placeholder="Type your review here..."
+				instanceRef={instance => (editorRef.current = instance)}
+				autofocus={true}
+				tools={EDITOR_JS_TOOLS}
+			/>
+			{/* <Menu>
 					<BlockButton format="heading" icon="heading" />
 					<MarkButton format="bold" icon="bold" />
 					<MarkButton format="underline" icon="underline" />
@@ -245,8 +232,7 @@ function ReviewEditor() {
 						spellCheck
 						autoFocus
 					/>
-				</div>
-			</Slate>
+				</div> */}
 		</div>
 	);
 }
