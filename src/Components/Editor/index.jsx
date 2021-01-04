@@ -1,50 +1,12 @@
 import React, { useEffect, useState, useContext, useCallback, useRef } from "react";
-import initialJSONValue from "Components/value.json";
 import { EDITOR_JS_TOOLS } from "./Helpers/tools";
 import { AppContext } from "Components/Content";
-import { isKeyHotkey } from "Util/isHotkey";
 import EditorJs from "react-editor-js";
-import Menu from "Components/Menu";
-import {
-	Element,
-	Leaf,
-	BlockButton,
-	MarkButton,
-	LinkButton,
-	QuoteButton,
-	TableButton,
-	ImageButton,
-	EraseButton,
-	toggleBlock,
-	toggleMark,
-} from "./Helpers";
 
 import "./editor.scss";
 
-// /** @type {JSON} */ const databaseValue = JSON.parse(localStorage.getItem("content"));
-// /** @type {Object} */ const starterValue = databaseValue || initialJSONValue;
-// /** @type {Object} */ const blankSlateValue = [{ type: "paragraph", children: [{ text: "" }] }];
-
-const HOTKEYS = {
-	heading: { isHotkey: isKeyHotkey("mod+h"), type: "block", formatType: "heading" },
-	bold: { isHotkey: isKeyHotkey("mod+b"), type: "mark", formatType: "bold" },
-	underline: { isHotkey: isKeyHotkey("mod+u"), type: "mark", formatType: "underline" },
-	italic: { isHotkey: isKeyHotkey("mod+i"), type: "mark", formatType: "italic" },
-	strikethrough: { isHotkey: isKeyHotkey("mod+-"), type: "mark", formatType: "strikethrough" },
-	spoiler: { isHotkey: isKeyHotkey("mod+1"), type: "block", formatType: "spoiler" },
-	noparse: { isHotkey: isKeyHotkey("mod+\\"), type: "block", formatType: "noparse" },
-	link: { isHotkey: isKeyHotkey("mod+L"), type: "mark", formatType: "link" },
-	olist: { isHotkey: isKeyHotkey("mod+2"), type: "block", formatType: "OList" },
-	ulist: { isHotkey: isKeyHotkey("mod+3"), type: "block", formatType: "UList" },
-	quote: { isHotkey: isKeyHotkey("mod+q"), type: "block", formatType: "quote" },
-	code: { isHotkey: isKeyHotkey("mod+`"), type: "block", formatType: "code" },
-	table: { isHotkey: isKeyHotkey("mod+t"), type: "block", formatType: "table" },
-	image: { isHotkey: isKeyHotkey("mod+y"), type: "block", formatType: "image" },
-	erase: { isHotkey: isKeyHotkey("mod+e"), type: "format", formatType: "erase" },
-	softbreak: { isHotkey: isKeyHotkey("shift+enter"), type: "format", formatType: "softbreak" },
-	delete: { isHotkey: isKeyHotkey("delete"), type: "format", formatType: "delete" },
-	selectall: { isHotkey: isKeyHotkey("mod+a"), type: "format", formatType: "selectall" },
-};
+/** @type {JSON} */ const databaseValue = JSON.parse(localStorage.getItem("content"));
+/** @type {Object} */ const starterValue = databaseValue || undefined;
 
 /**
  * Hook to trigger a timeout
@@ -79,7 +41,7 @@ function ReviewEditor() {
 	const editorRef = useRef(null);
 
 	/** @type {[Object, React.Dispatch<React.SetStateAction<any>>]} */
-	const [data, setData] = useState();
+	const [data, setData] = useState(starterValue);
 
 	/** @type {[Boolean, React.Dispatch<React.SetStateAction<any>>]} */
 	const [timerActive, setTimerActive] = useState(true);
@@ -138,101 +100,16 @@ function ReviewEditor() {
 		setData(newValue);
 	};
 
-	/**
-	 * On key down, if it's a formatting command toggle a mark.
-	 *
-	 * @param {React.KeyboardEvent} event
-	 */
-
-	const onKeyDown = event => {
-		/* if (event.shiftKey || event.ctrlKey || event.keyCode === 13) {
-			if (event.keyCode === 13) {
-				if (shouldBreakout.current) {
-					event.preventDefault();
-					let { selection } = editor;
-					Transforms.setNodes(editor, { type: "paragraph" });
-					if (selection?.anchor?.path.length > 2) {
-						Transforms.liftNodes(editor);
-					}
-					shouldBreakout.current = false;
-					return;
-				} else {
-					shouldBreakout.current = true;
-					return;
-				}
-			} else {
-				shouldBreakout.current = false;
-			}
-
-			for (const [, value] of Object.entries(HOTKEYS)) {
-				if (value.isHotkey(event)) {
-					if (value.type === "mark") {
-						event.preventDefault();
-						toggleMark(editor, value.formatType);
-					} else if (value.type === "block") {
-						event.preventDefault();
-						toggleBlock(editor, value.formatType);
-					} else {
-						if (value.formatType === "softbreak") {
-							event.preventDefault();
-							Transforms.insertText(editor, "\n");
-						} else if (value.formatType === "delete") {
-							if (isAllSelected) {
-								event.preventDefault();
-								Transforms.delete(editor);
-								Transforms.setNodes(editor, { type: "paragraph" });
-								shouldSelectAll(false);
-							}
-						} else if (value.formatType === "selectall") {
-							shouldSelectAll(!isAllSelected);
-						} else {
-							shouldSelectAll(false);
-						}
-					}
-				}
-			}
-		} else {
-			shouldBreakout.current = false;
-		} */
-	};
-
 	return (
 		<div className="editor__root">
 			<EditorJs
 				data={data}
 				placeholder="Type your review here..."
 				instanceRef={instance => (editorRef.current = instance)}
+				onChange={onChange}
 				autofocus={true}
 				tools={EDITOR_JS_TOOLS}
 			/>
-			{/* <Menu>
-					<BlockButton format="heading" icon="heading" />
-					<MarkButton format="bold" icon="bold" />
-					<MarkButton format="underline" icon="underline" />
-					<MarkButton format="italic" icon="italic" />
-					<MarkButton format="strikethrough" icon="strikethrough" />
-					<BlockButton format="spoiler" icon="eye-slash" />
-					<BlockButton format="noparse" icon="noparse" />
-					<LinkButton />
-					<BlockButton format="UList" icon="list-ul" />
-					<BlockButton format="OList" icon="list-ol" />
-					<QuoteButton format="quote" icon="comment" />
-					<BlockButton format="code" icon="code" />
-					<TableButton format="table" icon="table" />
-					<ImageButton format="image" icon="image" />
-					<EraseButton clearFunction={clearEditor} />
-				</Menu>
-
-				<div className="editor">
-					<Editable
-						onKeyDown={onKeyDown}
-						renderElement={renderElement}
-						renderLeaf={renderLeaf}
-						placeholder="Type your review here..."
-						spellCheck
-						autoFocus
-					/>
-				</div> */}
 		</div>
 	);
 }

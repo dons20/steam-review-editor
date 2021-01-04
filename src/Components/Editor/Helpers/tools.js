@@ -7,7 +7,7 @@ import Quote from "@editorjs/quote";
 import List from "@editorjs/list";
 
 /**
- *
+ * @type {{[toolName: string]: EditorJS.BlockToolConstructable | EditorJS.InlineToolConstructable | EditorJS.ToolSettings}}
  */
 export const EDITOR_JS_TOOLS = {
 	list: List,
@@ -20,7 +20,10 @@ export const EDITOR_JS_TOOLS = {
 		class: Table,
 		inlineToolbar: true,
 	},
-	header: Header,
+	header: {
+		class: Header,
+		shortcut: "CMD+SHIFT+H",
+	},
 	underline: Underline,
 	inlineCode: InlineCode,
 };
