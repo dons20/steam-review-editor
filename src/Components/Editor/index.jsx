@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useContext, useCallback, useRef } from "react";
+import { createReactEditorJS } from "react-editor-js";
 import { EDITOR_JS_TOOLS } from "./Helpers/tools";
 import { AppContext } from "Components/Content";
-import EditorJs from "react-editor-js";
 
 import "./editor.scss";
+
+const EditorJs = createReactEditorJS();
 
 /** @type {JSON} */ const databaseValue = JSON.parse(localStorage.getItem("content"));
 /** @type {Object} */ const starterValue = databaseValue || undefined;
@@ -100,12 +102,21 @@ function ReviewEditor() {
 		setData(newValue);
 	};
 
+	const handleInitialize = React.useCallback(instance => {
+		editorRef.current = instance;
+	}, []);
+
+	//   const handleSave = React.useCallback(async () => {
+	// 	const savedData = await editorRef.current.save();
+	//   }, []);
+
 	return (
 		<div className="editor__root">
 			<EditorJs
-				data={data}
+				// data={data}
 				placeholder="Type your review here..."
-				instanceRef={instance => (editorRef.current = instance)}
+				// instanceRef={instance => (editorRef.current = instance)}
+				onInitialize={handleInitialize}
 				onChange={onChange}
 				autofocus={true}
 				tools={EDITOR_JS_TOOLS}

@@ -10,7 +10,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "./assets/styles/general.scss";
 
 /** Configuration */
-toast.configure();
 Modal.setAppElement("#root");
 
 function App() {
