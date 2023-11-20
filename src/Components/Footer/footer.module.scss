@@ -1,23 +1,23 @@
 .root {
-    align-items: center;
-    background: rgba(0, 0, 0, 0.3);
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0, rgba(0, 0, 0, 0.5) 100%);
-    color: #b8b6b4;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.3);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0, rgba(0, 0, 0, 0.5) 100%);
+  color: #b8b6b4;
+  display: grid;
+  justify-content: center;
+  line-height: 1.69rem;
+  text-align: center;
+  padding: 10px 0;
+
+  & .iconRow {
     display: grid;
-    justify-content: center;
-    line-height: 1.69rem;
-    text-align: center;
-    padding: 10px 0;
+    grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr));
+    max-width: 400px;
+    width: 100%;
+  }
 
-    & .iconRow {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(3rem, 1fr));
-        max-width: 400px;
-        width: 100%;
-    }
-
-    & .icon {
-        color: #fff;
-        position: relative;
-    }
+  & .icon {
+    color: #fff;
+    position: relative;
+  }
 }

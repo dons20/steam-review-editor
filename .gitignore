@@ -23,11 +23,4 @@ yarn-error.log*
 # local optionals
 .env
 .vscode
-*.ts
-tsconfig.json
 .eslintcache
-
-# cypress
-cypress.env.json
-cypress/screenshots
-cypress/videos
