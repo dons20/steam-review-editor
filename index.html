@@ -95,7 +95,7 @@
                             <div class="col"><h1 class="lead brighter">Store Preview</h1></div>
                         </div>
                         <div class="row preview-top py-2">
-                            <div class="col-4 mr-xl-5">
+                            <div class="col-12 col-md-4 mr-xl-5">
                                 <div class="d-flex">
                                     <span class="fa-stack fa-lg mr-2">
                                         <i class="fa fa-square fa-stack-2x fa-inverse hide" aria-hidden="true"></i>
@@ -104,7 +104,7 @@
                                     <p class="name">Your Username</p>
                                 </div>
                             </div>
-                            <div class="col next pl-0">
+                            <div class="col-12 col-md pt-2 pt-md-0 next pl-md-0">
                                 <div class="d-flex">
                                     <span class="fa-stack fa-2x mr-2">
                                         <i class="fa fa-square fa-stack-2x fa-inverse hide" aria-hidden="true"></i>
@@ -112,16 +112,19 @@
                                     </span>
                                     <div class="d-flex flex-column">
                                         <h1 class="recommended mb-0">Recommended</h1>
-                                        <p class="mb-0">0.0 hrs on record</p>
+                                        <p class="hours mb-0">0.0 hrs on record</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col preview-container p-0">
-                                <div class="d-flex justify-content-xl-end">
-                                    <div id="preview" class="preview p-3"></div>
-                                </div>
+                        <div class="row preview-container">
+                            <div class="d-none d-md-block col-4 preview-container p-0 mr-xl-5">&nbsp;</div>
+                            <div class="col preview-container posted-date pl-3 p-md-0 text-uppercase">Posted: <span class="current-date"></span></div>
+                        </div>
+                        <div class="row preview-container">
+                            <div class="d-none d-md-block col-4 preview-container p-0 mr-xl-5">&nbsp;</div>
+                            <div class="col preview-container pl-3 p-md-0">
+                                <div id="preview" class="preview pr-3 py-1"></div>
                             </div>
                         </div>
                     </div>
