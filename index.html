@@ -12,12 +12,13 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">        
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
-        <link rel="stylesheet" href="https://cdn.quilljs.com/1.2.4/quill.snow.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
         <link rel="stylesheet" href="assets/style.min.css">
     </head>
     <body>
         <!--Header section-->
-        <a href="https://github.com/dons20/Steam-Review-Editor" target="_blank"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
+        <a class="github-fork-ribbon" href="https://github.com/dons20/Steam-Review-Editor" target="_blank" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
         <div class="container-fluid">
             <div class="jumbotron jumbotron-fluid">
                 <div class="container">
@@ -171,7 +172,7 @@
                 <a class="mr-2" href="http://twitter.com/kcinnovations" target="_none"><i data-toggle="tooltip" data-animation="false" data-placement="top" title="Twitter" class="fa fa-3x fa-twitter-square" aria-hidden="true"></i></a>
                 <a href="#changelogModal" role="button" data-toggle="modal"><i data-toggle="tooltip" data-animation="false" data-placement="top" title="Changelog" class="fa fa-3x fa-question" aria-hidden="true"></i></a>
                 <!--<button type="button" class="btn" data-toggle="modal" data-target="#changelogModal"><i class="fa fa-3x fa-question" aria-hidden="true"></i></button>-->
-                <p>Copyright &copy; 2017 Keno Clayton, Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</a>
+                <p>Copyright &copy; <script>document.write(Date().split` `[3])</script> Keno Clayton, Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License, Version 2.0</a>
                 <br>
                 This website is <strong>not</strong> associated with Valve Corporation</p>
             </div>
@@ -179,15 +180,15 @@
 
         <!--Javascript-->
         <!--Bootstrap 4-->
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
         <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.7/js/tether.min.js" integrity="sha512-X7kCKQJMwapt5FCOl2+ilyuHJp+6ISxFTVrx+nkrhgplZozodT9taV2GuGHxBgKKpOJZ4je77OuPooJg9FJLvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <!--Font Awesome-->
         <script defer src="https://use.fontawesome.com/8be862904e.js"></script>
 
         <!--Text Editor Quill-->
-        <script defer src="https://cdn.quilljs.com/1.2.4/quill.min.js"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.min.js"></script>
 
         <!--Local Scripts-->
         <script defer src="assets/scripts.min.js"></script>
