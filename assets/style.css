@@ -102,10 +102,6 @@
   line-height: 17px;
   white-space: pre-line; }
 
-@media only screen and (min-width: 1200px) {
-  .preview {
-    min-width: 400px;
-    max-width: 400px; } }
 .preview {
   overflow-wrap: break-word;
   overflow: hidden; }
@@ -137,12 +133,19 @@
   background-color: #111A24;
   color: #63B7E9; }
   .preview-top p {
+    font-size: 12px;
     color: #8091a2; }
     .preview-top p.name {
       color: #c6d4df;
       font-weight: bold; }
   .preview-top .next {
     background: rgba(0, 0, 0, 0.2); }
+
+.posted-date {
+  color: #8091A2;
+  font-size: 10px;
+  font-family: Arial,Helvetica,sans-serif;
+}
 
 .recommended {
   font-size: 16px;

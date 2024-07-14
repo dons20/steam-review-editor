@@ -157,4 +157,10 @@ $(document).ready(function () {
     var fade = $(".fade");
     fade.css({ "opacity":"0"});
     fade.fadeTo(500, 1, "swing");
+
+    const today = new Date();
+    const day = today.getDate();
+    const monthName = today.toLocaleString('en-us', { month: 'long' });
+
+    $('.current-date').html(`${day} ${monthName}`);
 });
