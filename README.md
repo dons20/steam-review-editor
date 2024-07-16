@@ -15,7 +15,7 @@ While the markup is automatically applied, there are currently a few elements th
 ## Resources
 
 * The text editor is [Quill](http://quilljs.com/) and is modified using CSS
-* The website is built with [Bootstrap v4.0.0-alpha.6](https://v4-alpha.getbootstrap.com/)
+* The website is built with [Bootstrap v4.6.2](https://getbootstrap.com/docs/4.6/getting-started/introduction/)
 * The colours, as well as other layout ideas were mostly sourced from Steam's very own website: [Steam Store](http://store.steampowered.com)
 
 ## Contributions

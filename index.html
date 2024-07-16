@@ -10,7 +10,7 @@
 
         <!--Stylesheets-->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">        
-        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
@@ -88,8 +88,8 @@
         </div>
 
         <!--Keeps both preview areas hidden with a toggle-->
-        <div id="previewCollapse" class="collapse">
-            <div class="container-fluid ml-sm-2 mr-sm-2 ml-lg-5 mr-lg-5">
+        <div id="previewCollapse" class="collapse px-4 px-lg-5">
+            <div class="container-fluid">
                 <div class="row">
                     <div class="col-12 col-lg-6 mb-sm-3 mb-xl-0">
                         <div class="row">
@@ -129,11 +129,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col pt-3 pt-lg-0">
                         <div class="row">
                             <div class="col"><h1 class="lead brighter">Markup Preview</h1></div>
                         </div>
-                        <div id="markup" class="col markup p-3"></div>
+                        <div id="markup" class="markup row m-lg-0 p-3"></div>
                     </div>
                 </div>
             </div>
@@ -143,8 +143,18 @@
         <div id="changelogModal" class="modal" tabindex="-1" role="dialog" aria-labelledby="Changelog Modal" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content p-3">
-                    <h3>Beta version 0.1 (22/01/2017) <span class="badge badge-success">New</span></h3>
-                    <p>We've entered the open beta stages of this simple, yet effective tool. At this point 95% of the required features have been implemented. Here's an overview of the changes</p>
+                    <h3>Beta version 0.2 (16/07/2024) <span class="badge badge-success">New</span></h3>
+                    <h5>Changes</h5>
+                    <ul>
+                        <li>Updated to stable versions of existing libraries</li>
+                    </ul>
+                    <h5>Upcoming</h5>
+                    <ul>
+                        <li>Rework to entire site</li>
+                        <li>Tables</li>
+                    </ul>
+                    <hr />
+                    <h3>Beta version 0.1 (22/01/2017)</h3>
                     <h5>Changes</h5>
                     <ul>
                         <li>Added this new changelog section!</li>
@@ -154,7 +164,7 @@
                         <li>Updated the Quill editor to version 1.2.0</li>
                         <li>Updated icon and button sizes to be more appropriate</li>
                     </ul>
-                    <h5>Still to come</h5>
+                    <h5>Upcoming</h5>
                     <ul>
                         <li>Table Creation</li>
                         <li>Quick-Insert Special Characters</li>
@@ -180,17 +190,17 @@
 
         <!--Javascript-->
         <!--Bootstrap 4-->
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
-        <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.7/js/tether.min.js" integrity="sha512-X7kCKQJMwapt5FCOl2+ilyuHJp+6ISxFTVrx+nkrhgplZozodT9taV2GuGHxBgKKpOJZ4je77OuPooJg9FJLvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script async src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+        <script async src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+        <script async src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.7/js/tether.min.js" integrity="sha512-X7kCKQJMwapt5FCOl2+ilyuHJp+6ISxFTVrx+nkrhgplZozodT9taV2GuGHxBgKKpOJZ4je77OuPooJg9FJLvw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <!--Font Awesome-->
-        <script defer src="https://use.fontawesome.com/8be862904e.js"></script>
+        <script async src="https://use.fontawesome.com/8be862904e.js"></script>
 
         <!--Text Editor Quill-->
-        <script defer src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.min.js"></script>
+        <script async src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.min.js"></script>
 
         <!--Local Scripts-->
-        <script defer src="assets/scripts.min.js"></script>
+        <script async src="assets/scripts.min.js"></script>
     </body>
 </html>
