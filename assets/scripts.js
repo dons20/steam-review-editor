@@ -129,18 +129,6 @@ $('#closeBtn').click(function() {
 setInterval(function() {
   if (change.length() > 0) {
     console.log('Saving changes', change);
-    /* 
-    Send partial changes
-    $.post('/your-endpoint', { 
-      partial: JSON.stringify(change) 
-    });
-    
-    Send entire document
-    $.post('/your-endpoint', { 
-      doc: JSON.stringify(quill.getContents())
-    });
-    */
-    //CopyToClipboard(quill.container.firstChild.innerHTML);
     change = new Delta();
   }
 }, 5*1000);

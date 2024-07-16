@@ -160,6 +160,8 @@
 .ql-editor {
   line-height: 1.5rem; }
 
+.github-fork-ribbon:before { background-color: #333; }
+
 a i {
   color: white; }
 
