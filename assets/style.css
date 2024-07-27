@@ -100,7 +100,7 @@
   font-family: "Motiva Sans", Sans-serif;
   font-size: 13px;
   line-height: 17px;
-  white-space: pre-line; }
+  white-space: pre; }
 
 .preview {
   overflow-wrap: break-word;

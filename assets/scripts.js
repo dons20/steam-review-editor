@@ -82,11 +82,11 @@ window.addEventListener(
         .replace(/<\/em>/g, "[/i]")
         .replace(/<u>/g, "[u]")
         .replace(/<\/u>/g, "[/u]")
-        .replace(/<ol>/g, "[olist]\n")
-        .replace(/<\/ol>/g, "[/olist]\n")
-        .replace(/<ul>/g, "[list]\n")
-        .replace(/<\/ul>/g, "[/list]\n")
-        .replace(/<li>/g, "[*]")
+        .replace(/<ol>/g, "")
+        .replace(/<\/ol>/g, "")
+        .replace(/((<li data-list="ordered">)(.*?)(<\/li>))+/g, `[olist]\n$&[/olist]`)
+        .replace(/((<li data-list="bullet">)(.*?)(<\/li>))+/g, `[list]\n$&[/list]`)
+        .replace(/<li (.*?)>/g, "\t[*]")
         .replace(/<\/li>/g, "\n")
         .replace(/<br>/g, "\n")
         .replace(/<a href="/g, "[url=")
@@ -96,6 +96,7 @@ window.addEventListener(
         .replace(/<\/s>/g, "[/strike]")
         .replace(/<blockquote>/g, "[quote=author]")
         .replace(/<\/blockquote>/g, "[/quote]\n")
+        .replace(/(<span class="ql-ui")(.*?)(<\/span>)/g, "")
         .replace(/<span class="spoiler">/g, "[spoiler]")
         .replace(/<\/span>/g, "[/spoiler]")
         .replace(/<pre spellcheck="false">/g, "[code]")
@@ -146,7 +147,6 @@ window.addEventListener(
     //Show Preview
     $("#previewCollapse").on("show.bs.collapse", function () {
       quill.blur();
-      console.log(text);
       document.getElementById("showBtn").innerHTML = "Hide Preview";
     });
 
@@ -169,7 +169,7 @@ window.addEventListener(
     // Save periodically
     setInterval(function () {
       if (change.length() > 0) {
-        console.log("Saving changes", change);
+        // console.log("Saving changes", change);
         change = new Delta();
       }
     }, 5 * 1000);
