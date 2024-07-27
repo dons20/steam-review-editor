@@ -1,6 +1,9 @@
 import React from "react";
 import classes from "./Preview/preview.module.scss";
 
+import type { Document } from "slate";
+import type { List } from "immutable";
+
 export default {
   rules: [
     {
@@ -8,7 +11,7 @@ export default {
        * @param {import('slate').Document} obj
        * @param {Array<import('immutable').List>} children
        */
-      serialize(obj, children) {
+      serialize(obj: Document, children: Array<List>) {
         if (obj.object === "block") {
           switch (obj.type) {
             case "heading":
