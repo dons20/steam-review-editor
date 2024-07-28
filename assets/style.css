@@ -202,6 +202,15 @@
         padding: 0.8rem;
         width: 100%;
       }
+
+      & .spoiler {
+        background: black;
+        color: initial;
+
+        &:hover {
+          color: #eee;
+        }
+      }
     }
   }
 }
@@ -246,14 +255,18 @@
   }
 }
 
-.spoiler {
-  background: black;
-  color: #aaa; }
-  .spoiler:hover {
-    color: #eee; }
-
 .ql-editor {
-  line-height: 1.5rem; }
+  line-height: 1.5rem;
+
+  & .spoiler {
+    background: black;
+    color: #aaa;
+
+    &:hover {
+      color: #eee;
+    }
+  }
+}
 
 .github-fork-ribbon:before { background-color: #333; }
 
