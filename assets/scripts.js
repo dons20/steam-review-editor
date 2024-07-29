@@ -104,14 +104,16 @@ window.addEventListener(
         .replace(/<code>/g, "[noparse]")
         .replace(/<\/code>/g, "[/noparse]");
 
-      //Process the preview
-      //let previewText = text;
+      let previewText = quill.getSemanticHTML().replaceAll('<blockquote>', `
+        <blockquote>
+          <div class="font-italic quote-author">Originally posted by <b>author</b>:</div>
+      `);
 
       //Set the markup display
       $("#markup").html(markupText);
 
       //Set the preview display
-      $("#preview").html(quill.getSemanticHTML());
+      $("#preview").html(previewText);
     }
 
     function CopyToClipboard(containerid) {
