@@ -111,7 +111,7 @@ window.addEventListener(
       $("#markup").html(markupText);
 
       //Set the preview display
-      $("#preview").html(convertText);
+      $("#preview").html(quill.getSemanticHTML());
     }
 
     function CopyToClipboard(containerid) {
