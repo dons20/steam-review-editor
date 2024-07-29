@@ -1,6 +1,12 @@
 #closeBtn {
   float: right;
-  margin: 1rem; }
+  margin: 1em;
+  background-color: #AAA;
+
+  &:hover {
+    background-color: #CCC;
+  }
+}
 
 #editorWindow {
   -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
@@ -111,6 +117,11 @@
     display: grid;
     grid-column: 1;
     grid-template-columns: 50px 1fr;
+    opacity: 0.6;
+
+    .my-review-container:hover & {
+      opacity: 1;
+    }
 
     & .user-avatar {
       color: #63B7E9;
@@ -178,10 +189,15 @@
       }
 
       & blockquote {
-        border: 1px solid lightblue;
+        border: 1px solid #56707f;
         border-radius: 5px;
-        padding: 0.8rem;
+        padding: 1em;
         width: 100%;
+        font-size: 92%;
+
+        & .quote-author {
+          font-size: 92%;
+        }
       }
 
       & code {
@@ -208,6 +224,10 @@
         border-top: 2px solid #EEEEEE;
       }
 
+      & p {
+        margin-bottom: 0 !important;
+      }
+
       & pre {
         background: transparent;
         border: 1px solid #555;
@@ -220,6 +240,7 @@
       & .spoiler {
         background: black;
         color: initial;
+        padding-inline: 0.5em;
 
         &:hover {
           color: #eee;
@@ -271,6 +292,10 @@
 
 .ql-editor {
   line-height: 1.5rem;
+
+  & hr {
+    border-top: 2px solid #AAA;
+  }
 
   & .spoiler {
     background: black;
