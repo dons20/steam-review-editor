@@ -204,6 +204,10 @@
         font-size: 16px;
       }
 
+      & hr {
+        border-top: 2px solid #EEEEEE;
+      }
+
       & pre {
         background: transparent;
         border: 1px solid #555;
