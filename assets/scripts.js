@@ -4,6 +4,7 @@ window.addEventListener(
     if (!window.jQuery || !window.Quill) return setTimeout(load, 50);
 
     let Embed = Quill.import("blots/embed");
+    let BlockEmbed = Quill.import("blots/block/embed");
 
     //Create a new spoiler class for span tags with class spoiler applied
 
@@ -19,6 +20,11 @@ window.addEventListener(
     Spoiler.className = "spoiler";
     Spoiler.tagName = "span";
 
+    class DividerBlot extends BlockEmbed {
+      static blotName = 'divider';
+      static tagName = 'hr';
+    }
+
     let steamSpoiler = function () {
       let customSpan = document.createElement("span");
       let range = quill.getSelection();
@@ -27,8 +33,16 @@ window.addEventListener(
       }
     };
 
+    let steamDivider = function () {
+      const range = quill.getSelection(true);
+      quill.insertText(range.index, '', Quill.sources.USER);
+      quill.insertEmbed(range.index, 'divider', true, Quill.sources.USER);
+      quill.setSelection(range.index + 1, Quill.sources.SILENT);
+    };
+
     Quill.register({
       "formats/spoiler": Spoiler,
+      "formats/divider": DividerBlot,
     });
 
     let Delta = Quill.import("delta");
@@ -38,6 +52,7 @@ window.addEventListener(
           container: "#toolbar",
           handlers: {
             spoiler: steamSpoiler,
+            divider: steamDivider
           },
         },
       },
@@ -76,8 +91,13 @@ window.addEventListener(
         .replace(/<\/p>/g, "\n")
         .replace(/<strong>/g, "[b]")
         .replace(/<\/strong>/g, "[/b]")
+        .replace(/<hr>/g, "[hr][/hr]\n")
         .replace(/<h1>/g, "[h1]")
         .replace(/<\/h1>/g, "[/h1]\n")
+        .replace(/<h2>/g, "[h2]")
+        .replace(/<\/h2>/g, "[/h2]\n")
+        .replace(/<h3>/g, "[h3]")
+        .replace(/<\/h3>/g, "[/h3]\n")
         .replace(/<em>/g, "[i]")
         .replace(/<\/em>/g, "[/i]")
         .replace(/<u>/g, "[u]")
@@ -104,14 +124,16 @@ window.addEventListener(
         .replace(/<code>/g, "[noparse]")
         .replace(/<\/code>/g, "[/noparse]");
 
-      //Process the preview
-      //let previewText = text;
+      let previewText = quill.getSemanticHTML().replaceAll('<blockquote>', `
+        <blockquote>
+          <div class="font-italic quote-author">Originally posted by <b>author</b>:</div>
+      `);
 
       //Set the markup display
       $("#markup").html(markupText);
 
       //Set the preview display
-      $("#preview").html(convertText);
+      $("#preview").html(previewText);
     }
 
     function CopyToClipboard(containerid) {

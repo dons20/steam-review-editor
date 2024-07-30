@@ -1,6 +1,12 @@
 #closeBtn {
   float: right;
-  margin: 1rem; }
+  margin: 1em;
+  background-color: #AAA;
+
+  &:hover {
+    background-color: #CCC;
+  }
+}
 
 #editorWindow {
   -webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
@@ -94,7 +100,7 @@
   text-shadow: 1px 1px 10px #222;
   text-align: center; }
 
-.markup, .preview {
+.markup {
   background-color: #111A24;
   color: #acb2b8;
   font-family: "Motiva Sans", Sans-serif;
@@ -102,63 +108,204 @@
   line-height: 17px;
   white-space: pre; }
 
-.preview {
-  overflow-wrap: break-word;
-  overflow: hidden; }
-  .preview a {
-    color: #ebebeb; }
-  .preview blockquote {
-    border: 1px solid lightblue;
-    border-radius: 5px;
-    padding: 0.8rem;
-    width: 100%; }
-  .preview code {
-    background: transparent;
-    color: #acb2b8; }
-  .preview h1 {
-    color: #5aa9d6;
-    font-size: 15px; }
-  .preview pre {
-    background: transparent;
-    border: 1px solid #555;
-    border-radius: 5px;
-    color: #acb2b8;
-    padding: 0.8rem;
-    width: 100%; }
+.my-review-container {
+  display: grid;
+  background-color: #16202D;
+  grid-template-columns: repeat(3, minmax(80px, 1fr));
 
-.preview-container {
-  background-color: #111A24; }
+  & .avatar-and-username {
+    display: grid;
+    grid-column: 1;
+    grid-template-columns: 50px 1fr;
+    opacity: 0.6;
 
-.preview-top {
-  background-color: #111A24;
-  color: #63B7E9; }
-  .preview-top p {
-    font-size: 12px;
-    color: #8091a2; }
-    .preview-top p.name {
-      color: #c6d4df;
-      font-weight: bold; }
-  .preview-top .next {
-    background: rgba(0, 0, 0, 0.2); }
+    .my-review-container:hover & {
+      opacity: 1;
+    }
 
-.posted-date {
-  color: #8091A2;
-  font-size: 10px;
-  font-family: Arial,Helvetica,sans-serif;
+    & .user-avatar {
+      color: #63B7E9;
+    }
+
+    & .username-and-review-count {
+      display: grid;
+      align-items: center;
+
+      & .name {
+        color: #c1dbf4;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+
+      & .review-count {
+        font-size: 11px;
+        color: #c1dbf4;
+      }
+    }
+  }
+
+  & .recommended-and-hours-on-record {
+    display: grid;
+    grid-column: 2 / span 2;
+    grid-template-columns: 50px 1fr;
+    background-color: #121a24;
+
+    & .thumbs-up-icon {
+      color: #63B7E9;
+    }
+
+    & .recommended {
+      font-size: 16px;
+      color: #d6d7d8;
+    }
+
+    & .hours {
+      font-size: 11px;
+      color: #8091a2;
+      font-weight: 300;
+      opacity: 0.6;
+    }
+  }
+
+  & .posted-date {
+    grid-column: 2 / span 2;
+    color: #8091A2;
+    font-size: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    opacity: 0.6;
+  }
+
+  & .preview-container {
+    grid-column: 2 / span 2;
+
+    & .preview {
+      color: #ACB2B8;
+      overflow-wrap: break-word;
+      overflow: hidden;
+
+      & a {
+        color: #ebebeb;
+      }
+
+      & blockquote {
+        border: 1px solid #56707f;
+        border-radius: 5px;
+        padding: 1em;
+        width: 100%;
+        font-size: 92%;
+
+        & .quote-author {
+          font-size: 92%;
+        }
+      }
+
+      & code {
+        background: transparent;
+        color: #acb2b8;
+      }
+
+      & h1 {
+        color: #5aa9d6;
+        font-size: 20px;
+      }
+
+      & h2 {
+        color: #5aa9d6;
+        font-size: 18px;
+      }
+
+      & h3 {
+        color: #5aa9d6;
+        font-size: 16px;
+      }
+
+      & hr {
+        border-top: 2px solid #EEEEEE;
+      }
+
+      & p {
+        margin-bottom: 0 !important;
+      }
+
+      & pre {
+        background: transparent;
+        border: 1px solid #555;
+        border-radius: 5px;
+        color: #acb2b8;
+        padding: 0.8rem;
+        width: 100%;
+      }
+
+      & .spoiler {
+        background: black;
+        color: initial;
+        padding-inline: 0.5em;
+
+        &:hover {
+          color: #eee;
+        }
+      }
+    }
+  }
 }
 
-.recommended {
-  font-size: 16px;
-  color: #d6d7d8; }
+@media screen and (max-width: 767px) {
+  .my-review-container {
+    background-color: #121a24;
 
-.spoiler {
-  background: black;
-  color: #aaa; }
-  .spoiler:hover {
-    color: #eee; }
+    & .avatar-and-username {
+      & .username-and-review-count {
+        grid-template-columns: 30% 1fr;
+
+        & .review-count {
+          font-size: 13px;
+          border-left: 2px solid grey;
+        }
+      }
+    }
+
+    & .recommended-and-hours-on-record {
+      background-color: #1B2838;
+      grid-column: 1 / span 3;
+      order: 1;
+
+      & .thumbs-up-icon {
+        color: #7b9823;
+
+        & .fa-inverse {
+          background: transparent;
+        }
+      }
+
+      & .hours {
+        font-size: 13px;
+      }
+    }
+
+    & .avatar-and-username, & .posted-date, & .preview-container {
+      grid-column: 1 / span 3;
+      order: 2;
+    }
+  }
+}
 
 .ql-editor {
-  line-height: 1.5rem; }
+  line-height: 1.5rem;
+
+  & hr {
+    border-top: 2px solid #AAA;
+  }
+
+  & .spoiler {
+    background: black;
+    color: #aaa;
+
+    &:hover {
+      color: #eee;
+    }
+  }
+}
 
 .github-fork-ribbon:before { background-color: #333; }
 

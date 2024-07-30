@@ -43,8 +43,10 @@
                 <span class="ql-formats">
                     <select class="ql-header">
                         <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
                         <option selected></option>
-                    </select>                   
+                    </select>
                 </span>
                 <span class="ql-formats">
                     <button class="ql-bold" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Bold"></button>
@@ -57,9 +59,12 @@
                     <button class="ql-blockquote" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Blockquote"></button>
                     <button class="ql-code" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="In-line (&quot;No-parse&quot;) Text"></button>
                     <button class="ql-code-block" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Pre-formatted Text"></button>
+                    <button id="divider" class="ql-divider fa fa-lg fa-minus" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Divider"></button>
                 </span>
                 <span class="ql-formats">
                     <button class="ql-header" type="button" value="1" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Heading 1"></button>
+                    <button class="ql-header" type="button" value="2" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Heading 2"></button>
+                    <button class="ql-header" type="button" value="3" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Heading 3"></button>
                 </span>
                 <span class="ql-formats">
                     <button class="ql-list" type="button" value="ordered" data-toggle="tooltip" data-animation="false" data-placement="bottom" title="Ordered List"></button>
@@ -95,37 +100,41 @@
                         <div class="row">
                             <div class="col"><h1 class="lead brighter">Store Preview</h1></div>
                         </div>
-                        <div class="row preview-top py-2">
-                            <div class="col-12 col-md-4 mr-xl-5">
-                                <div class="d-flex">
-                                    <span class="fa-stack fa-lg mr-2">
+
+                        <div class="my-review-container">
+                            <div class="ml-2 ml-md-0 avatar-and-username">
+                                <div class="user-avatar">
+                                    <span class="fa-stack fa-2x">
                                         <i class="fa fa-square fa-stack-2x fa-inverse hide" aria-hidden="true"></i>
                                         <i class="fa fa-question-circle fa-stack-1x" aria-hidden="true"></i>
                                     </span>
-                                    <p class="name">Your Username</p>
+                                </div>
+                                <div class="username-and-review-count">
+                                    <span class="mb-0 pr-2 font-weight-bold name">Your Username</span>
+                                    <span class="px-2 px-md-0 review-count">1 review</span>
                                 </div>
                             </div>
-                            <div class="col-12 col-md pt-2 pt-md-0 next pl-md-0">
-                                <div class="d-flex">
-                                    <span class="fa-stack fa-2x mr-2">
+
+                            <div class="mb-3 mb-md-0 recommended-and-hours-on-record">
+                                <div class="thumbs-up-icon">
+                                    <span class="fa-stack fa-2x">
                                         <i class="fa fa-square fa-stack-2x fa-inverse hide" aria-hidden="true"></i>
                                         <i class="fa fa-thumbs-up fa-stack-2x fa-flip-horizontal" aria-hidden="true"></i>
                                     </span>
-                                    <div class="d-flex flex-column">
-                                        <h1 class="recommended mb-0">Recommended</h1>
-                                        <p class="hours mb-0">0.0 hrs on record</p>
-                                    </div>
+                                </div>
+
+                                <div style="display: grid;">
+                                    <span class="mb-0 recommended">Recommended</span>
+                                    <span class="mb-0 hours">0.0 hrs on record</span>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row preview-container">
-                            <div class="d-none d-md-block col-4 preview-container p-0 mr-xl-5">&nbsp;</div>
-                            <div class="col preview-container posted-date pl-3 p-md-0 text-uppercase">Posted: <span class="current-date"></span></div>
-                        </div>
-                        <div class="row preview-container">
-                            <div class="d-none d-md-block col-4 preview-container p-0 mr-xl-5">&nbsp;</div>
-                            <div class="col preview-container pl-3 p-md-0">
-                                <div id="preview" class="preview pr-3 py-1"></div>
+
+                            <div class="ml-2 ml-md-0 mt-2 mb-1 pl-0 text-uppercase posted-date">
+                                <span>Posted: <span class="current-date"></span></span>
+                            </div>
+
+                            <div class="col-12 ml-2 ml-md-0 p-0 preview-container">
+                                <div class="preview pr-3 py-1" id="preview"></div>
                             </div>
                         </div>
                     </div>
@@ -133,7 +142,7 @@
                         <div class="row">
                             <div class="col"><h1 class="lead brighter">Markup Preview</h1></div>
                         </div>
-                        <pre id="markup" class="markup row m-lg-0 p-3"></pre>
+                        <pre id="markup" class="markup m-lg-0 p-3"></pre>
                     </div>
                 </div>
             </div>
