@@ -1,74 +1,85 @@
 window.addEventListener(
   "load",
   function load() {
-    if (!window.jQuery || !window.Quill) return setTimeout(load, 50);
+    // Temporary workaround for Quill not loading properly
+    if (!window.jQuery || !window.Quill) return setTimeout(load, 120);
 
-    let Embed = Quill.import("blots/embed");
-    let BlockEmbed = Quill.import("blots/block/embed");
+    const Inline = Quill.import("blots/inline");
+    const BlockEmbed = Quill.import("blots/block/embed");
 
-    //Create a new spoiler class for span tags with class spoiler applied
+    class SpoilerBlot extends Inline {
+      static blotName = "spoiler";
+      static className = "spoiler";
+      static tagName = "span";
 
-    class Spoiler extends Embed {
-      static create(value) {
-        let node = super.create(value);
-        node.innerHTML = value;
-        return node;
+      static create() {
+        return super.create();
+      }
+    
+      static formats() {
+        return true;
+      }
+    
+      optimize(context) {
+        super.optimize(context);
+        if (this.domNode.tagName !== this.statics.tagName) {
+          this.replaceWith(this.statics.blotName);
+        }
       }
     }
-
-    Spoiler.blotName = "span";
-    Spoiler.className = "spoiler";
-    Spoiler.tagName = "span";
 
     class DividerBlot extends BlockEmbed {
       static blotName = 'divider';
       static tagName = 'hr';
     }
 
-    let steamSpoiler = function () {
-      let customSpan = document.createElement("span");
-      let range = quill.getSelection();
-      if (range) {
-        quill.insertEmbed(range.index, "span", customSpan);
-      }
+    const steamDivider = function () {
+      const range = quillInstance.getSelection(true);
+      quillInstance.insertText(range.index, '', Quill.sources.USER);
+      quillInstance.insertEmbed(range.index, 'divider', true, Quill.sources.USER);
+      quillInstance.setSelection(range.index + 1, Quill.sources.SILENT);
     };
 
-    let steamDivider = function () {
-      const range = quill.getSelection(true);
-      quill.insertText(range.index, '', Quill.sources.USER);
-      quill.insertEmbed(range.index, 'divider', true, Quill.sources.USER);
-      quill.setSelection(range.index + 1, Quill.sources.SILENT);
-    };
+    Quill.register("formats/spoiler", SpoilerBlot);
+    Quill.register("formats/divider", DividerBlot); 
 
-    Quill.register({
-      "formats/spoiler": Spoiler,
-      "formats/divider": DividerBlot,
-    });
-
-    let Delta = Quill.import("delta");
-    let quill = new Quill("#editor", {
+    const Delta = Quill.import("delta");
+    const quillInstance = new Quill("#editor", {
       modules: {
         toolbar: {
           container: "#toolbar",
           handlers: {
-            spoiler: steamSpoiler,
             divider: steamDivider
           },
         },
       },
+      formats: [
+        "header",
+        "bold",
+        "italic",
+        "underline",
+        "strike",
+        "blockquote",
+        "code",
+        "code-block",
+        "divider",
+        "spoiler",
+        "list",
+        "link",
+      ],
       placeholder: "Write your review here!",
       theme: "snow",
     });
 
-    let text = quill.container.firstChild.innerHTML;
+    let text = quillInstance.container.firstChild.innerHTML;
 
     // Enable all tooltips
     $('[data-toggle="tooltip"]').tooltip();
 
     let change = new Delta();
 
-    quill.on("selection-change", function (range, oldRange, source) {
-      text = quill.container.firstChild.innerHTML;
+    quillInstance.on("selection-change", function (range, oldRange, source) {
+      text = quillInstance.container.firstChild.innerHTML;
       convertHTML(text);
       if (range) {
         $("#editorWindow").addClass("active");
@@ -77,14 +88,16 @@ window.addEventListener(
       }
     });
 
-    quill.on("text-change", function (delta, oldDelta, source) {
-      text = quill.container.firstChild.innerHTML;
+    quillInstance.on("text-change", function (delta, oldDelta, source) {
+      text = quillInstance.container.firstChild.innerHTML;
       convertHTML(text);
       change = change.compose(delta);
     });
 
+    /**
+     * @param {string} convertText 
+     */
     function convertHTML(convertText) {
-      //TODO: No Parse, Table
       //Process the markup tags
       let markupText = convertText
         .replace(/<p>/g, "")
@@ -104,8 +117,8 @@ window.addEventListener(
         .replace(/<\/u>/g, "[/u]")
         .replace(/<ol>/g, "")
         .replace(/<\/ol>/g, "")
-        .replace(/((<li data-list="ordered">)(.*?)(<\/li>))+/g, `[olist]\n$&[/olist]`)
-        .replace(/((<li data-list="bullet">)(.*?)(<\/li>))+/g, `[list]\n$&[/list]`)
+        .replace(/((<li data-list="ordered">)(.*?)(<\/li>))+/g, `[olist]\n$&[/olist]\n`)
+        .replace(/((<li data-list="bullet">)(.*?)(<\/li>))+/g, `[list]\n$&[/list]\n`)
         .replace(/<li (.*?)>/g, "\t[*]")
         .replace(/<\/li>/g, "\n")
         .replace(/<br>/g, "\n")
@@ -117,14 +130,15 @@ window.addEventListener(
         .replace(/<blockquote>/g, "[quote=author]")
         .replace(/<\/blockquote>/g, "[/quote]\n")
         .replace(/(<span class="ql-ui")(.*?)(<\/span>)/g, "")
-        .replace(/<span class="spoiler">/g, "[spoiler]")
+        .replace(/<span class="spoiler">(.*?)<\/span>/g, "[spoiler]$1[/spoiler]")
+        .replace(/<span contenteditable="false">/g, "")
         .replace(/<\/span>/g, "[/spoiler]")
         .replace(/<pre spellcheck="false">/g, "[code]")
         .replace(/<\/pre>/g, "[/code]\n")
         .replace(/<code>/g, "[noparse]")
         .replace(/<\/code>/g, "[/noparse]");
 
-      let previewText = quill.getSemanticHTML().replaceAll('<blockquote>', `
+      let previewText = quillInstance.getSemanticHTML().replaceAll('<blockquote>', `
         <blockquote>
           <div class="font-italic quote-author">Originally posted by <b>author</b>:</div>
       `);
@@ -137,16 +151,11 @@ window.addEventListener(
     }
 
     function CopyToClipboard(containerid) {
-      // creating new textarea element and giveing it id 't'
       let t = document.createElement("textarea");
       t.id = "t";
-      // Optional step to make less noise in the page, if any!
       t.style.height = 0;
-      // You have to append it to your page somewhere, I chose <body>
       document.body.appendChild(t);
-      // Copy whatever is in your div to our new textarea
       t.value = document.getElementById(containerid).innerText;
-      // Now copy whatever inside the textarea to clipboard
       let selector = document.querySelector("#t");
       selector.select();
       selector.setSelectionRange(0, 99999); /*For mobile devices*/
@@ -168,14 +177,14 @@ window.addEventListener(
 
     //Show Preview
     $("#previewCollapse").on("show.bs.collapse", function () {
-      quill.blur();
+      quillInstance.blur();
       document.getElementById("showBtn").innerHTML = "Hide Preview";
     });
 
     //Hide Preview
     $("#previewCollapse").on("hide.bs.collapse", function () {
       document.getElementById("showBtn").innerHTML = "Show Preview";
-      quill.focus();
+      quillInstance.focus();
     });
 
     $("#copyBtn").click(function () {
