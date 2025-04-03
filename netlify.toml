@@ -1,0 +1,4 @@
+[[redirects]]
+    from = "/steam-review-editor/*"
+    to = "/steam-review-editor/:splat"
+    status = 200
