@@ -1,5 +1,3 @@
-import { Range, Editor, Point, Transforms } from "slate";
-
 const insertTable = (editor, rows, columns) => {
   if (editor.selection) {
     wrapTable(editor, rows, columns);

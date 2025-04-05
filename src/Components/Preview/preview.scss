@@ -2,7 +2,7 @@ $background-color: #111a24;
 $body-color: #acb2b8;
 $primary-font: "Motiva Sans", "Raleway", sans-serif;
 
-@import "../../assets/styles/master";
+@use "../../assets/styles/master";
 
 .preview {
   display: grid;
@@ -10,7 +10,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
   grid-row: 4;
   grid-template-columns: repeat(auto-fill, minmax(550px, auto));
   margin-top: 2vh;
-  max-width: $breakpoint-large;
+  max-width: master.$breakpoint-large;
   width: 100%;
 
   &.hidden {

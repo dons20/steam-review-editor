@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { useSlate, ReactEditor } from "slate-react";
 import { insertLink, insertImage, insertTable } from "./";
-import { Editor, Transforms, Range } from "slate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /** @type {Array} */ const LIST_TYPES = ["OList", "UList"];

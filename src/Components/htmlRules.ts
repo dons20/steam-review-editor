@@ -1,7 +1,6 @@
 import React from "react";
 import classes from "./Preview/preview.module.scss";
 
-import type { Document } from "slate";
 import type { List } from "immutable";
 
 export default {

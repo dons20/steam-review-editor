@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelected, useFocused } from "slate-react";
 
 export default function Element({ attributes, children, element }) {
   const selected = useSelected();

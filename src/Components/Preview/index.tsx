@@ -26,7 +26,6 @@ const months = [
 
 /**
  * Randomizes a number between 0 and max
- * @param {number} max
  */
 const randomize = (max = 1) => {
   return parseInt((Math.random() * Math.floor(max)).toFixed(1));
@@ -35,16 +34,10 @@ const randomize = (max = 1) => {
 let rand = randomize(51);
 
 /**
- *
  * @param {Object} props
- * @param {React.MutableRefObject<*>} props.markupRef
- * @param {Boolean} props.visible
  */
-function Preview({ markupRef, visible }) {
-  /** @type {[boolean, import("react").Dispatch<import("react").SetStateAction<any>>]} */
+function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visible: boolean }) {
   const [isRecommended, setIsRecommended] = useState(true);
-
-  /** @type {{markup: JSON, previewContent: JSON}} */
   const { previewContent, markup } = useContext(AppContext);
 
   //const content = toHTMLMarkup.serialize(props.content);
@@ -94,7 +87,7 @@ function Preview({ markupRef, visible }) {
         <h1 className="heading">Markup Preview</h1>
         <pre className="markupBody" ref={markupRef}>
           {markup ? (
-            <React.Suspense fallback={<>Loading...</>}>{/* <Markup value={markup} /> */}Test</React.Suspense>
+            <React.Suspense fallback={<>Loading...</>}>{<Markup value={markup} />}</React.Suspense>
           ) : (
             <FontAwesomeIcon icon="spinner" size="4x" style={{ width: "100%" }} spin pulse />
           )}

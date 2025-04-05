@@ -1,4 +1,3 @@
-import { Transforms, Editor } from "slate";
 import isImage from "is-image";
 import isUrl from "is-url";
 

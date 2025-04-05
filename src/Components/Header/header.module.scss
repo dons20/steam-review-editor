@@ -1,4 +1,4 @@
-@import "../../assets/styles/master";
+@use "../../assets/styles/master";
 
 .main {
   background-color: #171a21;
@@ -20,7 +20,7 @@
   line-height: 100%;
 }
 
-@media only screen and (min-width: $breakpoint-small) {
+@media only screen and (min-width: master.$breakpoint-small) {
   .main {
     font-size: 3rem;
   }

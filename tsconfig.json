@@ -5,6 +5,7 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "module": "ES2020",
     "moduleResolution": "Bundler",
     "jsx": "preserve",
     "target": "ESNext",

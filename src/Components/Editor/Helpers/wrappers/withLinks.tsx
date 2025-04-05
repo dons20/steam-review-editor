@@ -1,4 +1,3 @@
-import { Transforms, Editor, Range } from "slate";
 import isUrl from "is-url";
 
 const insertLink = editor => {

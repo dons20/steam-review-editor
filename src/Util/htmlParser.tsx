@@ -1,9 +1,12 @@
 import React, { Fragment } from "react";
 import escapeHtml from "escape-html";
-import { Text } from "slate";
+import edjsHTML from "editorjs-html";
+import plugins from "./htmlParsers";
+
+const edjsParser = edjsHTML(plugins);
 
 const serialize = (value, index = -1) => {
-  if (Text.isText(value)) {
+  if (edjsParser) {
     let markValue = <Fragment key={`${value.text}-${index}`}>{value.text}</Fragment>;
     if (value.hasOwnProperty("strikethrough")) {
       markValue = <s key={index}>{markValue}</s>;

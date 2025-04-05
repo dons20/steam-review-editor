@@ -5,11 +5,13 @@ import Table from "@editorjs/table";
 import Image from "@editorjs/image";
 import Quote from "@editorjs/quote";
 import List from "@editorjs/list";
+import type { ToolConstructable, ToolSettings } from "@editorjs/editorjs";
 
-/**
- * @type {{[toolName: string]: EditorJS.BlockToolConstructable | EditorJS.InlineToolConstructable | EditorJS.ToolSettings}}
- */
-export const EDITOR_JS_TOOLS = {
+type EditorJSConfig = {
+  [toolName: string]: ToolConstructable|ToolSettings;
+};
+
+export const EDITOR_JS_TOOLS: EditorJSConfig = {
   list: List,
   image: {
     class: Image,
@@ -17,6 +19,7 @@ export const EDITOR_JS_TOOLS = {
   },
   quote: Quote,
   table: {
+    // @ts-expect-error Types in Table don't align with React EditorJS
     class: Table,
     inlineToolbar: true,
   },
