@@ -36,38 +36,26 @@
     ]
   },
   "dependencies": {
-    "@editorjs/editorjs": "2.30.8",
-    "@editorjs/header": "2.8.8",
-    "@editorjs/image": "2.10.1",
-    "@editorjs/inline-code": "1.5.1",
-    "@editorjs/list": "2.0.4",
-    "@editorjs/paragraph": "2.11.7",
-    "@editorjs/quote": "2.7.6",
-    "@editorjs/underline": "1.2.1",
-    "@fortawesome/fontawesome-svg-core": "6.7.2",
-    "@fortawesome/free-brands-svg-icons": "6.7.2",
-    "@fortawesome/free-regular-svg-icons": "6.7.2",
-    "@fortawesome/free-solid-svg-icons": "6.7.2",
-    "@fortawesome/react-fontawesome": "0.2.2",
+    "@tiptap/extension-document": "^2.11.7",
+    "@tiptap/extension-paragraph": "^2.11.7",
+    "@tiptap/extension-text": "^2.11.7",
+    "@tiptap/react": "^2.11.7",
     "@vitejs/plugin-react": "4.3.4",
-    "axios": "1.8.1",
-    "classnames": "2.5.1",
-    "editorjs-html": "4.0.5",
-    "is-image": "4.0.0",
-    "is-url": "1.2.4",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "react-editor-js": "2.1.0",
-    "react-modal": "3.16.3",
-    "react-toastify": "11.0.3",
-    "sass": "1.83.4",
-    "typescript": "5.8.2",
-    "vite": "6.2.0",
-    "vite-tsconfig-paths": "5.1.4"
+    "axios": "^1.8.4",
+    "classnames": "^2.5.1",
+    "editorjs-html": "^4.0.5",
+    "is-image": "^4.0.0",
+    "is-url": "^1.2.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-modal": "^3.16.3",
+    "react-toastify": "^11.0.5",
+    "sass": "^1.86.3",
+    "typescript": "^5.8.3",
+    "vite": "^6.2.5",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
-    "@editorjs/table": "2.4.3",
-    "vitest": "3.0.7"
-  },
-  "packageManager": "yarn@4.7.0"
+    "vitest": "^3.1.1"
+  }
 }
