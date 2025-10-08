@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=18.8.2"
+    "node": ">=22.14.0"
   },
   "scripts": {
     "start": "vite",
@@ -36,26 +36,36 @@
     ]
   },
   "dependencies": {
-    "@tiptap/extension-document": "^2.11.7",
-    "@tiptap/extension-paragraph": "^2.11.7",
-    "@tiptap/extension-text": "^2.11.7",
-    "@tiptap/react": "^2.11.7",
-    "@vitejs/plugin-react": "4.3.4",
-    "axios": "^1.8.4",
+    "@floating-ui/dom": "^1.7.4",
+    "@tiptap/core": "^3.6.5",
+    "@tiptap/extension-image": "^3.6.5",
+    "@tiptap/extension-link": "^3.6.5",
+    "@tiptap/extension-placeholder": "^3.6.5",
+    "@tiptap/extension-table": "^3.6.5",
+    "@tiptap/extension-table-cell": "^3.6.5",
+    "@tiptap/extension-table-header": "^3.6.5",
+    "@tiptap/extension-table-row": "^3.6.5",
+    "@tiptap/extension-underline": "^3.6.5",
+    "@tiptap/pm": "^3.6.5",
+    "@tiptap/react": "^3.6.5",
+    "@tiptap/starter-kit": "^3.6.5",
+    "@vitejs/plugin-react": "^5.0.4",
+    "axios": "^1.12.2",
     "classnames": "^2.5.1",
     "editorjs-html": "^4.0.5",
     "is-image": "^4.0.0",
     "is-url": "^1.2.4",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-icons": "^5.5.0",
     "react-modal": "^3.16.3",
     "react-toastify": "^11.0.5",
-    "sass": "^1.86.3",
-    "typescript": "^5.8.3",
-    "vite": "^6.2.5",
+    "sass": "^1.93.2",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9",
     "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
-    "vitest": "^3.1.1"
+    "vitest": "^3.2.4"
   }
 }

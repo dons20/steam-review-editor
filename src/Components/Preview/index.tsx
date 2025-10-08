@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaQuestion, FaSquare, FaSteamSymbol } from "react-icons/fa6";
 import notRec from "assets/img/thumbsDown.png";
 import rec from "assets/img/thumbsUp.png";
 import { AppContext } from "../Content";
@@ -40,7 +40,6 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
   const [isRecommended, setIsRecommended] = useState(true);
   const { previewContent, markup } = useContext(AppContext);
 
-  //const content = toHTMLMarkup.serialize(props.content);
   /** Flips between Recommended/Not Recommended and randomizes hours */
   const setReview = () => {
     setIsRecommended(!isRecommended);
@@ -54,8 +53,8 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
         <div className="body">
           <div className="profile">
             <span className="fa-layers fa-fw">
-              <FontAwesomeIcon icon="square" color="rgba(255,255,255,0.2)" />
-              <FontAwesomeIcon icon="question" transform="shrink-7" />
+              <FaSquare color="rgba(255,255,255,0.2)" />
+              <FaQuestion width="16" />
             </span>
             <div className="details">
               <p className="username">Your Username</p>
@@ -72,14 +71,14 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
               </span>
             </div>
             <div className="middle">
-              <FontAwesomeIcon icon={["fab", "steam"]} aria-label="Steam Logo" />
+              <FaSteamSymbol aria-label="Steam Logo" />
             </div>
           </div>
           <div className="content">
             <p className="subtext">
               POSTED: {date.getDate()} {months[date.getMonth()]}
             </p>
-            <Markup value={previewContent} />
+            {previewContent && <div dangerouslySetInnerHTML={{ __html: previewContent }} />}
           </div>
         </div>
       </div>
@@ -89,7 +88,10 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
           {markup ? (
             <React.Suspense fallback={<>Loading...</>}>{<Markup value={markup} />}</React.Suspense>
           ) : (
-            <FontAwesomeIcon icon="spinner" size="4x" style={{ width: "100%" }} spin pulse />
+            <div className="empty-preview-message">
+              <p>Start typing in the editor to see your Steam BBCode markup here.</p>
+              <p className="hint">This is the text you'll copy and paste into your Steam review.</p>
+            </div>
           )}
         </pre>
       </div>

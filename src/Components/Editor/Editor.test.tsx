@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 
 import Editor from ".";
 import EditorValue from "./testValue.json";
-import SteamMarkup from "../../Util/steamParser";
+import SteamMarkup from "../../util/steamParser";
 import rules from "./rules.js";
 
 it("renders the editor", () => {

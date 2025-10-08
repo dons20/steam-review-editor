@@ -14,16 +14,16 @@ Coming soon...
 
 ## How to test locally
 
-Be sure to have [Node v18 LTS or higher](https://nodejs.org/en/) on your development machine.
+Be sure to have [Node v22.14 LTS or higher](https://nodejs.org/en/) on your development machine.
 
 1. Clone or download the source code in the [main branch](https://github.com/dons20/steam-review-editor)
 2. Open a terminal inside the cloned directory.
-3. Type `npm run start` to start a local development server
-4. Type `npm run build` to build the files for production.
+3. Type `pnpm run start` to start a local development server
+4. Type `pnpm run build` to build the files for production.
 
 ## Resources
 
-- The main editor is built with [EditorJS](https://editorjs.io/)
+- The main editor is built with [TipTap](https://tiptap.dev/)
 - Icons sourced from [Font Awesome](https://fontawesome.com/)
 - Inspiration for colours, layout, and overall design were sourced from the Steam web store: [Steam Store](http://store.steampowered.com)
 
@@ -35,7 +35,7 @@ _Guidelines coming soon_
 
 ## License
 
-This application is licensed under the [Blue Oak License](LICENSE).
+This application is licensed under the [MIT License](LICENSE).
 
 ## Attribution
 

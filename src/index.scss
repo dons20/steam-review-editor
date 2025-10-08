@@ -212,3 +212,13 @@ button {
   background-color: transparent;
   cursor: pointer;
 }
+
+:root {
+  --white: #fff;
+  --black: #000;
+  --gray-1: rgba(61, 37, 20, .05);
+  --gray-2: rgba(61, 37, 20, .08);
+  --gray-3: rgba(61, 37, 20, .12);
+  --gray-4: rgba(53, 38, 28, .3);
+  --gray-5: rgba(28, 25, 23, .6);
+}

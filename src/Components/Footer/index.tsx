@@ -1,8 +1,8 @@
 import React from "react";
 import classes from "./footer.module.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaClipboardList, FaSquareGithub, FaSquareTwitter } from "react-icons/fa6";
 
-function Footer({ showModal }) {
+function Footer() {
   const date = new Date().getFullYear();
 
   return (
@@ -12,29 +12,29 @@ function Footer({ showModal }) {
           className="tooltip"
           href="http://twitter.com/kcinnovations"
           target="_none"
-          data-title="Twitter"
+          data-tooltip="Twitter"
           rel="noopener noreferrer"
         >
-          <FontAwesomeIcon icon={["fab", "twitter-square"]} size={"3x"} className={classes.icon} />
+          <FaSquareTwitter size="36" className={classes.icon} />
         </a>
         <a
           className="tooltip"
           href="https://github.com/dons20/Steam-Review-Editor"
           target="_none"
-          data-title="GitHub"
+          data-tooltip="GitHub"
           rel="noopener noreferrer"
         >
-          <FontAwesomeIcon icon={["fab", "github-square"]} size={"3x"} className={classes.icon} />
+          <FaSquareGithub size="36" className={classes.icon} />
         </a>
-        <button
-          type="button"
+        <a
           className="tooltip"
-          onClick={() => showModal(true)}
-          data-toggle="modal"
-          data-title="Changelog"
+          href="https://github.com/dons20/steam-review-editor/releases"
+          target="_blank"
+          data-tooltip="Changelog"
+          rel="noopener noreferrer"
         >
-          <FontAwesomeIcon icon={["far", "list-alt"]} size={"3x"} className={classes.icon} />
-        </button>
+          <FaClipboardList size="36" className={classes.icon} />
+        </a>
       </div>
       <p>
         Copyright &copy; {date} | Keno Clayton.

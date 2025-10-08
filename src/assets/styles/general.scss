@@ -22,7 +22,7 @@ body.enableHover {
       border-radius: 10px;
       bottom: 110%;
       color: #fff;
-      content: attr(data-title);
+      content: attr(data-tooltip);
       display: inline;
       font-size: 1rem;
       font-weight: 500;

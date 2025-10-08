@@ -1,0 +1,89 @@
+.editor-toolbar-header {
+  border-bottom: 2px solid #eee;
+  border-radius: 10px 10px 0 0;
+  position: relative;
+  padding: 0.5rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background-color: transparent;
+  border-bottom: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  min-width: 2rem;
+  height: 2rem;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  position: relative;
+
+  // Instant tooltip on hover using data-tooltip attribute
+  &[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.25rem 0.5rem;
+    background-color: #333;
+    color: #fff;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    border-radius: 4px;
+    margin-bottom: 0.25rem;
+    pointer-events: none;
+    z-index: 1000;
+  }
+
+  &:hover:not(:disabled) {
+    background-color: #e0e0e0;
+    border-color: #999;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.is-active {
+    background-color: #4a90e2;
+    color: #fff;
+    border-color: #357abd;
+
+    &:hover {
+      background-color: #357abd;
+    }
+  }
+
+  .heading-level {
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 1.5rem;
+  background-color: #ccc;
+  margin: 0 0.25rem;
+}

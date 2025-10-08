@@ -9,7 +9,10 @@
     "moduleResolution": "Bundler",
     "jsx": "preserve",
     "target": "ESNext",
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "paths": {
+      "@/*": ["./"]
+    }
   },
   "typeAcquisition": { "enable": true },
   "exclude": ["node_modules", "**/node_modules/*"]

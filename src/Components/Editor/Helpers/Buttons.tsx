@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { insertLink, insertImage, insertTable } from "./";
+import { insertLink, insertImage, insertTable } from ".";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /** @type {Array} */ const LIST_TYPES = ["OList", "UList"];

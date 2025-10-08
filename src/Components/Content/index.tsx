@@ -1,32 +1,27 @@
-/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useRef } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import steamParser from "Util/steamParser";
-// import parseHTML from "Util/htmlParser";
+import { FaCircleQuestion, FaRegCircleXmark } from "react-icons/fa6";
+import { htmlToSteamBBCode, cleanBBCode } from "util/htmlToSteamBBCode";
 import cx from "classnames";
-import ReviewEditor from "Components/Editor";
-import Preview from "Components/Preview";
+import ReviewEditor from "components/Editor";
+import Preview from "components/Preview";
 import "./content.scss";
 
-import type { OutputData } from "@editorjs/editorjs";
-
 export type AppContextType = null | {
-  setHTMLContent: React.Dispatch<React.SetStateAction<OutputData>>;
+  setHTMLContent: React.Dispatch<React.SetStateAction<string>>;
   notify: Function;
   markup: string | null;
-  previewContent: Record<string, unknown> | null;
+  previewContent: string | null;
 };
 
 const AppContext = React.createContext<AppContextType>(null);
-const markupParser = steamParser();
 
 function Content({ notify }) {
   const [showTip, setShowTip] = useState<boolean>(JSON.parse(localStorage.getItem("showTip")));
   const [hideHelp, setHideHelp] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-  const [htmlContent, setHTMLContent] = useState<OutputData>(null);
+  const [htmlContent, setHTMLContent] = useState<string>("");
   const [markup, setMarkup] = useState<string | null>(null);
-  const [previewContent, setPreviewContent] = useState<Record<string, unknown> | null>(null);
+  const [previewContent, setPreviewContent] = useState<string | null>(null);
   const [width, setWidth] = useState<number>(document.body.getBoundingClientRect().width);
   const markupAreaRef = useRef<HTMLDivElement | null>(null);
   const helpAreaRef = useRef<HTMLDivElement | null>(null);
@@ -94,15 +89,16 @@ function Content({ notify }) {
 
   /** Parses the editor content before preview is rendered */
   useEffect(() => {
-    async function handleSerialization() {
-      console.log(htmlContent, markupParser.parse(htmlContent));
-      setMarkup(markupParser.parse(htmlContent));
-      // setPreviewContent(await serializeHTML(htmlContent));
-    }
+    if (htmlContent) {
+      // Convert HTML to Steam BBCode
+      const bbcode = htmlToSteamBBCode(htmlContent);
+      const cleanedBBCode = cleanBBCode(bbcode);
+      setMarkup(cleanedBBCode);
 
-    if (htmlContent) handleSerialization();
-    console.log("htmlContent Updated");
-  }, [htmlContent, markupParser]);
+      // Set preview content (HTML for Store Preview)
+      setPreviewContent(htmlContent);
+    }
+  }, [htmlContent]);
 
   return (
     <AppContext.Provider value={{ setHTMLContent, markup, previewContent, notify }}>
@@ -122,13 +118,13 @@ function Content({ notify }) {
             Steam!
           </p>
           <div className={`${width >= 1200 ? "tooltip " : ""} close`} onClick={startHide} data-title="Close">
-            {width >= 1200 ? <FontAwesomeIcon icon={["far", "times-circle"]} size={"2x"} className="close" /> : "Close"}
+            {width >= 1200 ? <FaRegCircleXmark size="36" className="close" /> : "Close"}
           </div>
         </div>
         {showTip === false && (
           <div className={`tooltip showHelp`} data-title="Help" onClick={showInstructions}>
             <span style={{ display: "flex", alignItems: "center" }}>
-              <FontAwesomeIcon icon={["far", "question-circle"]} size={"2x"} />
+              <FaCircleQuestion size={"2x"} />
               &nbsp; Show Help
             </span>
           </div>
