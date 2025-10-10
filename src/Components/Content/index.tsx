@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaCircleQuestion, FaRegCircleXmark } from "react-icons/fa6";
+import { IconHelpCircle, IconCircleX } from "components/Icons";
+import Tooltip from "components/Tooltip";
 import { htmlToSteamBBCode, cleanBBCode } from "util/htmlToSteamBBCode";
 import cx from "classnames";
 import ReviewEditor from "components/Editor";
@@ -117,14 +118,20 @@ function Content({ notify }) {
             manually apply steam markup tags. Simply type your review, click "Copy Markup to Clipboard", and paste it in
             Steam!
           </p>
-          <div className={`${width >= 1200 ? "tooltip " : ""} close`} onClick={startHide} data-title="Close">
-            {width >= 1200 ? <FaRegCircleXmark size="36" className="close" /> : "Close"}
-          </div>
+          {width >= 1200 ? (
+            <Tooltip content="Close" position="top">
+              <IconCircleX width={48} height={48} onClick={startHide} cursor="pointer" />
+            </Tooltip>
+          ) : (
+            <div className="close" onClick={startHide}>
+              Close
+            </div>
+          )}
         </div>
         {showTip === false && (
-          <div className={`tooltip showHelp`} data-title="Help" onClick={showInstructions}>
+          <div className="showHelp" onClick={showInstructions}>
             <span style={{ display: "flex", alignItems: "center" }}>
-              <FaCircleQuestion size={"2x"} />
+              <IconHelpCircle width={36} height={36} />
               &nbsp; Show Help
             </span>
           </div>

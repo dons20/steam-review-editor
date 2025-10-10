@@ -17,19 +17,14 @@ declare module "@tiptap/core" {
 
 export const Quote = Node.create<QuoteOptions>({
   name: "quote",
-
   group: "block",
-
   content: "block+",
-
   defining: true,
-
   addOptions() {
     return {
       HTMLAttributes: {},
     };
   },
-
   addAttributes() {
     return {
       author: {
@@ -46,7 +41,6 @@ export const Quote = Node.create<QuoteOptions>({
       },
     };
   },
-
   parseHTML() {
     return [
       {
@@ -54,7 +48,6 @@ export const Quote = Node.create<QuoteOptions>({
       },
     ];
   },
-
   renderHTML({ HTMLAttributes }) {
     return [
       "blockquote",
@@ -65,7 +58,6 @@ export const Quote = Node.create<QuoteOptions>({
       0,
     ];
   },
-
   addCommands() {
     return {
       setQuote:

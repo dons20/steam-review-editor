@@ -8,9 +8,11 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
 import { Table, TableRow, TableCell, TableHeader } from "@tiptap/extension-table";
 import { Extension } from "@tiptap/core";
-import { Spoiler, NoParse, Quote } from "./extensions";
-import { Toolbar } from "./Helpers/Toolbar";
 import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaLink } from "react-icons/fa6";
+import { toast } from "react-toastify";
+import Tooltip from "components/Tooltip";
+import { Toolbar, TableMenu } from "./Helpers";
+import { Spoiler, NoParse, Quote } from "./extensions";
 
 // Custom keyboard shortcuts extension
 const CustomKeyboardShortcuts = Extension.create({
@@ -56,7 +58,7 @@ const extensions = [
     },
   }),
   Table.configure({
-    resizable: true,
+    allowTableNodeSelection: true,
     HTMLAttributes: {
       class: "steam-table",
     },
@@ -86,46 +88,51 @@ const BubbleMenuContent = () => {
 
   return (
     <div className="bubble-menu">
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleBold().run()}
-        className={`bubble-menu-button ${editor.isActive("bold") ? "is-active" : ""}`}
-        title="Bold"
-      >
-        <FaBold />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleItalic().run()}
-        className={`bubble-menu-button ${editor.isActive("italic") ? "is-active" : ""}`}
-        title="Italic"
-      >
-        <FaItalic />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
-        className={`bubble-menu-button ${editor.isActive("underline") ? "is-active" : ""}`}
-        title="Underline"
-      >
-        <FaUnderline />
-      </button>
-      <button
-        type="button"
-        onClick={() => editor.chain().focus().toggleStrike().run()}
-        className={`bubble-menu-button ${editor.isActive("strike") ? "is-active" : ""}`}
-        title="Strikethrough"
-      >
-        <FaStrikethrough />
-      </button>
-      <button
-        type="button"
-        onClick={addLink}
-        className={`bubble-menu-button ${editor.isActive("link") ? "is-active" : ""}`}
-        title="Link"
-      >
-        <FaLink />
-      </button>
+      <Tooltip content="Bold">
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleBold().run()}
+          className={`bubble-menu-button ${editor.isActive("bold") ? "is-active" : ""}`}
+        >
+          <FaBold />
+        </button>
+      </Tooltip>
+      <Tooltip content="Italic">
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleItalic().run()}
+          className={`bubble-menu-button ${editor.isActive("italic") ? "is-active" : ""}`}
+        >
+          <FaItalic />
+        </button>
+      </Tooltip>
+      <Tooltip content="Underline">
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          className={`bubble-menu-button ${editor.isActive("underline") ? "is-active" : ""}`}
+        >
+          <FaUnderline />
+        </button>
+      </Tooltip>
+      <Tooltip content="Strikethrough">
+        <button
+          type="button"
+          onClick={() => editor.chain().focus().toggleStrike().run()}
+          className={`bubble-menu-button ${editor.isActive("strike") ? "is-active" : ""}`}
+        >
+          <FaStrikethrough />
+        </button>
+      </Tooltip>
+      <Tooltip content="Link">
+        <button
+          type="button"
+          onClick={addLink}
+          className={`bubble-menu-button ${editor.isActive("link") ? "is-active" : ""}`}
+        >
+          <FaLink />
+        </button>
+      </Tooltip>
     </div>
   );
 };
@@ -153,7 +160,13 @@ const BaseEditor = ({ content, onUpdate }: BaseEditorProps) => {
 
     const timer = setTimeout(() => {
       localStorage.setItem("content", html);
-      console.log("Content auto-saved");
+
+      toast.info("Content auto-saved", {
+        autoClose: 2000,
+        position: "bottom-right",
+        toastId: "autosave-notification",
+        hideProgressBar: true,
+      });
     }, 3000);
 
     setSaveTimer(timer);
@@ -187,6 +200,7 @@ const BaseEditor = ({ content, onUpdate }: BaseEditorProps) => {
       <BubbleMenu editor={null}>
         <BubbleMenuContent />
       </BubbleMenu>
+      <TableMenu />
     </EditorProvider>
   );
 };

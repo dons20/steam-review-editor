@@ -1,26 +1,48 @@
 import React from "react";
 import { useCurrentEditor } from "@tiptap/react";
+import Tooltip from "components/Tooltip";
 import {
-  TablerBold,
-  TablerItalic,
-  TablerUnderline,
-  TablerStrikethrough,
-  TablerH1,
-  TablerH2,
-  TablerH3,
-  TablerList,
-  TablerListNumbers,
-  TablerLink,
-  TablerPhoto,
-  TablerTable,
-  TablerCode,
-  TablerQuote,
-  TablerEyeOff,
-  TablerCircleOff,
-  TablerMinus,
-  TablerTrash,
-  TablerClearFormatting,
+  IconBold,
+  IconItalic,
+  IconUnderline,
+  IconStrikethrough,
+  IconH1,
+  IconH2,
+  IconH3,
+  IconList,
+  IconListNumbers,
+  IconLink,
+  IconPhoto,
+  IconTable,
+  IconCode,
+  IconQuote,
+  IconEyeOff,
+  IconCircleOff,
+  IconMinus,
+  IconTrash,
+  IconClearFormatting,
 } from "components/Icons";
+import {
+  addLink,
+  addImage,
+  addQuote,
+  insertTable,
+  clearContent,
+  toggleBold,
+  toggleItalic,
+  toggleUnderline,
+  toggleStrike,
+  toggleHeading1,
+  toggleHeading2,
+  toggleHeading3,
+  toggleBulletList,
+  toggleOrderedList,
+  toggleCodeBlock,
+  toggleSpoiler,
+  toggleNoParse,
+  setHorizontalRule,
+  clearFormatting,
+} from "./tools";
 import "./toolbar.scss";
 
 interface ToolbarButtonProps {
@@ -31,19 +53,29 @@ interface ToolbarButtonProps {
   children: React.ReactNode;
 }
 
-const ToolbarButton: React.FC<ToolbarButtonProps> = ({ onClick, active, disabled, tooltip, children }) => {
-  return (
+const ToolbarButton: React.FC<ToolbarButtonProps> = React.memo(({ onClick, active, disabled, tooltip, children }) => {
+  const button = (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
       className={`toolbar-button ${active ? "is-active" : ""}`}
-      data-tooltip={tooltip}
     >
       {children}
     </button>
   );
-};
+
+  // Wrap with tooltip if tooltip text is provided
+  if (tooltip) {
+    return (
+      <Tooltip content={tooltip} position="top">
+        {button}
+      </Tooltip>
+    );
+  }
+
+  return button;
+});
 
 const ToolbarDivider = () => <div className="toolbar-divider" />;
 
@@ -54,181 +86,128 @@ export const Toolbar: React.FC = () => {
     return null;
   }
 
-  const addLink = () => {
-    const url = window.prompt("Enter URL:");
-    if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
-    }
-  };
+  const handleAddLink = React.useCallback(() => addLink(editor), [editor]);
+  const handleAddImage = React.useCallback(() => addImage(editor), [editor]);
+  const handleAddQuote = React.useCallback(() => addQuote(editor), [editor]);
+  const handleInsertTable = React.useCallback(() => insertTable(editor), [editor]);
+  const handleClearContent = React.useCallback(() => clearContent(editor), [editor]);
 
-  const addImage = () => {
-    const url = window.prompt("Enter image URL:");
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
-  };
+  const handleToggleBold = React.useCallback(() => toggleBold(editor), [editor]);
+  const handleToggleItalic = React.useCallback(() => toggleItalic(editor), [editor]);
+  const handleToggleUnderline = React.useCallback(() => toggleUnderline(editor), [editor]);
+  const handleToggleStrike = React.useCallback(() => toggleStrike(editor), [editor]);
 
-  const addQuote = () => {
-    const author = window.prompt("Enter author name (optional):");
-    if (author !== null) {
-      editor
-        .chain()
-        .focus()
-        .toggleQuote({ author: author || undefined })
-        .run();
-    }
-  };
+  const handleToggleH1 = React.useCallback(() => toggleHeading1(editor), [editor]);
+  const handleToggleH2 = React.useCallback(() => toggleHeading2(editor), [editor]);
+  const handleToggleH3 = React.useCallback(() => toggleHeading3(editor), [editor]);
 
-  const insertTable = () => {
-    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
-  };
+  const handleToggleBulletList = React.useCallback(() => toggleBulletList(editor), [editor]);
+  const handleToggleOrderedList = React.useCallback(() => toggleOrderedList(editor), [editor]);
 
-  const clearContent = () => {
-    if (window.confirm("Are you sure you want to clear all content?")) {
-      editor.commands.clearContent();
-    }
-  };
+  const handleToggleCodeBlock = React.useCallback(() => toggleCodeBlock(editor), [editor]);
+  const handleToggleSpoiler = React.useCallback(() => toggleSpoiler(editor), [editor]);
+  const handleToggleNoParse = React.useCallback(() => toggleNoParse(editor), [editor]);
+
+  const handleSetHorizontalRule = React.useCallback(() => setHorizontalRule(editor), [editor]);
+  const handleClearFormatting = React.useCallback(() => clearFormatting(editor), [editor]);
 
   return (
     <div className="toolbar">
       <div className="toolbar-group">
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          active={editor.isActive("bold")}
-          tooltip="Bold (Ctrl+B)"
-        >
-          <TablerBold />
+        <ToolbarButton onClick={handleToggleBold} active={editor.isActive("bold")} tooltip="Bold (Ctrl+B)">
+          <IconBold />
+        </ToolbarButton>
+        <ToolbarButton onClick={handleToggleItalic} active={editor.isActive("italic")} tooltip="Italic (Ctrl+I)">
+          <IconItalic />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          active={editor.isActive("italic")}
-          tooltip="Italic (Ctrl+I)"
-        >
-          <TablerItalic />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
+          onClick={handleToggleUnderline}
           active={editor.isActive("underline")}
           tooltip="Underline (Ctrl+U)"
         >
-          <TablerUnderline />
+          <IconUnderline />
         </ToolbarButton>
         <ToolbarButton
-          onClick={() => editor.chain().focus().toggleStrike().run()}
+          onClick={handleToggleStrike}
           active={editor.isActive("strike")}
           tooltip="Strikethrough (Ctrl+Shift+X)"
         >
-          <TablerStrikethrough />
+          <IconStrikethrough />
         </ToolbarButton>
       </div>
 
       <ToolbarDivider />
 
       <div className="toolbar-group">
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-          active={editor.isActive("heading", { level: 1 })}
-          tooltip="Heading 1"
-        >
-          <TablerH1 />
+        <ToolbarButton onClick={handleToggleH1} active={editor.isActive("heading", { level: 1 })} tooltip="Heading 1">
+          <IconH1 />
         </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          active={editor.isActive("heading", { level: 2 })}
-          tooltip="Heading 2"
-        >
-          <TablerH2 />
+        <ToolbarButton onClick={handleToggleH2} active={editor.isActive("heading", { level: 2 })} tooltip="Heading 2">
+          <IconH2 />
         </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          active={editor.isActive("heading", { level: 3 })}
-          tooltip="Heading 3"
-        >
-          <TablerH3 />
+        <ToolbarButton onClick={handleToggleH3} active={editor.isActive("heading", { level: 3 })} tooltip="Heading 3">
+          <IconH3 />
         </ToolbarButton>
       </div>
 
       <ToolbarDivider />
 
       <div className="toolbar-group">
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          active={editor.isActive("bulletList")}
-          tooltip="Bullet List"
-        >
-          <TablerList />
+        <ToolbarButton onClick={handleToggleBulletList} active={editor.isActive("bulletList")} tooltip="Bullet List">
+          <IconList />
         </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          active={editor.isActive("orderedList")}
-          tooltip="Ordered List"
-        >
-          <TablerListNumbers />
+        <ToolbarButton onClick={handleToggleOrderedList} active={editor.isActive("orderedList")} tooltip="Ordered List">
+          <IconListNumbers />
         </ToolbarButton>
       </div>
 
       <ToolbarDivider />
 
       <div className="toolbar-group">
-        <ToolbarButton onClick={addLink} active={editor.isActive("link")} tooltip="Insert Link (Ctrl+K)">
-          <TablerLink />
+        <ToolbarButton onClick={handleAddLink} active={editor.isActive("link")} tooltip="Insert Link (Ctrl+K)">
+          <IconLink />
         </ToolbarButton>
-        <ToolbarButton onClick={addImage} tooltip="Insert Image">
-          <TablerPhoto />
+        <ToolbarButton onClick={handleAddImage} tooltip="Insert Image">
+          <IconPhoto />
         </ToolbarButton>
-        <ToolbarButton onClick={insertTable} tooltip="Insert Table">
-          <TablerTable />
-        </ToolbarButton>
-      </div>
-
-      <ToolbarDivider />
-
-      <div className="toolbar-group">
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          active={editor.isActive("codeBlock")}
-          tooltip="Code Block"
-        >
-          <TablerCode />
-        </ToolbarButton>
-        <ToolbarButton onClick={addQuote} active={editor.isActive("quote")} tooltip="Quote">
-          <TablerQuote />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleSpoiler().run()}
-          active={editor.isActive("spoiler")}
-          tooltip="Spoiler"
-        >
-          <TablerEyeOff />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={() => editor.chain().focus().toggleNoParse().run()}
-          active={editor.isActive("noParse")}
-          tooltip="No Parse"
-        >
-          <TablerCircleOff />
+        <ToolbarButton onClick={handleInsertTable} tooltip="Insert Table">
+          <IconTable />
         </ToolbarButton>
       </div>
 
       <ToolbarDivider />
 
       <div className="toolbar-group">
-        <ToolbarButton onClick={() => editor.chain().focus().setHorizontalRule().run()} tooltip="Horizontal Rule">
-          <TablerMinus />
+        <ToolbarButton onClick={handleToggleCodeBlock} active={editor.isActive("codeBlock")} tooltip="Code Block">
+          <IconCode />
+        </ToolbarButton>
+        <ToolbarButton onClick={handleAddQuote} active={editor.isActive("quote")} tooltip="Quote">
+          <IconQuote />
+        </ToolbarButton>
+        <ToolbarButton onClick={handleToggleSpoiler} active={editor.isActive("spoiler")} tooltip="Spoiler">
+          <IconEyeOff />
+        </ToolbarButton>
+        <ToolbarButton onClick={handleToggleNoParse} active={editor.isActive("noParse")} tooltip="No Parse">
+          <IconCircleOff />
         </ToolbarButton>
       </div>
 
       <ToolbarDivider />
 
       <div className="toolbar-group">
-        <ToolbarButton
-          onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}
-          tooltip="Clear Formatting"
-        >
-          <TablerClearFormatting />
+        <ToolbarButton onClick={handleSetHorizontalRule} tooltip="Horizontal Rule">
+          <IconMinus />
         </ToolbarButton>
-        <ToolbarButton onClick={clearContent} tooltip="Clear All Content">
-          <TablerTrash />
+      </div>
+
+      <ToolbarDivider />
+
+      <div className="toolbar-group">
+        <ToolbarButton onClick={handleClearFormatting} tooltip="Clear Formatting">
+          <IconClearFormatting />
+        </ToolbarButton>
+        <ToolbarButton onClick={handleClearContent} tooltip="Clear All Content">
+          <IconTrash />
         </ToolbarButton>
       </div>
     </div>

@@ -6,7 +6,6 @@ import { toast, Flip } from "react-toastify";
 /** Styling */
 import classes from "./App.module.scss";
 import "react-toastify/dist/ReactToastify.css";
-import "./assets/styles/general.scss";
 
 function App() {
   useEnableHover();

@@ -1,32 +1,97 @@
-import InlineCode from "@editorjs/inline-code";
-import Underline from "@editorjs/underline";
-import Header from "@editorjs/header";
-import Table from "@editorjs/table";
-import Image from "@editorjs/image";
-import Quote from "@editorjs/quote";
-import List from "@editorjs/list";
-import type { ToolConstructable, ToolSettings } from "@editorjs/editorjs";
+import { Editor } from "@tiptap/react";
 
-type EditorJSConfig = {
-  [toolName: string]: ToolConstructable|ToolSettings;
+export const addLink = (editor: Editor) => {
+  const url = window.prompt("Enter URL:");
+  if (url) {
+    editor.chain().focus().setLink({ href: url }).run();
+  }
 };
 
-export const EDITOR_JS_TOOLS: EditorJSConfig = {
-  list: List,
-  image: {
-    class: Image,
-    inlineToolbar: true,
-  },
-  quote: Quote,
-  table: {
-    // @ts-expect-error Types in Table don't align with React EditorJS
-    class: Table,
-    inlineToolbar: true,
-  },
-  header: {
-    class: Header,
-    shortcut: "CMD+SHIFT+H",
-  },
-  underline: Underline,
-  inlineCode: InlineCode,
+export const addImage = (editor: Editor) => {
+  const url = window.prompt("Enter image URL:");
+  if (url) {
+    editor.chain().focus().setImage({ src: url }).run();
+  }
+};
+
+export const addQuote = (editor: Editor) => {
+  const author = window.prompt("Enter author name (optional):");
+  if (author !== null) {
+    editor
+      .chain()
+      .focus()
+      .toggleQuote({ author: author || undefined })
+      .run();
+  }
+};
+
+export const insertTable = (editor: Editor) => {
+  editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).blur().run();
+  // editor.chain().blur().run();
+};
+
+export const clearContent = (editor: Editor) => {
+  if (window.confirm("Are you sure you want to clear all content?")) {
+    editor.commands.clearContent();
+  }
+};
+
+// Text formatting
+export const toggleBold = (editor: Editor) => {
+  editor.chain().focus().toggleBold().run();
+};
+
+export const toggleItalic = (editor: Editor) => {
+  editor.chain().focus().toggleItalic().run();
+};
+
+export const toggleUnderline = (editor: Editor) => {
+  editor.chain().focus().toggleUnderline().run();
+};
+
+export const toggleStrike = (editor: Editor) => {
+  editor.chain().focus().toggleStrike().run();
+};
+
+// Headings
+export const toggleHeading1 = (editor: Editor) => {
+  editor.chain().focus().toggleHeading({ level: 1 }).run();
+};
+
+export const toggleHeading2 = (editor: Editor) => {
+  editor.chain().focus().toggleHeading({ level: 2 }).run();
+};
+
+export const toggleHeading3 = (editor: Editor) => {
+  editor.chain().focus().toggleHeading({ level: 3 }).run();
+};
+
+// Lists
+export const toggleBulletList = (editor: Editor) => {
+  editor.chain().focus().toggleBulletList().run();
+};
+
+export const toggleOrderedList = (editor: Editor) => {
+  editor.chain().focus().toggleOrderedList().run();
+};
+
+// Block elements
+export const toggleCodeBlock = (editor: Editor) => {
+  editor.chain().focus().toggleCodeBlock().run();
+};
+
+export const toggleSpoiler = (editor: Editor) => {
+  editor.chain().focus().toggleSpoiler().run();
+};
+
+export const toggleNoParse = (editor: Editor) => {
+  editor.chain().focus().toggleNoParse().run();
+};
+
+export const setHorizontalRule = (editor: Editor) => {
+  editor.chain().focus().setHorizontalRule().run();
+};
+
+export const clearFormatting = (editor: Editor) => {
+  editor.chain().focus().unsetAllMarks().clearNodes().run();
 };

@@ -10,31 +10,6 @@
   }
 }
 
-body.enableHover {
-  & .markupBtn {
-    &:hover {
-      background: master.$tertiary-color center/15000%;
-      color: #333;
-    }
-  }
-
-  & .previewBtn {
-    &:hover {
-      background: color.adjust(master.$primary-color, $lightness: 20%);
-      //color: rgba(2, 117, 216, 1);
-    }
-  }
-
-  & .close {
-    border: none;
-    padding: 0;
-  }
-
-  & .tooltip:before {
-    min-width: 90px;
-  }
-}
-
 .content-root {
   display: grid;
   grid-template-rows: auto minmax(350px, 1fr) minmax(50px, auto) auto;
@@ -57,9 +32,9 @@ body.enableHover {
   }
 
   .close {
-    border: 2px solid #fff;
     cursor: pointer;
-    font-weight: bolder;
+    border: 2px solid white;
+    border-radius: 6px;
     padding: 5px 10px;
   }
 
