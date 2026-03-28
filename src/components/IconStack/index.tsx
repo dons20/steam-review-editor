@@ -1,6 +1,10 @@
 import React, { SVGProps, ComponentType, ReactElement } from "react";
 
-type IconComponent = ComponentType<SVGProps<SVGSVGElement>>;
+// Use a broad type to accept both Lucide icons (LucideProps) and plain SVG components.
+// Lucide's LucideProps extends SVGProps with extra fields, and csstype version
+// mismatches between lucide-react and the project cause deep structural incompatibility
+// when using the narrow `ComponentType<SVGProps<SVGSVGElement>>`.
+type IconComponent = ComponentType<Record<string, unknown>>;
 
 type Layer = {
   Icon: IconComponent;

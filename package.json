@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22.14.0"
+    "node": ">=24.14.0"
   },
   "scripts": {
     "start": "vite",
@@ -36,34 +36,34 @@
     ]
   },
   "dependencies": {
-    "@floating-ui/dom": "^1.7.5",
-    "@tiptap/core": "^3.19.0",
-    "@tiptap/extension-image": "^3.19.0",
-    "@tiptap/extension-link": "^3.19.0",
-    "@tiptap/extension-placeholder": "^3.19.0",
-    "@tiptap/extension-table": "^3.19.0",
-    "@tiptap/extension-table-cell": "^3.19.0",
-    "@tiptap/extension-table-header": "^3.19.0",
-    "@tiptap/extension-table-row": "^3.19.0",
-    "@tiptap/extension-underline": "^3.19.0",
-    "@tiptap/pm": "^3.19.0",
-    "@tiptap/react": "^3.19.0",
-    "@tiptap/starter-kit": "^3.19.0",
-    "@vitejs/plugin-react": "^5.1.4",
-    "axios": "^1.13.5",
+    "@floating-ui/dom": "^1.7.6",
+    "@tiptap/core": "^3.21.0",
+    "@tiptap/extension-image": "^3.21.0",
+    "@tiptap/extension-link": "^3.21.0",
+    "@tiptap/extension-placeholder": "^3.21.0",
+    "@tiptap/extension-table": "^3.21.0",
+    "@tiptap/extension-table-cell": "^3.21.0",
+    "@tiptap/extension-table-header": "^3.21.0",
+    "@tiptap/extension-table-row": "^3.21.0",
+    "@tiptap/extension-underline": "^3.21.0",
+    "@tiptap/pm": "^3.21.0",
+    "@tiptap/react": "^3.21.0",
+    "@tiptap/starter-kit": "^3.21.0",
+    "@vitejs/plugin-react": "^6.0.1",
+    "axios": "^1.14.0",
     "classnames": "^2.5.1",
     "editorjs-html": "^4.0.5",
     "is-image": "^4.0.0",
     "is-url": "^1.2.4",
+    "lucide-react": "^1.7.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-toastify": "^11.0.5",
-    "sass": "^1.97.3",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.1",
-    "vite-tsconfig-paths": "^6.1.0"
+    "sass": "^1.98.0",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.3"
   },
   "devDependencies": {
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.2"
   }
 }

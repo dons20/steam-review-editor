@@ -81,6 +81,20 @@ const ToolbarDivider = () => <div className="toolbar-divider" />;
 
 export const Toolbar: React.FC = () => {
   const { editor } = useCurrentEditor();
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+
+  React.useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    const update = () => forceUpdate();
+    editor.on("transaction", update);
+
+    return () => {
+      editor.off("transaction", update);
+    };
+  }, [editor]);
 
   if (!editor) {
     return null;

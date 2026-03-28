@@ -1,10 +1,18 @@
 /**
- * Converts HTML output from TipTap editor to Steam BBCode format
+ * Converts HTML output from TipTap editor to Steam BBCode format.
+ *
+ * Block-level elements each output their content followed by exactly one `\n`.
+ * Empty paragraphs (blank lines in the editor) output a bare `\n`, which
+ * preserves intentional spacing in the BBCode output.
+ *
+ * The `cleanBBCode` function only trims leading/trailing whitespace — it
+ * does NOT collapse multiple newlines, because consecutive empty lines
+ * represent intentional spacing from the user.
+ *
  * @param html - The HTML string from the editor
  * @returns Steam BBCode formatted string
  */
 export function htmlToSteamBBCode(html: string): string {
-  // Create a temporary div to parse HTML
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
 
@@ -14,7 +22,7 @@ export function htmlToSteamBBCode(html: string): string {
 function processNode(node: Node): string {
   let result = "";
 
-  node.childNodes.forEach(child => {
+  node.childNodes.forEach((child) => {
     if (child.nodeType === Node.TEXT_NODE) {
       result += child.textContent || "";
     } else if (child.nodeType === Node.ELEMENT_NODE) {
@@ -26,7 +34,11 @@ function processNode(node: Node): string {
   return result;
 }
 
-function trimInnerSpaces(content: string): { before: string; trimmed: string; after: string } {
+function trimInnerSpaces(content: string): {
+  before: string;
+  trimmed: string;
+  after: string;
+} {
   const leadingSpaces = content.match(/^\s*/)?.[0] || "";
   const trailingSpaces = content.match(/\s*$/)?.[0] || "";
   const trimmed = content.trim();
@@ -76,8 +88,19 @@ function processElement(element: HTMLElement): string {
   }
 
   switch (tagName) {
-    case "p":
-      return content + "\n\n";
+    // ── Block-level elements ──────────────────────────────────────────
+    // Each block emits exactly one trailing \n.
+    // Empty paragraphs (blank lines in the editor) emit just \n.
+
+    case "p": {
+      // Strip trailing <br> artifacts that TipTap adds to empty paragraphs
+      const stripped = content.replace(/^\n+|\n+$/g, "").trim();
+      if (!stripped) {
+        // Empty paragraph → blank line
+        return "\n";
+      }
+      return content + "\n";
+    }
 
     case "br":
       return "\n";
@@ -100,6 +123,8 @@ function processElement(element: HTMLElement): string {
     case "li":
       return `[*]${content}\n`;
 
+    // ── Inline elements ──────────────────────────────────────────────
+
     case "a": {
       const href = element.getAttribute("href") || "";
       return `[url=${href}]${content}[/url]`;
@@ -111,7 +136,7 @@ function processElement(element: HTMLElement): string {
     }
 
     case "code":
-      // Check if it's inside a pre tag (code block) or inline code
+      // Inside a <pre> (code block) — content is handled by the <pre> case
       if (element.parentElement?.tagName.toLowerCase() === "pre") {
         return content;
       }
@@ -122,7 +147,6 @@ function processElement(element: HTMLElement): string {
       if (dataType === "noparse") {
         return `[noparse]${content}[/noparse]\n`;
       }
-      // Regular code block
       return `[code]${content}[/code]\n`;
     }
 
@@ -130,10 +154,11 @@ function processElement(element: HTMLElement): string {
       const dataType = element.getAttribute("data-type");
       if (dataType === "quote") {
         const author = element.getAttribute("data-author");
+        const inner = content.trim();
         if (author) {
-          return `[quote=${author}]${content}[/quote]\n`;
+          return `[quote=${author}]${inner}[/quote]\n`;
         }
-        return `[quote]${content}[/quote]\n`;
+        return `[quote]${inner}[/quote]\n`;
       }
       return content;
     }
@@ -141,7 +166,7 @@ function processElement(element: HTMLElement): string {
     case "div": {
       const dataType = element.getAttribute("data-type");
       if (dataType === "spoiler") {
-        return `[spoiler]${content}[/spoiler]\n`;
+        return `[spoiler]${content.trim()}[/spoiler]\n`;
       }
       return content;
     }
@@ -153,19 +178,17 @@ function processElement(element: HTMLElement): string {
       let tableContent = "";
       const rows = element.querySelectorAll("tr");
 
-      rows.forEach(row => {
+      rows.forEach((row) => {
         tableContent += "[tr]\n";
 
-        // Check for header cells
         const headers = row.querySelectorAll("th");
-        headers.forEach(th => {
-          tableContent += `[th]${processNode(th)}[/th]\n`;
+        headers.forEach((th) => {
+          tableContent += `[th]${processNode(th).trim()}[/th]\n`;
         });
 
-        // Check for data cells
         const cells = row.querySelectorAll("td");
-        cells.forEach(td => {
-          tableContent += `[td]${processNode(td)}[/td]\n`;
+        cells.forEach((td) => {
+          tableContent += `[td]${processNode(td).trim()}[/td]\n`;
         });
 
         tableContent += "[/tr]\n";
@@ -179,7 +202,6 @@ function processElement(element: HTMLElement): string {
     case "tr":
     case "th":
     case "td":
-      // These are handled by the table case
       return content;
 
     default:
@@ -188,11 +210,10 @@ function processElement(element: HTMLElement): string {
 }
 
 /**
- * Cleans up extra whitespace and formatting in BBCode
+ * Cleans up formatting in BBCode output.
+ * Only trims leading/trailing whitespace — does NOT collapse multiple
+ * newlines, because consecutive empty lines represent intentional spacing.
  */
 export function cleanBBCode(bbcode: string): string {
-  return bbcode
-    .replace(/\n{3,}/g, "\n\n") // Replace multiple newlines with double newline
-    .replace(/\n\s+\n/g, "\n\n") // Remove whitespace-only lines
-    .trim();
+  return bbcode.trim();
 }

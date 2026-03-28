@@ -8,11 +8,15 @@ import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
 import { Table, TableRow, TableCell, TableHeader } from "@tiptap/extension-table";
 import { Extension } from "@tiptap/core";
-import { FaBold, FaItalic, FaUnderline, FaStrikethrough, FaLink } from "react-icons/fa6";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import TiptapUnderline from "@tiptap/extension-underline";
+import TiptapLink from "@tiptap/extension-link";
+import { Bold, Italic, Underline, Strikethrough, Link } from "lucide-react";
 import { toast } from "react-toastify";
 import Tooltip from "components/Tooltip";
 import { Toolbar, TableMenu } from "./Helpers";
 import { Spoiler, NoParse, Quote } from "./extensions";
+import { steamBBCodeToHtml, containsSteamBBCode } from "util/steamBBCodeToHtml";
 
 // Custom keyboard shortcuts extension
 const CustomKeyboardShortcuts = Extension.create({
@@ -36,17 +40,51 @@ const CustomKeyboardShortcuts = Extension.create({
   },
 });
 
+const SteamPasteExtension = Extension.create({
+  name: "steamPasteExtension",
+
+  addProseMirrorPlugins() {
+    return [
+      new Plugin({
+        key: new PluginKey("steamPasteExtension"),
+        props: {
+          handlePaste: (view, event) => {
+            const clipboardData = event.clipboardData;
+            if (!clipboardData) return false;
+
+            const plainText = clipboardData.getData("text/plain");
+
+            // If the pasted text contains Steam BBCode, convert it
+            if (plainText && containsSteamBBCode(plainText)) {
+              event.preventDefault();
+              const html = steamBBCodeToHtml(plainText);
+
+              // Use TipTap's native insertContent which handles marks correctly
+              // and safely triggers all internal state updates.
+              this.editor.commands.insertContent(html);
+
+              toast.info("Steam markup converted", {
+                autoClose: 2000,
+                position: "bottom-right",
+                toastId: "bbcode-paste",
+                hideProgressBar: true,
+              });
+
+              return true;
+            }
+
+            return false;
+          },
+        },
+      }),
+    ];
+  },
+});
+
 const extensions = [
   StarterKit.configure({
     heading: {
       levels: [1, 2, 3],
-    },
-    link: {
-      openOnClick: false,
-      HTMLAttributes: {
-        target: "_blank",
-        rel: "noopener noreferrer",
-      },
     },
   }),
   Placeholder.configure({
@@ -69,11 +107,34 @@ const extensions = [
   Spoiler,
   NoParse,
   Quote,
+  TiptapUnderline,
+  TiptapLink.configure({
+    openOnClick: false,
+    HTMLAttributes: {
+      target: "_blank",
+      rel: "noopener noreferrer",
+    },
+  }),
   CustomKeyboardShortcuts,
+  SteamPasteExtension,
 ];
 
 const BubbleMenuContent = () => {
   const { editor } = useCurrentEditor();
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+
+  React.useEffect(() => {
+    if (!editor) {
+      return;
+    }
+
+    const update = () => forceUpdate();
+    editor.on("transaction", update);
+
+    return () => {
+      editor.off("transaction", update);
+    };
+  }, [editor]);
 
   if (!editor) {
     return null;
@@ -94,7 +155,7 @@ const BubbleMenuContent = () => {
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`bubble-menu-button ${editor.isActive("bold") ? "is-active" : ""}`}
         >
-          <FaBold />
+          <Bold size={16} />
         </button>
       </Tooltip>
       <Tooltip content="Italic">
@@ -103,7 +164,7 @@ const BubbleMenuContent = () => {
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`bubble-menu-button ${editor.isActive("italic") ? "is-active" : ""}`}
         >
-          <FaItalic />
+          <Italic size={16} />
         </button>
       </Tooltip>
       <Tooltip content="Underline">
@@ -112,7 +173,7 @@ const BubbleMenuContent = () => {
           onClick={() => editor.chain().focus().toggleUnderline().run()}
           className={`bubble-menu-button ${editor.isActive("underline") ? "is-active" : ""}`}
         >
-          <FaUnderline />
+          <Underline size={16} />
         </button>
       </Tooltip>
       <Tooltip content="Strikethrough">
@@ -121,7 +182,7 @@ const BubbleMenuContent = () => {
           onClick={() => editor.chain().focus().toggleStrike().run()}
           className={`bubble-menu-button ${editor.isActive("strike") ? "is-active" : ""}`}
         >
-          <FaStrikethrough />
+          <Strikethrough size={16} />
         </button>
       </Tooltip>
       <Tooltip content="Link">
@@ -130,7 +191,7 @@ const BubbleMenuContent = () => {
           onClick={addLink}
           className={`bubble-menu-button ${editor.isActive("link") ? "is-active" : ""}`}
         >
-          <FaLink />
+          <Link size={16} />
         </button>
       </Tooltip>
     </div>
