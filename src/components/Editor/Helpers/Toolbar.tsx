@@ -65,7 +65,6 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = React.memo(({ onClick, activ
     </button>
   );
 
-  // Wrap with tooltip if tooltip text is provided
   if (tooltip) {
     return (
       <Tooltip content={tooltip} position="top">

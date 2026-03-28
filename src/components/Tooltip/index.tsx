@@ -214,6 +214,18 @@ export const Tooltip: React.FC<TooltipProps> = ({
     ref: attachHandlers,
   });
 
+  // Slide offset: 4px away from the anchor, collapses to 0 on enter
+  const getSlideTransform = (pos: TooltipPosition | undefined, visible: boolean): string => {
+    if (visible) return "translate(0, 0)";
+    switch (pos) {
+      case "bottom": return "translate(0, -4px)";
+      case "left":   return "translate(4px, 0)";
+      case "right":  return "translate(-4px, 0)";
+      case "top":
+      default:       return "translate(0, 4px)";
+    }
+  };
+
   // Always render tooltip but position it off-screen initially to measure it
   const tooltipElement = (
     <div
@@ -223,6 +235,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
         top: coords ? `${coords.top}px` : "-9999px",
         left: coords ? `${coords.left}px` : "-9999px",
         opacity: isVisible && coords ? 1 : 0,
+        transform: getSlideTransform(coords?.position, !!(isVisible && coords)),
         pointerEvents: "none",
       }}
       role="tooltip"

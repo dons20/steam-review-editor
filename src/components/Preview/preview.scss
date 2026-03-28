@@ -1,6 +1,6 @@
 $background-color: #111a24;
-$body-color: #acb2b8;
-$primary-font: "Motiva Sans", "Raleway", sans-serif;
+$body-color: #8091a2;
+$primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
 @use "../../assets/styles/master";
 
@@ -13,53 +13,76 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
   max-width: master.$breakpoint-large;
   width: 100%;
 
+  @media (max-width: master.$breakpoint-medium) {
+    grid-template-columns: 1fr;
+  }
+
   &.hidden {
     display: none;
   }
 
   .body {
-    align-items: center;
+    align-items: flex-start;
     background: #111a24;
     background: linear-gradient(to bottom, #111923, #17212e 50%);
     display: grid;
     grid-template-columns: 1fr 2fr;
-    grid-template-rows: auto 1fr;
     grid-row-gap: 10px;
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding: 0.5rem;
   }
 
   .profile {
     color: #fff;
+    align-items: flex-start;
+    column-gap: 0.5rem;
     display: grid;
     grid-template-columns: auto 1fr;
     font-size: 3.1em;
     position: relative;
     padding-right: 1rem;
 
+    .avatar-container {
+      background-color: #1a3a5c;
+      border: 1px solid #4b8fc4;
+      border-radius: 3px;
+      align-items: center;
+      display: inline-flex;
+      justify-content: center;
+      width: 34px;
+      height: 34px;
+      position: relative;
+      flex-shrink: 0;
+
+      svg {
+        position: relative;
+        z-index: 1;
+      }
+    }
+
     .details {
       color: #c1dbf4;
       font-size: 1rem;
 
       .username {
-        font-size: 1.1rem;
+        font-size: 13px;
         font-weight: bold;
-        margin: 0;
+        line-height: normal;
+        margin: 0 0 3px;
       }
 
       .sampleDetail {
         margin: 0;
-        font-size: 0.8rem;
+        font-size: 11px;
+        line-height: normal;
       }
     }
   }
 
   .content {
     grid-column: 2;
-    grid-row: 2;
     font-size: 15px;
     padding-right: 1rem;
-    color: #acb2b8;
+    color: $body-color;
 
     & a {
       color: #ebebeb;
@@ -213,6 +236,79 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     white-space: pre-wrap;
   }
 
+  .heading-row {
+    margin: 0 0 10px;
+    position: relative;
+  }
+
+  .heading-actions {
+    align-items: center;
+    display: flex;
+    gap: 0.25rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+
+  .tooltip-wrapper {
+    position: relative;
+
+    &:hover .action-tooltip {
+      opacity: 1;
+      pointer-events: none;
+      transform: translateY(0) translateX(-50%);
+    }
+
+    // Keep rightmost tooltip from clipping out of viewport
+    &:last-child .action-tooltip {
+      left: auto;
+      right: 0;
+      transform: translateY(-4px);
+    }
+
+    &:last-child:hover .action-tooltip {
+      transform: translateY(0);
+    }
+  }
+
+  .action-tooltip {
+    background: #333;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 500;
+    left: 50%;
+    opacity: 0;
+    padding: 0.25rem 0.55rem;
+    pointer-events: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    transform: translateY(-4px) translateX(-50%);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    white-space: nowrap;
+    z-index: 10;
+  }
+
+  .preview-action-btn {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: rgba(255,255,255,0.35);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    padding: 0.3rem;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+
+    &:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.8);
+    }
+  }
+
   .heading {
     background-image: url("../../assets/img/rule.png");
     background-position: bottom left;
@@ -222,7 +318,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     font-weight: 300;
     letter-spacing: 2px;
     line-height: 26px;
-    margin: 0 0 10px;
+    margin: 0;
     text-transform: uppercase;
   }
 
@@ -271,6 +367,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
 
   .middle {
     align-self: center;
+    height: 1rem;
   }
 
   .notRec {
@@ -291,23 +388,26 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
   .stats {
     background-color: rgba(0, 0, 0, 0.2);
     color: #d6d7d8;
-    cursor: pointer;
     display: grid;
     font-size: 16px;
     font-weight: 500;
-    column-gap: 1rem;
+    column-gap: 0.25rem;
     grid-template-columns: auto 1fr auto;
     grid-template-rows: auto;
-    padding-right: 1rem;
+    padding-right: 0.25rem;
   }
 
-  .subtext {
-    color: #a1adba;
+  .subtext,
+  .datePosted {
+    color: #8091A2;
     display: block;
-    font-family: Arial, Helvetica, sans-serif;
     font-weight: 300;
-    font-size: 12px;
-    line-height: 1.3rem;
+    font-size: 11px;
+    line-height: 1rem;
+  }
+  
+  .datePosted {
+    font-size: 10px;
     opacity: 0.6;
   }
 
@@ -326,13 +426,7 @@ $primary-font: "Motiva Sans", "Raleway", sans-serif;
     }
   }
 
-  @media only screen and (min-width: 768px) {
-    .stats {
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
-    }
-  }
+
 
   @media only screen and (max-width: 1179px) {
     .body {

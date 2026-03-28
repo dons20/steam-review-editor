@@ -1,14 +1,99 @@
 @use "../../assets/styles/master";
 
+// ── Editor theme tokens ──────────────────────────────────────────────────────
+// Defaults: light
 .editor__root {
-  background-color: #fff;
+  // Surface & borders
+  --ed-bg:              #ffffff;
+  --ed-border:          #e0e0e0;
+  --ed-shadow:          rgba(0, 0, 0, 0.16);
+
+  // Mode bar
+  --ed-modebar-bg:      #f0f0f0;
+  --ed-modebar-border:  #e0e0e0;
+  --ed-modebar-label:   #888;
+
+  // Mode-bar buttons
+  --ed-btn-bg:          #ffffff;
+  --ed-btn-border:      #ccc;
+  --ed-btn-color:       #555;
+  --ed-btn-hover-bg:    #e8e8e8;
+  --ed-btn-hover-border:#999;
+  --ed-btn-hover-color: #333;
+
+  // Help button hover accent
+  --ed-help-hover-color:#095ea9;
+
+  // Tiptap content area
+  --ed-content-bg:      #ffffff;
+  --ed-content-color:   inherit;
+  --ed-placeholder:     rgba(53, 38, 28, 0.3);
+
+  // Markup textarea
+  --ed-markup-bg:       #fafafa;
+  --ed-markup-bg-focus: #ffffff;
+  --ed-markup-color:    #2d2d2d;
+  --ed-markup-placeholder: #bbb;
+
+  // tiptap content
+  --ed-table-border:    #ddd;
+  --ed-table-th-bg:     #f5f5f5;
+  --ed-table-td-bg:     #ffffff;
+  --ed-table-sel-bg:    #e8f4f8;
+  --ed-noparse-bg:      #f5f5f5;
+  --ed-noparse-border:  #ddd;
+  --ed-noparse-color:   inherit;
+  --ed-hr-color:        #ddd;
+
+  // Dark mode overrides
+  &[data-theme="dark"] {
+    --ed-bg:              #1b2838;
+    --ed-border:          #3d4f5c;
+    --ed-shadow:          rgba(0, 0, 0, 0.45);
+
+    --ed-modebar-bg:      #16202d;
+    --ed-modebar-border:  #2a3a4a;
+    --ed-modebar-label:   #6a8099;
+
+    --ed-btn-bg:          #1e2d3d;
+    --ed-btn-border:      #2e4055;
+    --ed-btn-color:       #8099b0;
+    --ed-btn-hover-bg:    #253445;
+    --ed-btn-hover-border:#5aa9d6;
+    --ed-btn-hover-color: #c1dbf4;
+
+    --ed-help-hover-color:#5aa9d6;
+
+    --ed-content-bg:      #1b2838;
+    --ed-content-color:   #c6d4df;
+    --ed-placeholder:     rgba(128, 145, 162, 0.4);
+
+    --ed-markup-bg:       #111923;
+    --ed-markup-bg-focus: #16202d;
+    --ed-markup-color:    #c6d4df;
+    --ed-markup-placeholder: rgba(128, 145, 162, 0.4);
+
+    --ed-table-border:    #2e4055;
+    --ed-table-th-bg:     #1e2d3d;
+    --ed-table-td-bg:     #16202d;
+    --ed-table-sel-bg:    rgba(90, 169, 214, 0.12);
+    --ed-noparse-bg:      #111923;
+    --ed-noparse-border:  #2e4055;
+    --ed-noparse-color:   #8ba7bf;
+    --ed-hr-color:        #2e4055;
+  }
+}
+
+.editor__root {
+  background-color: var(--ed-bg);
   box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.16),
-    0 3px 6px rgba(0, 0, 0, 0.24);
+    0 2px 4px var(--ed-shadow),
+    0 3px 6px var(--ed-shadow);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
   display: grid;
   font-size: 18px;
   grid-row: 2;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;
   grid-template-columns: 100%;
   max-width: master.$breakpoint-large;
   min-height: 430px;
@@ -243,7 +328,6 @@
 
 .tiptap {
   height: 100%;
-  margin: 1.5rem;
 
   &:focus {
     outline: none;
@@ -346,6 +430,9 @@
   min-height: 40vh;
   padding: 1.5rem;
   outline: none;
+  background: var(--ed-content-bg);
+  color: var(--ed-content-color);
+  transition: background 0.2s ease, color 0.2s ease;
   
   &:focus {
     outline: none;
@@ -368,13 +455,15 @@
   }
 
   .noparse {
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
+    background-color: var(--ed-noparse-bg);
+    border: 1px solid var(--ed-noparse-border);
+    color: var(--ed-noparse-color);
     padding: 0.5rem;
     margin: 0.5rem 0;
     border-radius: 4px;
     font-family: monospace;
     white-space: pre-wrap;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 
   .quote {
@@ -399,27 +488,28 @@
 
     th,
     td {
-      border: 1px solid #ddd;
+      border: 1px solid var(--ed-table-border);
       padding: 0.5rem;
       text-align: left;
       min-width: 50px;
       position: relative;
+      transition: background 0.2s ease, border-color 0.2s ease;
     }
 
     th {
-      background-color: #f5f5f5;
+      background-color: var(--ed-table-th-bg);
       font-weight: bold;
     }
     
     td {
-      background-color: #fff;
+      background-color: var(--ed-table-td-bg);
     }
     
     // Make table cells easier to see and edit
     th,
     td {
       &:hover {
-        background-color: #e8f4f8;
+        background-color: var(--ed-table-sel-bg);
         outline: 2px solid #4a90e2;
         outline-offset: -1px;
       }
@@ -427,7 +517,7 @@
     
     // Selected cell
     .selectedCell {
-      background-color: #e8f4f8;
+      background-color: var(--ed-table-sel-bg);
       outline: 2px solid #4a90e2;
       outline-offset: -1px;
     }
@@ -443,12 +533,13 @@
 
     th,
     td {
-      border: 2px solid #ddd;
+      border: 2px solid var(--ed-table-border);
       padding: 0.5rem;
       text-align: left;
       vertical-align: top;
       position: relative;
       min-width: 100px;
+      transition: background 0.2s ease, border-color 0.2s ease;
       
       > * {
         margin-bottom: 0;
@@ -456,13 +547,13 @@
     }
 
     th {
-      background-color: #f5f5f5;
+      background-color: var(--ed-table-th-bg);
       font-weight: bold;
       text-align: left;
     }
     
     td {
-      background-color: #fff;
+      background-color: var(--ed-table-td-bg);
     }
     
     .selectedCell {
@@ -506,8 +597,9 @@
 
   hr {
     border: none;
-    border-top: 2px solid #ddd;
+    border-top: 2px solid var(--ed-hr-color);
     margin: 1.5rem 0;
+    transition: border-color 0.2s ease;
   }
 }
 
@@ -519,6 +611,35 @@
   padding: 0.25rem;
   gap: 0.25rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+  .tooltip-wrapper {
+    position: relative;
+    display: flex;
+
+    &:hover .action-tooltip {
+      opacity: 1;
+      transform: translateY(0) translateX(-50%);
+    }
+  }
+
+  .action-tooltip {
+    background: #333;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 500;
+    left: 50%;
+    opacity: 0;
+    padding: 0.25rem 0.55rem;
+    pointer-events: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    transform: translateY(4px) translateX(-50%);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    white-space: nowrap;
+    z-index: 200;
+  }
 
   .bubble-menu-button {
     display: flex;
@@ -551,16 +672,63 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.35rem 0.75rem;
-  background: #f0f0f0;
-  border-bottom: 1px solid #e0e0e0;
+  background: var(--ed-modebar-bg);
+  border-bottom: 1px solid var(--ed-modebar-border);
+  transition: background 0.2s ease, border-color 0.2s ease;
 
   .editor-mode-label {
     font-size: 0.7rem;
     font-weight: 600;
-    color: #888;
+    color: var(--ed-modebar-label);
     text-transform: uppercase;
     letter-spacing: 0.06em;
     user-select: none;
+    transition: color 0.2s ease;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .tooltip-wrapper {
+    position: relative;
+
+    &:hover .action-tooltip {
+      opacity: 1;
+      transform: translateY(0) translateX(-50%);
+    }
+
+    // Keep rightmost tooltip (Guide) from clipping
+    &:last-child .action-tooltip {
+      left: auto;
+      right: 0;
+      transform: translateY(-4px);
+    }
+
+    &:last-child:hover .action-tooltip {
+      transform: translateY(0);
+    }
+  }
+
+  .action-tooltip {
+    background: #333;
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 500;
+    left: 50%;
+    opacity: 0;
+    padding: 0.25rem 0.55rem;
+    pointer-events: none;
+    position: absolute;
+    bottom: calc(100% + 6px);
+    transform: translateY(4px) translateX(-50%);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    white-space: nowrap;
+    z-index: 10;
   }
 
   .mode-switch-btn {
@@ -568,10 +736,10 @@
     align-items: center;
     gap: 5px;
     padding: 4px 10px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--ed-btn-border);
     border-radius: 4px;
-    background: #fff;
-    color: #555;
+    background: var(--ed-btn-bg);
+    color: var(--ed-btn-color);
     font-size: 12px;
     font-weight: 500;
     cursor: pointer;
@@ -580,9 +748,9 @@
     line-height: 1;
 
     &:hover {
-      background: #e8e8e8;
-      border-color: #999;
-      color: #333;
+      background: var(--ed-btn-hover-bg);
+      border-color: var(--ed-btn-hover-border);
+      color: var(--ed-btn-hover-color);
     }
 
     &:active {
@@ -591,6 +759,32 @@
 
     span {
       user-select: none;
+    }
+  }
+
+  .help-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: 1px solid var(--ed-btn-border);
+    border-radius: 4px;
+    background: var(--ed-btn-bg);
+    color: var(--ed-btn-color);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 0;
+    flex-shrink: 0;
+
+    &:hover {
+      background: var(--ed-btn-hover-bg);
+      border-color: var(--ed-btn-hover-border);
+      color: var(--ed-help-hover-color);
+    }
+
+    &:active {
+      transform: scale(0.97);
     }
   }
 }
@@ -613,18 +807,19 @@
       "Consolas", "Liberation Mono", "Menlo", monospace;
     font-size: 14px;
     line-height: 1.7;
-    color: #2d2d2d;
-    background: #fafafa;
+    color: var(--ed-markup-color);
+    background: var(--ed-markup-bg);
     tab-size: 4;
     white-space: pre-wrap;
     word-wrap: break-word;
+    transition: background 0.2s ease, color 0.2s ease;
 
     &::placeholder {
-      color: #bbb;
+      color: var(--ed-markup-placeholder);
     }
 
     &:focus {
-      background: #fff;
+      background: var(--ed-markup-bg-focus);
     }
   }
 }

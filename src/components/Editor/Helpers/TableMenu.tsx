@@ -18,7 +18,6 @@ const TableMenuButton: React.FC<TableMenuButtonProps> = ({ onClick, disabled, to
     </button>
   );
 
-  // Wrap with tooltip if tooltip text is provided
   if (tooltip) {
     return (
       <Tooltip content={tooltip} position="top">

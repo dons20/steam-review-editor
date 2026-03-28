@@ -1,46 +1,74 @@
-import React, { useEffect, useState, useContext, useCallback } from "react";
+import React, { useEffect, useRef, useState, useContext, useCallback } from "react";
+import { toast } from "react-toastify";
 import { AppContext, type AppContextType } from "components/Content";
 import { htmlToSteamBBCode, cleanBBCode } from "util/htmlToSteamBBCode";
 import { steamBBCodeToHtml } from "util/steamBBCodeToHtml";
-import { ArrowLeftRight } from "lucide-react";
+import { ArrowLeftRight, CircleHelp } from "lucide-react";
 import TiptapEditor from "./BaseEditor";
+import HelpModal from "components/HelpModal";
+import { useModalTheme } from "util/ThemeContext";
 
 export type EditorMode = "rich-text" | "markup";
 
 /** Defines the core editor component */
 function ReviewEditor() {
-  const [initialContent, setInitialContent] = useState<string>("");
+  // Lazy initializer — reads localStorage *before* first render so TipTap
+  // gets the saved content on mount (useEffect fires too late).
+  const [initialContent, setInitialContent] = useState<string>(() => {
+    const saved = localStorage.getItem("content");
+    if (!saved) return "";
+    try {
+      return JSON.parse(saved); // handle legacy JSON-wrapped format
+    } catch {
+      return saved;
+    }
+  });
   const [editorMode, setEditorMode] = useState<EditorMode>("rich-text");
-  const [markupText, setMarkupText] = useState<string>("");
-  const [tiptapContent, setTiptapContent] = useState<string>("");
+  const [markupText, setMarkupText] = useState<string>(() => {
+    // Also restore markup mode content if it was saved
+    return localStorage.getItem("content-markup") ?? "";
+  });
   const { setHTMLContent, notify } = useContext<AppContextType>(AppContext);
 
   // Store ref to latest HTML from TipTap for mode switching
   const latestHtmlRef = React.useRef<string>("");
 
-  // Load saved content on mount
-  useEffect(() => {
-    const savedContent = localStorage.getItem("content");
-    if (savedContent) {
-      try {
-        // Try to parse as JSON (old format)
-        const parsed = JSON.parse(savedContent);
-        setInitialContent(parsed);
-      } catch {
-        // If not JSON, use as HTML string
-        setInitialContent(savedContent);
-      }
+  // Debounce timer ref — avoids stale closures from useState
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  /** Fires debounced auto-save and shows a toast when the timer expires */
+  const scheduleAutoSave = useCallback((key: string, value: string) => {
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
     }
+    saveTimerRef.current = setTimeout(() => {
+      localStorage.setItem(key, value);
+      toast.success("Review content auto-saved", {
+        autoClose: 1800,
+        position: "bottom-right",
+        toastId: "autosave-notification",
+        hideProgressBar: true,
+      });
+    }, 2000);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+      }
+    };
   }, []);
 
   /** Handles editor updates from TipTap */
   const handleUpdate = useCallback(
     (html: string) => {
       latestHtmlRef.current = html;
-      setTiptapContent(html);
       setHTMLContent(html);
+      scheduleAutoSave("content", html);
     },
-    [setHTMLContent]
+    [setHTMLContent, scheduleAutoSave]
   );
 
   /** Toggle between modes */
@@ -51,7 +79,6 @@ function ReviewEditor() {
       setEditorMode("markup");
     } else {
       const html = steamBBCodeToHtml(markupText);
-      setTiptapContent(html);
       setInitialContent(html);
       setHTMLContent(html);
       latestHtmlRef.current = html;
@@ -67,27 +94,49 @@ function ReviewEditor() {
       // Also update the HTML content for Preview panel in real-time
       const html = steamBBCodeToHtml(value);
       setHTMLContent(html);
+      // Auto-save the raw BBCode markup
+      scheduleAutoSave("content-markup", value);
     },
-    [setHTMLContent]
+    [setHTMLContent, scheduleAutoSave]
   );
 
   const isMarkup = editorMode === "markup";
+  const [showHelp, setShowHelp] = useState(false);
+  const { modalTheme } = useModalTheme();
 
   return (
-    <div className="editor__root">
+    <div className="editor__root" data-theme={modalTheme}>
       {/* Consistent mode switch bar — always in the same spot */}
       <div className="editor-mode-bar">
         <span className="editor-mode-label">{isMarkup ? "Markup Mode" : "Rich Text Mode"}</span>
-        <button
-          type="button"
-          className="mode-switch-btn"
-          onClick={toggleMode}
-          title={isMarkup ? "Switch to Rich Text" : "Switch to Markup"}
-        >
-          <ArrowLeftRight size={14} />
-          <span>{isMarkup ? "Switch to Rich Text" : "Switch to Markup"}</span>
-        </button>
+        <div className="editor-mode-bar__actions">
+          <div className="tooltip-wrapper">
+            <button
+              type="button"
+              className="mode-switch-btn"
+              onClick={toggleMode}
+              aria-label={isMarkup ? "Switch to Rich Text" : "Switch to Markup"}
+            >
+              <ArrowLeftRight size={14} />
+              <span>{isMarkup ? "Switch to Rich Text" : "Switch to Markup"}</span>
+            </button>
+            <span className="action-tooltip">{isMarkup ? "Switch to Rich Text" : "Switch to Markup"}</span>
+          </div>
+          <div className="tooltip-wrapper">
+            <button
+              type="button"
+              className="help-btn"
+              onClick={() => setShowHelp(true)}
+              aria-label="Open guide"
+            >
+              <CircleHelp size={15} />
+            </button>
+            <span className="action-tooltip">Guide</span>
+          </div>
+        </div>
       </div>
+
+      <HelpModal open={showHelp} onClose={() => setShowHelp(false)} />
 
       {/* Rich Text Editor */}
       {!isMarkup && <TiptapEditor content={initialContent} onUpdate={handleUpdate} />}

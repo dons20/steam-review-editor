@@ -12,7 +12,7 @@
 
 .content-root {
   display: grid;
-  grid-template-rows: auto minmax(350px, 1fr) minmax(50px, auto) auto;
+  grid-template-rows: auto;
   grid-template-columns: 100%;
   justify-items: center;
   position: relative;
@@ -31,48 +31,6 @@
     width: 100%;
   }
 
-  .close {
-    cursor: pointer;
-    border: 2px solid white;
-    border-radius: 6px;
-    padding: 5px 10px;
-  }
-
-  .instructions {
-    align-items: center;
-    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
-    background: #095ea9;
-    background: linear-gradient(180deg, #095ea9 5%, #1984e1 95%);
-    border-radius: 10px;
-    color: #fff;
-    display: grid;
-    font-size: 1.25rem;
-    gap: 1rem;
-    grid-template-rows: 1fr auto;
-    justify-items: right;
-    line-height: 2rem;
-    max-width: master.$breakpoint-large;
-    padding: 1.5rem;
-    width: 100%;
-    will-change: opacity;
-    &.wide {
-      grid-template-rows: 1fr;
-      grid-template-columns: 1fr;
-      grid-template-columns: 1fr 8%;
-      justify-items: center;
-    }
-
-    &.hiding {
-      animation-name: hide;
-      animation-fill-mode: forwards;
-      animation-duration: 0.3s;
-      animation-timing-function: ease-in;
-    }
-
-    &.hidden {
-      display: none;
-    }
-  }
 
   .markupBtn,
   .previewBtn {
@@ -110,14 +68,7 @@
   }
 
   .showHelp {
-    color: #fff;
-    cursor: pointer;
-    top: 2%;
-    right: 2%;
-    justify-self: right;
-    display: grid;
-    grid-template-columns: minmax(90px, 100%);
-    justify-items: center;
+    display: none;
   }
 }
 

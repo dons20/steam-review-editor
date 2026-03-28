@@ -1,7 +1,8 @@
 import React, { Suspense } from "react";
 import { Header, Content, Footer } from "./components";
 import useEnableHover from "./util/useEnableHover";
-import { toast, Flip } from "react-toastify";
+import { toast, Flip, ToastContainer } from "react-toastify";
+import { ThemeProvider } from "./util/ThemeContext";
 
 /** Styling */
 import classes from "./App.module.scss";
@@ -25,13 +26,16 @@ function App() {
   };
 
   return (
-    <div className={classes.root}>
-      <Header />
-      <Suspense fallback={<div>Editor is now loading...</div>}>
-        <Content notify={notify} />
-      </Suspense>
-      <Footer />
-    </div>
+    <ThemeProvider>
+      <div className={classes.root}>
+        <Header />
+        <Suspense fallback={<div>Editor is now loading...</div>}>
+          <Content notify={notify} />
+        </Suspense>
+        <Footer />
+        <ToastContainer />
+      </div>
+    </ThemeProvider>
   );
 }
 

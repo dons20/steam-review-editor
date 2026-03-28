@@ -1,11 +1,12 @@
 .editor-toolbar-header {
-  border-bottom: 2px solid #eee;
+  border-bottom: 2px solid var(--ed-border);
   position: relative;
   padding: 0.5rem;
   overflow-x: auto;
   overflow-y: visible;
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+  transition: background 0.2s ease, border-color 0.2s ease;
 
   &::-webkit-scrollbar {
     height: 3px;
@@ -35,8 +36,8 @@
     position: sticky;
     grid-row: 2;
     z-index: 100;
-    background-color: #fff;
-    border-top: 2px solid #eee;
+    background-color: var(--ed-bg);
+    border-top: 2px solid var(--ed-border);
     border-bottom: none;
   }
 }
@@ -66,35 +67,19 @@
   padding: 0.5rem;
   min-width: 2rem;
   height: 2rem;
-  border: 1px solid #ccc;
-  background-color: #fff;
+  border: 1px solid var(--ed-btn-border);
+  background-color: var(--ed-btn-bg);
+  color: var(--ed-btn-color);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   font-size: 0.9rem;
   position: relative;
 
-  // Instant tooltip on hover using data-tooltip attribute
-  &[data-tooltip]:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.5rem 0.75rem;
-    background-color: #333;
-    color: #fff;
-    font-size: 0.875rem;
-    white-space: nowrap;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
-    pointer-events: none;
-    z-index: 1000;
-  }
-
   &:hover:not(:disabled) {
-    background-color: #e0e0e0;
-    border-color: #999;
+    background-color: var(--ed-btn-hover-bg);
+    border-color: var(--ed-btn-hover-border);
+    color: var(--ed-btn-hover-color);
   }
 
   &:disabled {
@@ -121,16 +106,17 @@
 .toolbar-divider {
   width: 1px;
   height: 1.5rem;
-  background-color: #ccc;
+  background-color: var(--ed-border);
   margin: 0 0.25rem;
+  transition: background-color 0.2s ease;
 }
 
 // Table menu styles
 .table-menu {
   display: flex;
   gap: 0.25rem;
-  background-color: #fff;
-  border: 1px solid #ccc;
+  background-color: var(--ed-btn-bg);
+  border: 1px solid var(--ed-btn-border);
   border-radius: 6px;
   padding: 0.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -143,34 +129,18 @@
   padding: 0.5rem;
   min-width: 2rem;
   height: 2rem;
-  border: 1px solid #ccc;
-  background-color: #fff;
+  border: 1px solid var(--ed-btn-border);
+  background-color: var(--ed-btn-bg);
+  color: var(--ed-btn-color);
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
 
-  // Tooltip for table menu buttons
-  &[data-tooltip]:hover::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 0.25rem 0.5rem;
-    background-color: #333;
-    color: #fff;
-    font-size: 0.75rem;
-    white-space: nowrap;
-    border-radius: 4px;
-    margin-bottom: 0.25rem;
-    pointer-events: none;
-    z-index: 1000;
-  }
-
   &:hover:not(:disabled) {
-    background-color: #e0e0e0;
-    border-color: #999;
+    background-color: var(--ed-btn-hover-bg);
+    border-color: var(--ed-btn-hover-border);
+    color: var(--ed-btn-hover-color);
   }
 
   &:disabled {

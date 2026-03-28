@@ -13,7 +13,6 @@ import TiptapUnderline from "@tiptap/extension-underline";
 import TiptapLink from "@tiptap/extension-link";
 import { Bold, Italic, Underline, Strikethrough, Link } from "lucide-react";
 import { toast } from "react-toastify";
-import Tooltip from "components/Tooltip";
 import { Toolbar, TableMenu } from "./Helpers";
 import { Spoiler, NoParse, Quote } from "./extensions";
 import { steamBBCodeToHtml, containsSteamBBCode } from "util/steamBBCodeToHtml";
@@ -149,7 +148,7 @@ const BubbleMenuContent = () => {
 
   return (
     <div className="bubble-menu">
-      <Tooltip content="Bold">
+      <div className="tooltip-wrapper">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -157,8 +156,9 @@ const BubbleMenuContent = () => {
         >
           <Bold size={16} />
         </button>
-      </Tooltip>
-      <Tooltip content="Italic">
+        <span className="action-tooltip">Bold</span>
+      </div>
+      <div className="tooltip-wrapper">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
@@ -166,8 +166,9 @@ const BubbleMenuContent = () => {
         >
           <Italic size={16} />
         </button>
-      </Tooltip>
-      <Tooltip content="Underline">
+        <span className="action-tooltip">Italic</span>
+      </div>
+      <div className="tooltip-wrapper">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
@@ -175,8 +176,9 @@ const BubbleMenuContent = () => {
         >
           <Underline size={16} />
         </button>
-      </Tooltip>
-      <Tooltip content="Strikethrough">
+        <span className="action-tooltip">Underline</span>
+      </div>
+      <div className="tooltip-wrapper">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
@@ -184,8 +186,9 @@ const BubbleMenuContent = () => {
         >
           <Strikethrough size={16} />
         </button>
-      </Tooltip>
-      <Tooltip content="Link">
+        <span className="action-tooltip">Strikethrough</span>
+      </div>
+      <div className="tooltip-wrapper">
         <button
           type="button"
           onClick={addLink}
@@ -193,7 +196,8 @@ const BubbleMenuContent = () => {
         >
           <Link size={16} />
         </button>
-      </Tooltip>
+        <span className="action-tooltip">Link</span>
+      </div>
     </div>
   );
 };
@@ -204,48 +208,29 @@ interface BaseEditorProps {
 }
 
 const BaseEditor = ({ content, onUpdate }: BaseEditorProps) => {
-  const [saveTimer, setSaveTimer] = React.useState<NodeJS.Timeout | null>(null);
-
   const handleUpdate = ({ editor }: { editor: any }) => {
     const html = editor.getHTML();
 
-    // Call parent onUpdate immediately for preview
+    // Propagate to parent (which handles preview + auto-save)
     if (onUpdate) {
       onUpdate(html);
     }
-
-    // Debounced autosave to localStorage
-    if (saveTimer) {
-      clearTimeout(saveTimer);
-    }
-
-    const timer = setTimeout(() => {
-      localStorage.setItem("content", html);
-
-      toast.info("Content auto-saved", {
-        autoClose: 2000,
-        position: "bottom-right",
-        toastId: "autosave-notification",
-        hideProgressBar: true,
-      });
-    }, 3000);
-
-    setSaveTimer(timer);
   };
 
-  // Save on unmount
-  React.useEffect(() => {
-    return () => {
-      if (saveTimer) {
-        clearTimeout(saveTimer);
-      }
-    };
-  }, [saveTimer]);
+  // Fire once after mount so the preview is populated from restored content
+  // without requiring the user to make an edit first.
+  const handleCreate = ({ editor }: { editor: any }) => {
+    const html = editor.getHTML();
+    if (onUpdate && html && html !== "<p></p>") {
+      onUpdate(html);
+    }
+  };
 
   return (
     <EditorProvider
       extensions={extensions}
       content={content}
+      onCreate={handleCreate}
       onUpdate={handleUpdate}
       slotBefore={
         <div className="editor-toolbar-header">

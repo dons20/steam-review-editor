@@ -12,13 +12,13 @@ function Footer() {
       <div className={classes.iconRow}>
         <Tooltip content="X / Twitter" position="top">
           <a href="http://twitter.com/kcinnovations" target="_none" rel="noopener noreferrer">
-            <IconBrandX width={48} height={48} className={classes.icon} />
+            <IconBrandX width={36} height={36} className={classes.icon} />
           </a>
         </Tooltip>
         <Tooltip content="GitHub" position="top">
-          <a href="https://github.com/dons20/Steam-Review-Editor" target="_none" rel="noopener noreferrer">
+          <a href="https://github.com/dons20/steam-review-editor" target="_none" rel="noopener noreferrer">
             <IconStack
-              size={48}
+              size={36}
               layers={[
                 { Icon: IconCircle, scale: 1 },
                 { Icon: IconBrandGithub, scale: 0.6 },
@@ -29,7 +29,7 @@ function Footer() {
         </Tooltip>
         <Tooltip content="Changelog" position="top">
           <a href="https://github.com/dons20/steam-review-editor/releases" target="_blank" rel="noopener noreferrer">
-            <IconClipboardList width={48} height={48} className={classes.icon} />
+            <IconClipboardList width={36} height={36} className={classes.icon} />
           </a>
         </Tooltip>
       </div>
