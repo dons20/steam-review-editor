@@ -52,7 +52,6 @@
     "@vitejs/plugin-react": "^6.0.1",
     "axios": "^1.14.0",
     "classnames": "^2.5.1",
-    "editorjs-html": "^4.0.5",
     "is-image": "^4.0.0",
     "is-url": "^1.2.4",
     "lucide-react": "^1.7.0",
