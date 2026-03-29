@@ -1,0 +1,239 @@
+@use "../../assets/styles/master";
+
+// ── Theme variables ─────────────────────────────────────────────────────────
+// Defaults: light (this modal was light originally)
+.help-modal-overlay {
+  --hm-bg:          #ffffff;
+  --hm-border:      #e8e8e8;
+  --hm-header-border: #eee;
+  --hm-title:       #1a1a2e;
+  --hm-body-text:   #555;
+  --hm-heading:     #1a1a2e;
+  --hm-accent:      #095ea9;
+  --hm-accent-text: #095ea9;
+  --hm-icon-grad-a: #095ea9;
+  --hm-icon-grad-b: #1984e1;
+  --hm-close-hover-bg: #f0f0f0;
+  --hm-close-hover-color: #333;
+  --hm-section-hover: #f8f9ff;
+  --hm-em:          #777;
+  --hm-footer-border: #eee;
+  --hm-btn-bg:      #0275d8;
+  --hm-btn-hover:   #0267be;
+  --hm-btn-color:   #fff;
+  --hm-shadow:      rgba(0, 0, 0, 0.25);
+
+  // ── Dark mode overrides ────────────────────────────────────────────────────
+  &[data-theme="dark"] {
+    --hm-bg:          #1b2838;
+    --hm-border:      #3d4f5c;
+    --hm-header-border: rgba(61, 79, 92, 0.7);
+    --hm-title:       #c1dbf4;
+    --hm-body-text:   #8091a2;
+    --hm-heading:     #c1dbf4;
+    --hm-accent:      #5aa9d6;
+    --hm-accent-text: #5aa9d6;
+    --hm-icon-grad-a: #1b3a58;
+    --hm-icon-grad-b: #1e5280;
+    --hm-close-hover-bg: rgba(255, 255, 255, 0.08);
+    --hm-close-hover-color: #c1dbf4;
+    --hm-section-hover: rgba(90, 169, 214, 0.06);
+    --hm-em:          #8091a2;
+    --hm-footer-border: rgba(61, 79, 92, 0.7);
+    --hm-btn-bg:      #0275d8;
+    --hm-btn-hover:   #0267be;
+    --hm-btn-color:   #fff;
+    --hm-shadow:      rgba(0, 0, 0, 0.55);
+  }
+}
+
+// ── Overlay ─────────────────────────────────────────────────────────────────
+.help-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: hm-overlay-in 0.18s ease;
+}
+
+@keyframes hm-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// ── Modal card ─────────────────────────────────────────────────────────────
+.help-modal {
+  background: var(--hm-bg);
+  border: 1px solid var(--hm-border);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px var(--hm-shadow);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  width: min(680px, calc(100vw - 2rem));
+  animation: hm-modal-slide-in 0.2s ease;
+  overflow: hidden;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+@keyframes hm-modal-slide-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+// ── Header ─────────────────────────────────────────────────────────────────
+.help-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--hm-header-border);
+  flex-shrink: 0;
+}
+
+.help-modal__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--hm-title);
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.help-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: var(--hm-close-hover-bg);
+    color: var(--hm-close-hover-color);
+  }
+}
+
+// ── Body ───────────────────────────────────────────────────────────────────
+.help-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+// ── Section rows ───────────────────────────────────────────────────────────
+.help-section {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--hm-section-hover);
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--hm-icon-grad-a), var(--hm-icon-grad-b));
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: background 0.2s ease;
+  }
+
+  &__content {
+    flex: 1;
+
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--hm-heading);
+      margin: 0 0 0.3rem;
+      transition: color 0.2s ease;
+    }
+
+    p {
+      font-size: 0.88rem;
+      color: var(--hm-body-text);
+      line-height: 1.6;
+      margin: 0;
+      transition: color 0.2s ease;
+    }
+
+    strong {
+      color: var(--hm-accent-text);
+      font-weight: 600;
+      transition: color 0.2s ease;
+    }
+
+    em {
+      color: var(--hm-em);
+      transition: color 0.2s ease;
+    }
+  }
+}
+
+// ── Footer ─────────────────────────────────────────────────────────────────
+.help-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--hm-footer-border);
+  flex-shrink: 0;
+}
+
+.help-modal__done-btn {
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--hm-btn-bg);
+  color: var(--hm-btn-color);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.12s ease;
+
+  &:hover {
+    background: var(--hm-btn-hover);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// ── Mobile ─────────────────────────────────────────────────────────────────
+@media (max-width: 480px) {
+  .help-modal {
+    max-height: 95vh;
+    width: calc(100vw - 1rem);
+    border-radius: 10px 10px 0 0;
+    align-self: flex-end;
+  }
+
+  .help-section {
+    gap: 0.75rem;
+
+    &__icon {
+      width: 34px;
+      height: 34px;
+    }
+  }
+}

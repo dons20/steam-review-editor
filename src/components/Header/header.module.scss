@@ -1,0 +1,77 @@
+@use "../../assets/styles/master";
+
+.main {
+  background-color: #171a21;
+  color: #eee;
+  cursor: default;
+  font-variant: small-caps;
+  font-size: 1.5rem;
+  padding: 1.5rem 1.5rem;
+  text-shadow: 1px 1px 10px #222;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  @media (max-width: master.$breakpoint-medium) {
+    justify-content: flex-start;
+  }
+}
+
+.title {
+  align-items: center;
+  display: flex;
+  font-weight: bold;
+  justify-content: center;
+  letter-spacing: 5px;
+  line-height: 100%;
+}
+
+.themeToggle {
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-variant: normal;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  padding: 0.35rem 0.65rem;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
+
+.themeLabel {
+  font-variant: normal;
+}
+
+@media only screen and (min-width: master.$breakpoint-small) {
+  .main {
+    font-size: 3rem;
+    padding: 2rem 1.5rem;
+  }
+}
+
+@media only screen and (max-width: master.$breakpoint-medium) {
+  .themeLabel {
+    display: none;
+  }
+
+  .themeToggle {
+    padding: 0.35rem 0.5rem;
+  }
+}

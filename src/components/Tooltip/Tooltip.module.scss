@@ -1,0 +1,32 @@
+.tooltip {
+  position: fixed;
+  z-index: 10000;
+  pointer-events: none;
+  // Both opacity and transform are animated together via inline styles
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  will-change: opacity, transform;
+}
+
+.tooltipContent {
+  background-color: #333;
+  color: #fff;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  max-width: 300px;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+// Mobile adjustments
+@media (max-width: 768px) {
+  .tooltipContent {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.45rem;
+    max-width: 240px;
+  }
+}

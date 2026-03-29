@@ -1,0 +1,167 @@
+.editor-toolbar-header {
+  border-bottom: 2px solid var(--ed-border);
+  position: relative;
+  padding: 0.5rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+  transition: background 0.2s ease, border-color 0.2s ease;
+
+  &::-webkit-scrollbar {
+    height: 3px;
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.35);
+  }
+
+  &::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  // Mobile: sticky at bottom when scrolled past editor
+  @media (max-width: 768px) {
+    position: sticky;
+    grid-row: 2;
+    z-index: 100;
+    background-color: var(--ed-bg);
+    border-top: 2px solid var(--ed-border);
+    border-bottom: none;
+  }
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  background-color: transparent;
+  border-bottom: none;
+  align-items: center;
+  min-width: min-content;
+  justify-content: center;
+}
+
+.toolbar-group {
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.toolbar-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  min-width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--ed-btn-border);
+  background-color: var(--ed-btn-bg);
+  color: var(--ed-btn-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  position: relative;
+
+  &:hover:not(:disabled) {
+    background-color: var(--ed-btn-hover-bg);
+    border-color: var(--ed-btn-hover-border);
+    color: var(--ed-btn-hover-color);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.is-active {
+    background-color: var(--accent-color);
+    color: #fff;
+    border-color: #357abd;
+
+    &:hover {
+      background-color: #357abd;
+    }
+  }
+
+  .heading-level {
+    font-size: 0.75rem;
+    font-weight: bold;
+  }
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 1.5rem;
+  background-color: var(--ed-border);
+  margin: 0 0.25rem;
+  transition: background-color 0.2s ease;
+}
+
+// Table menu styles
+.table-menu {
+  display: flex;
+  gap: 0.25rem;
+  background-color: var(--ed-btn-bg);
+  border: 1px solid var(--ed-btn-border);
+  border-radius: 6px;
+  padding: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.table-menu-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  min-width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--ed-btn-border);
+  background-color: var(--ed-btn-bg);
+  color: var(--ed-btn-color);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+
+  &:hover:not(:disabled) {
+    background-color: var(--ed-btn-hover-bg);
+    border-color: var(--ed-btn-hover-border);
+    color: var(--ed-btn-hover-color);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &.is-active {
+    background-color: var(--accent-color);
+    color: #fff;
+    border-color: #357abd;
+
+    &:hover {
+      background-color: #357abd;
+    }
+  }
+}
+
+.table-menu-divider {
+  width: 1px;
+  align-self: stretch;
+  background-color: var(--ed-border);
+  margin: 0 0.25rem;
+}

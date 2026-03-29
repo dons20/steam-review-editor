@@ -1,0 +1,132 @@
+@use "assets/styles/master";
+
+.root {
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: auto 1fr minmax(150px, 180px);
+  min-height: 100vh;
+  width: 100%;
+}
+
+.toast {
+  background: #047a08 !important;
+}
+
+.modalOverlay {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: grid;
+  justify-items: center;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: 2rem;
+  position: fixed;
+  z-index: 2000;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+
+  &.afterOpen {
+    opacity: 1;
+  }
+
+  &.beforeClose {
+    opacity: 0;
+  }
+
+  .modal {
+    background-color: #fff;
+    border-radius: 10px;
+    margin: auto;
+    padding: 1rem;
+    max-height: 800px;
+    max-width: 800px;
+    overflow: auto;
+    height: 100%;
+    width: 100%;
+
+    .close {
+      background-color: #333;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 2.5em;
+      font-weight: bolder;
+      position: absolute;
+      width: 1.3em;
+      height: 1.3em;
+      top: 2vw;
+      right: 2vw;
+      transition: background-color 0.1s ease-in-out;
+      &:hover {
+        background-color: #555;
+      }
+    }
+  }
+}
+
+/* ── Skeleton loader (shown during lazy Content load) ── */
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+$skeleton-bg: rgba(255, 255, 255, 0.04);
+$skeleton-shine: linear-gradient(
+  90deg,
+  rgba(255, 255, 255, 0.02) 25%,
+  rgba(255, 255, 255, 0.08) 50%,
+  rgba(255, 255, 255, 0.02) 75%
+);
+
+.skeleton {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 100%;
+  justify-items: center;
+  row-gap: 1rem;
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+.skeletonBar {
+  width: 100%;
+  max-width: master.$breakpoint-large;
+  height: 38px;
+  border-radius: 6px;
+  background: $skeleton-bg;
+  background-image: $skeleton-shine;
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.skeletonEditor {
+  width: 100%;
+  max-width: master.$breakpoint-large;
+  height: 300px;
+  border-radius: 6px;
+  background: $skeleton-bg;
+  background-image: $skeleton-shine;
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  animation-delay: 0.15s;
+}
+
+.skeletonButtons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  width: 100%;
+  max-width: master.$breakpoint-large;
+}
+
+.skeletonBtn {
+  height: 44px;
+  border-radius: 5px;
+  background: $skeleton-bg;
+  background-image: $skeleton-shine;
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  animation-delay: 0.3s;
+}

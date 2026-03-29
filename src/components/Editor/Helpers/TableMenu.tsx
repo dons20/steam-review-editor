@@ -1,0 +1,100 @@
+import { useCurrentEditor, useEditorState } from "@tiptap/react";
+import { BubbleMenu, BubbleMenuProps } from "@tiptap/react/menus";
+import {
+  IconTablePlus,
+  IconTableMinus,
+  IconTableDown,
+  IconTableUp,
+  IconTrash,
+  IconTableHeader,
+} from "components/Icons";
+import Tooltip from "components/Tooltip";
+import { useEditorReady } from "../useEditorReady";
+import "./toolbar.scss";
+
+interface TableMenuButtonProps {
+  onClick: () => void;
+  disabled?: boolean;
+  active?: boolean;
+  tooltip?: string;
+  children: React.ReactNode;
+}
+
+const TableMenuButton: React.FC<TableMenuButtonProps> = ({ onClick, disabled, active, tooltip, children }) => {
+  const button = (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`table-menu-button${active ? " is-active" : ""}`}
+    >
+      {children}
+    </button>
+  );
+
+  if (tooltip) {
+    return (
+      <Tooltip content={tooltip} position="top">
+        {button}
+      </Tooltip>
+    );
+  }
+
+  return button;
+};
+
+export const TableMenu: React.FC = () => {
+  const { editor } = useCurrentEditor();
+  const ready = useEditorReady();
+
+  const shouldShow: BubbleMenuProps["shouldShow"] = ({ editor, state }) => {
+    const isInTable = editor.isActive("tableCell") || editor.isActive("tableHeader");
+    const hasTextSelection = !state.selection.empty;
+
+    return isInTable && !hasTextSelection;
+  };
+
+  const { isHeaderActive } = useEditorState({
+    editor,
+    selector: ({ editor }) => ({
+      isHeaderActive: editor.isActive("tableHeader"),
+    }),
+  });
+
+  if (!ready || !editor) {
+    return null;
+  }
+
+  return (
+    <BubbleMenu editor={editor} pluginKey="tableMenu" shouldShow={shouldShow} updateDelay={0}>
+      <div className="table-menu">
+        <TableMenuButton onClick={() => editor.chain().focus().addRowBefore().run()} tooltip="Add Row Above">
+          <IconTableUp />
+        </TableMenuButton>
+        <TableMenuButton onClick={() => editor.chain().focus().addRowAfter().run()} tooltip="Add Row Below">
+          <IconTableDown />
+        </TableMenuButton>
+        <TableMenuButton onClick={() => editor.chain().focus().deleteRow().run()} tooltip="Delete Row">
+          <IconTableMinus />
+        </TableMenuButton>
+        <TableMenuButton onClick={() => editor.chain().focus().addColumnAfter().run()} tooltip="Add Column">
+          <IconTablePlus />
+        </TableMenuButton>
+        <TableMenuButton onClick={() => editor.chain().focus().deleteColumn().run()} tooltip="Delete Column">
+          <IconTableMinus />
+        </TableMenuButton>
+        <div className="table-menu-divider" />
+        <TableMenuButton
+          onClick={() => editor.chain().focus().toggleHeaderRow().run()}
+          active={isHeaderActive}
+          tooltip={isHeaderActive ? "Remove Header Row" : "Add Header Row"}
+        >
+          <IconTableHeader />
+        </TableMenuButton>
+        <TableMenuButton onClick={() => editor.chain().focus().deleteTable().run()} tooltip="Delete Table">
+          <IconTrash />
+        </TableMenuButton>
+      </div>
+    </BubbleMenu>
+  );
+};

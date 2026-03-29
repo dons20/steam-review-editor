@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "types": ["vite/client", "vitest/globals", "node", "react"],
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "module": "es2022",
+    "moduleResolution": "Bundler",
+    "jsx": "preserve",
+    "target": "ESNext",
+    "paths": {
+      "@/*": ["./src"],
+      "*": ["./src/*"]
+    },
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "skipLibCheck": true
+  },
+  "typeAcquisition": { "enable": true },
+  "exclude": ["node_modules", "**/node_modules/*"]
+}
