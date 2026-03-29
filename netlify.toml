@@ -1,0 +1,4 @@
+[[redirects]]
+    from = "/steam-review-editor/*"
+    to = "https://projects.claytoninnovations.com/:splat"
+    status = 200
