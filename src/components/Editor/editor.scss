@@ -428,6 +428,10 @@
     float: left;
     height: 0;
     pointer-events: none;
+
+    [data-theme="dark"] & {
+      color: var(--light-gray);
+    }
   }
 }
 
