@@ -2,7 +2,13 @@ import React, { useState, useContext, useEffect } from "react";
 import { User, Settings, Shuffle } from "lucide-react";
 import { IconRecommended, IconNotRecommended, IconStar } from "components/Icons";
 import { AppContext } from "../Content";
-import { PreviewSettingsModal, PreviewSettings, randomizeSettings } from "./PreviewSettingsModal";
+import type { PreviewSettings } from "./PreviewSettingsModal";
+import { randomizeSettings } from "./previewUtils";
+
+/** Lazy-loaded: only fetched when user opens the settings modal */
+const PreviewSettingsModal = React.lazy(() =>
+  import("./PreviewSettingsModal").then(m => ({ default: m.PreviewSettingsModal }))
+);
 
 import "./preview.scss";
 
@@ -131,15 +137,17 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
         </pre>
       </div>
 
-      <PreviewSettingsModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        settings={settings}
-        onChange={setSettings}
-        onRandomize={() => {
-          setSettings(randomizeSettings());
-        }}
-      />
+      <React.Suspense fallback={null}>
+        <PreviewSettingsModal
+          isOpen={modalOpen}
+          onClose={() => setModalOpen(false)}
+          settings={settings}
+          onChange={setSettings}
+          onRandomize={() => {
+            setSettings(randomizeSettings());
+          }}
+        />
+      </React.Suspense>
     </div>
   );
 }

@@ -1,8 +1,11 @@
 import React, { Suspense } from "react";
-import { Header, Content, Footer, ProgressiveBackground } from "./components";
+import { Header, Footer, ProgressiveBackground } from "./components";
 import useEnableHover from "./util/useEnableHover";
 import { toast, Flip, ToastContainer } from "react-toastify";
 import { ThemeProvider } from "./util/ThemeContext";
+
+/** Lazy-loaded: splits the entire TipTap editor stack out of the initial bundle */
+const Content = React.lazy(() => import("./components/Content"));
 
 /** Styling */
 import classes from "./App.module.scss";
@@ -30,7 +33,18 @@ function App() {
       <div className={classes.root}>
         <ProgressiveBackground />
         <Header />
-        <Suspense fallback={<div>Editor is now loading...</div>}>
+        <Suspense
+          fallback={
+            <div className={classes.skeleton}>
+              <div className={classes.skeletonBar} />
+              <div className={classes.skeletonEditor} />
+              <div className={classes.skeletonButtons}>
+                <div className={classes.skeletonBtn} />
+                <div className={classes.skeletonBtn} />
+              </div>
+            </div>
+          }
+        >
           <Content notify={notify} />
         </Suspense>
         <Footer />

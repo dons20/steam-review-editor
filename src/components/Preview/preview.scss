@@ -339,6 +339,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     display: grid;
     grid-template-rows: auto 1fr;
     font-family: $primary-font;
+    font-display: swap;
     font-size: 1rem;
     line-height: 1.7rem;
     white-space: pre-line;

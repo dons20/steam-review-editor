@@ -9,6 +9,7 @@ import {
   IconTableHeader,
 } from "components/Icons";
 import Tooltip from "components/Tooltip";
+import { useEditorReady } from "../useEditorReady";
 import "./toolbar.scss";
 
 interface TableMenuButtonProps {
@@ -44,10 +45,7 @@ const TableMenuButton: React.FC<TableMenuButtonProps> = ({ onClick, disabled, ac
 
 export const TableMenu: React.FC = () => {
   const { editor } = useCurrentEditor();
-
-  if (!editor) {
-    return null;
-  }
+  const ready = useEditorReady();
 
   const shouldShow: BubbleMenuProps["shouldShow"] = ({ editor, state }) => {
     const isInTable = editor.isActive("tableCell") || editor.isActive("tableHeader");
@@ -62,6 +60,10 @@ export const TableMenu: React.FC = () => {
       isHeaderActive: editor.isActive("tableHeader"),
     }),
   });
+
+  if (!ready || !editor) {
+    return null;
+  }
 
   return (
     <BubbleMenu editor={editor} pluginKey="tableMenu" shouldShow={shouldShow} updateDelay={0}>

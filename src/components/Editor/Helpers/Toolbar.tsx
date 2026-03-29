@@ -44,6 +44,7 @@ import {
   clearFormatting,
 } from "./tools";
 import "./toolbar.scss";
+import { useEditorReady } from "../useEditorReady";
 
 interface ToolbarButtonProps {
   onClick: () => void;
@@ -80,8 +81,9 @@ const ToolbarDivider = () => <div className="toolbar-divider" />;
 
 export const Toolbar: React.FC = () => {
   const { editor } = useCurrentEditor();
+  const ready = useEditorReady();
   const { prompt } = usePrompt();
-  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   const handleAddLink = React.useCallback(async () => {
     if (!editor) return;
@@ -95,7 +97,7 @@ export const Toolbar: React.FC = () => {
   }, [editor, prompt]);
 
   React.useEffect(() => {
-    if (!editor) {
+    if (!editor || !ready) {
       return;
     }
 
@@ -116,9 +118,9 @@ export const Toolbar: React.FC = () => {
       editor.off("transaction", update);
       editor.view.dom.removeEventListener("keydown", handleKeyDown);
     };
-  }, [editor, handleAddLink]);
+  }, [editor, ready, handleAddLink]);
 
-  if (!editor) {
+  if (!editor || !ready) {
     return null;
   }
 

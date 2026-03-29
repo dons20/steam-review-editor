@@ -1,13 +1,15 @@
 import { useCurrentEditor } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import { Edit2, Trash2 } from "lucide-react";
+import { useEditorReady } from "./useEditorReady";
 import { usePrompt } from "./PromptContext";
 
 const ImageBubbleMenu = () => {
   const { editor } = useCurrentEditor();
   const { prompt } = usePrompt();
+  const ready = useEditorReady();
 
-  if (!editor) return null;
+  if (!ready || !editor) return null;
 
   const handleEdit = async () => {
     const src = editor.getAttributes("image").src || "";

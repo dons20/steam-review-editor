@@ -15,6 +15,7 @@ import { steamBBCodeToHtml, containsSteamBBCode } from "util/steamBBCodeToHtml";
 import { PromptProvider, usePrompt } from "./PromptContext";
 import { Spoiler, NoParse, Quote } from "./extensions";
 import ImageBubbleMenu from "./ImageBubbleMenu";
+import { useEditorReady } from "./useEditorReady";
 import { Toolbar, TableMenu } from "./Helpers";
 import LinkBubbleMenu from "./LinkBubbleMenu";
 
@@ -119,6 +120,7 @@ const extensions = [
 const BubbleMenuContent = () => {
   const { editor } = useCurrentEditor();
   const { prompt } = usePrompt();
+  const ready = useEditorReady();
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   React.useEffect(() => {
@@ -134,7 +136,7 @@ const BubbleMenuContent = () => {
     };
   }, [editor]);
 
-  if (!editor || editor.isActive("image") || editor.isActive("link")) {
+  if (!ready || !editor || editor.isActive("image") || editor.isActive("link")) {
     return null;
   }
 

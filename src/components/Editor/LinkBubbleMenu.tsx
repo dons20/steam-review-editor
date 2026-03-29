@@ -2,11 +2,13 @@ import React, { useEffect } from "react";
 import { useCurrentEditor } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import { Edit2, Trash2, ExternalLink } from "lucide-react";
+import { useEditorReady } from "./useEditorReady";
 import { usePrompt } from "./PromptContext";
 
 const LinkBubbleMenu = () => {
   const { editor } = useCurrentEditor();
   const { prompt } = usePrompt();
+  const ready = useEditorReady();
   
   const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
 
@@ -19,7 +21,7 @@ const LinkBubbleMenu = () => {
     };
   }, [editor]);
 
-  if (!editor) return null;
+  if (!ready || !editor) return null;
 
   const isActive = editor.isActive("link");
   if (!isActive) return null;

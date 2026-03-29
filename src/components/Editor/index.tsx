@@ -4,7 +4,7 @@ import { AppContext, type AppContextType } from "components/Content";
 import { ArrowLeftRight, CircleHelp, Check } from "lucide-react";
 import { steamBBCodeToHtml } from "util/steamBBCodeToHtml";
 import { useModalTheme } from "util/ThemeContext";
-import HelpModal from "components/HelpModal";
+const HelpModal = React.lazy(() => import("components/HelpModal"));
 import TiptapEditor from "./BaseEditor";
 
 export type EditorMode = "rich-text" | "markup";
@@ -137,7 +137,9 @@ function ReviewEditor() {
         </div>
       </div>
 
-      <HelpModal open={showHelp} onClose={() => setShowHelp(false)} />
+      <React.Suspense fallback={null}>
+        <HelpModal open={showHelp} onClose={() => setShowHelp(false)} />
+      </React.Suspense>
 
       {!isMarkup && <TiptapEditor content={initialContent} onUpdate={handleUpdate} />}
 

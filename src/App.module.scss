@@ -64,3 +64,69 @@
     }
   }
 }
+
+/* ── Skeleton loader (shown during lazy Content load) ── */
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+$skeleton-bg: rgba(255, 255, 255, 0.04);
+$skeleton-shine: linear-gradient(
+  90deg,
+  rgba(255, 255, 255, 0.02) 25%,
+  rgba(255, 255, 255, 0.08) 50%,
+  rgba(255, 255, 255, 0.02) 75%
+);
+
+.skeleton {
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 100%;
+  justify-items: center;
+  row-gap: 1rem;
+  padding: 2rem 1rem;
+  width: 100%;
+}
+
+.skeletonBar {
+  width: 100%;
+  max-width: master.$breakpoint-large;
+  height: 38px;
+  border-radius: 6px;
+  background: $skeleton-bg;
+  background-image: $skeleton-shine;
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+.skeletonEditor {
+  width: 100%;
+  max-width: master.$breakpoint-large;
+  height: 300px;
+  border-radius: 6px;
+  background: $skeleton-bg;
+  background-image: $skeleton-shine;
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  animation-delay: 0.15s;
+}
+
+.skeletonButtons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  width: 100%;
+  max-width: master.$breakpoint-large;
+}
+
+.skeletonBtn {
+  height: 44px;
+  border-radius: 5px;
+  background: $skeleton-bg;
+  background-image: $skeleton-shine;
+  background-size: 800px 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+  animation-delay: 0.3s;
+}
