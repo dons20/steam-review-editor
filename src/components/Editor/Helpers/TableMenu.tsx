@@ -1,19 +1,32 @@
-import { useCurrentEditor } from "@tiptap/react";
+import { useCurrentEditor, useEditorState } from "@tiptap/react";
 import { BubbleMenu, BubbleMenuProps } from "@tiptap/react/menus";
-import { IconTablePlus, IconTableMinus, IconTableDown, IconTableUp, IconTrash } from "components/Icons";
+import {
+  IconTablePlus,
+  IconTableMinus,
+  IconTableDown,
+  IconTableUp,
+  IconTrash,
+  IconTableHeader,
+} from "components/Icons";
 import Tooltip from "components/Tooltip";
 import "./toolbar.scss";
 
 interface TableMenuButtonProps {
   onClick: () => void;
   disabled?: boolean;
+  active?: boolean;
   tooltip?: string;
   children: React.ReactNode;
 }
 
-const TableMenuButton: React.FC<TableMenuButtonProps> = ({ onClick, disabled, tooltip, children }) => {
+const TableMenuButton: React.FC<TableMenuButtonProps> = ({ onClick, disabled, active, tooltip, children }) => {
   const button = (
-    <button type="button" onClick={onClick} disabled={disabled} className="table-menu-button">
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`table-menu-button${active ? " is-active" : ""}`}
+    >
       {children}
     </button>
   );
@@ -37,15 +50,18 @@ export const TableMenu: React.FC = () => {
   }
 
   const shouldShow: BubbleMenuProps["shouldShow"] = ({ editor, state }) => {
-    // Check if we're inside a table cell or header
     const isInTable = editor.isActive("tableCell") || editor.isActive("tableHeader");
-
-    // Don't show if there's a text selection (let the text bubble menu handle that)
     const hasTextSelection = !state.selection.empty;
 
-    // Show the table menu when in a table but without text selection
     return isInTable && !hasTextSelection;
   };
+
+  const { isHeaderActive } = useEditorState({
+    editor,
+    selector: ({ editor }) => ({
+      isHeaderActive: editor.isActive("tableHeader"),
+    }),
+  });
 
   return (
     <BubbleMenu editor={editor} pluginKey="tableMenu" shouldShow={shouldShow} updateDelay={0}>
@@ -64,6 +80,14 @@ export const TableMenu: React.FC = () => {
         </TableMenuButton>
         <TableMenuButton onClick={() => editor.chain().focus().deleteColumn().run()} tooltip="Delete Column">
           <IconTableMinus />
+        </TableMenuButton>
+        <div className="table-menu-divider" />
+        <TableMenuButton
+          onClick={() => editor.chain().focus().toggleHeaderRow().run()}
+          active={isHeaderActive}
+          tooltip={isHeaderActive ? "Remove Header Row" : "Add Header Row"}
+        >
+          <IconTableHeader />
         </TableMenuButton>
         <TableMenuButton onClick={() => editor.chain().focus().deleteTable().run()} tooltip="Delete Table">
           <IconTrash />

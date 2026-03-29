@@ -1,0 +1,36 @@
+@use "../../assets/styles/master";
+
+.backgroundContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 150%;
+  z-index: -1;
+  background-color: #1b2838;
+}
+
+.placeholder, .highRes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-position: center top;
+  background-repeat: no-repeat;
+  will-change: opacity;
+}
+
+.placeholder {
+  z-index: 1;
+}
+
+.highRes {
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+
+  &.loaded {
+    opacity: 1;
+  }
+}

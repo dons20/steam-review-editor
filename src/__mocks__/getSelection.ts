@@ -1,4 +1,4 @@
-window.getSelection = jest.fn().mockImplementation(() => {
+window.getSelection = vi.fn().mockImplementation(() => {
   return {
     anchorNode: Node,
     anchorOffset: Number,

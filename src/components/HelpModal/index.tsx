@@ -1,5 +1,5 @@
 import React from "react";
-import { X, FileText, ArrowLeftRight, Eye, Shuffle, Save } from "lucide-react";
+import { X, FileText, ArrowLeftRight, Eye, Shuffle, Save, AlertTriangle } from "lucide-react";
 import { useModalTheme } from "../../util/ThemeContext";
 import "./help-modal.scss";
 
@@ -90,6 +90,20 @@ function HelpModal({ open, onClose }: HelpModalProps) {
                 Your review content is <strong>automatically saved</strong> to this device's browser storage as you type
                 and will be restored the next time you visit. Content is saved <em>locally only</em>, nothing is sent to
                 any server.
+              </p>
+            </div>
+          </section>
+          <section className="help-section">
+            <div className="help-section__icon">
+              <AlertTriangle size={22} />
+            </div>
+            <div className="help-section__content">
+              <h3>Steam Compatibility</h3>
+              <p>
+                Please note that <strong>not all formatting options are supported across the entire Steam ecosystem</strong>. 
+                Some options (like images) only show up when creating a Guide or Workshop description and will not appear in User Reviews. 
+                <br /><br />
+                It is heavily recommended to check over your content before publishing to avoid any formatting mistakes in your final post.
               </p>
             </div>
           </section>

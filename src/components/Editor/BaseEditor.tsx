@@ -1,40 +1,34 @@
+import React from "react";
+import { TableKit } from "@tiptap/extension-table";
+import { Bold, Italic, Underline, Strikethrough, Link } from "lucide-react";
+import { EditorProvider, useCurrentEditor } from "@tiptap/react";
+import TiptapUnderline from "@tiptap/extension-underline";
+import Placeholder from "@tiptap/extension-placeholder";
+import { Plugin, PluginKey } from "@tiptap/pm/state";
+import { BubbleMenu } from "@tiptap/react/menus";
+import TiptapLink from "@tiptap/extension-link";
+import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
+import { Extension } from "@tiptap/core";
+import { toast } from "react-toastify";
+import { steamBBCodeToHtml, containsSteamBBCode } from "util/steamBBCodeToHtml";
+import { PromptProvider, usePrompt } from "./PromptContext";
+import { Spoiler, NoParse, Quote } from "./extensions";
+import ImageBubbleMenu from "./ImageBubbleMenu";
+import { Toolbar, TableMenu } from "./Helpers";
+import LinkBubbleMenu from "./LinkBubbleMenu";
+
 import "./editor.scss";
 
-import React from "react";
-import { EditorProvider, useCurrentEditor } from "@tiptap/react";
-import { BubbleMenu } from "@tiptap/react/menus";
-import StarterKit from "@tiptap/starter-kit";
-import Placeholder from "@tiptap/extension-placeholder";
-import Image from "@tiptap/extension-image";
-import { Table, TableRow, TableCell, TableHeader } from "@tiptap/extension-table";
-import { Extension } from "@tiptap/core";
-import { Plugin, PluginKey } from "@tiptap/pm/state";
-import TiptapUnderline from "@tiptap/extension-underline";
-import TiptapLink from "@tiptap/extension-link";
-import { Bold, Italic, Underline, Strikethrough, Link } from "lucide-react";
-import { toast } from "react-toastify";
-import { Toolbar, TableMenu } from "./Helpers";
-import { Spoiler, NoParse, Quote } from "./extensions";
-import { steamBBCodeToHtml, containsSteamBBCode } from "util/steamBBCodeToHtml";
-
-// Custom keyboard shortcuts extension
 const CustomKeyboardShortcuts = Extension.create({
   name: "customKeyboardShortcuts",
 
   addKeyboardShortcuts() {
     return {
-      // Ctrl+U for underline
       "Mod-u": () => this.editor.commands.toggleUnderline(),
-      // Ctrl+Shift+X for strikethrough
       "Mod-Shift-x": () => this.editor.commands.toggleStrike(),
-      // Ctrl+K for link
-      "Mod-k": () => {
-        const url = window.prompt("Enter URL:");
-        if (url) {
-          this.editor.chain().focus().setLink({ href: url }).run();
-        }
-        return true;
-      },
+      "Mod-b": () => this.editor.commands.toggleBold(),
+      "Mod-i": () => this.editor.commands.toggleItalic(),
     };
   },
 });
@@ -85,6 +79,9 @@ const extensions = [
     heading: {
       levels: [1, 2, 3],
     },
+    blockquote: false,
+    link: false,
+    underline: false,
   }),
   Placeholder.configure({
     placeholder: "Write your review here...",
@@ -94,21 +91,22 @@ const extensions = [
       class: "steam-image",
     },
   }),
-  Table.configure({
-    allowTableNodeSelection: true,
-    HTMLAttributes: {
-      class: "steam-table",
+  TableKit.configure({
+    table: {
+      allowTableNodeSelection: true,
+      resizable: true,
+      HTMLAttributes: {
+        class: "steam-table",
+      },
     },
   }),
-  TableRow,
-  TableCell,
-  TableHeader,
   Spoiler,
   NoParse,
   Quote,
   TiptapUnderline,
   TiptapLink.configure({
     openOnClick: false,
+    enableClickSelection: true,
     HTMLAttributes: {
       target: "_blank",
       rel: "noopener noreferrer",
@@ -120,6 +118,7 @@ const extensions = [
 
 const BubbleMenuContent = () => {
   const { editor } = useCurrentEditor();
+  const { prompt } = usePrompt();
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   React.useEffect(() => {
@@ -135,70 +134,83 @@ const BubbleMenuContent = () => {
     };
   }, [editor]);
 
-  if (!editor) {
+  if (!editor || editor.isActive("image") || editor.isActive("link")) {
     return null;
   }
 
-  const addLink = () => {
-    const url = window.prompt("Enter URL:");
+  const handleAddLink = async () => {
+    const previousUrl = editor.getAttributes("link").href || "";
+    const url = await prompt({
+      title: "Enter Link URL:",
+      defaultValue: previousUrl,
+    });
+
     if (url) {
-      editor.chain().focus().setLink({ href: url }).run();
+      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+    } else if (url === "") {
+      editor.chain().focus().unsetLink().run();
     }
   };
 
   return (
-    <div className="bubble-menu">
-      <div className="tooltip-wrapper">
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`bubble-menu-button ${editor.isActive("bold") ? "is-active" : ""}`}
-        >
-          <Bold size={16} />
-        </button>
-        <span className="action-tooltip">Bold</span>
+    <BubbleMenu editor={undefined} pluginKey="baseBubbleMenu">
+      <div className="bubble-menu">
+        <div className="tooltip-wrapper">
+          <button
+            type="button"
+            onClick={handleAddLink}
+            className={`bubble-menu-button ${editor.isActive("link") ? "is-active" : ""}`}
+          >
+            <Link size={16} />
+          </button>
+          <span className="action-tooltip">Link</span>
+        </div>
+
+        <div className="tooltip-wrapper">
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().toggleBold().run()}
+            className={`bubble-menu-button ${editor.isActive("bold") ? "is-active" : ""}`}
+          >
+            <Bold size={16} />
+          </button>
+          <span className="action-tooltip">Bold</span>
+        </div>
+
+        <div className="tooltip-wrapper">
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().toggleItalic().run()}
+            className={`bubble-menu-button ${editor.isActive("italic") ? "is-active" : ""}`}
+          >
+            <Italic size={16} />
+          </button>
+          <span className="action-tooltip">Italic</span>
+        </div>
+
+        <div className="tooltip-wrapper">
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            className={`bubble-menu-button ${editor.isActive("underline") ? "is-active" : ""}`}
+          >
+            <Underline size={16} />
+          </button>
+          <span className="action-tooltip">Underline</span>
+        </div>
+
+        <div className="tooltip-wrapper">
+          <button
+            type="button"
+            onClick={() => editor.chain().focus().toggleStrike().run()}
+            className={`bubble-menu-button ${editor.isActive("strike") ? "is-active" : ""}`}
+          >
+            <Strikethrough size={16} />
+          </button>
+          <span className="action-tooltip">Strikethrough</span>
+        </div>
       </div>
-      <div className="tooltip-wrapper">
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`bubble-menu-button ${editor.isActive("italic") ? "is-active" : ""}`}
-        >
-          <Italic size={16} />
-        </button>
-        <span className="action-tooltip">Italic</span>
-      </div>
-      <div className="tooltip-wrapper">
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={`bubble-menu-button ${editor.isActive("underline") ? "is-active" : ""}`}
-        >
-          <Underline size={16} />
-        </button>
-        <span className="action-tooltip">Underline</span>
-      </div>
-      <div className="tooltip-wrapper">
-        <button
-          type="button"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={`bubble-menu-button ${editor.isActive("strike") ? "is-active" : ""}`}
-        >
-          <Strikethrough size={16} />
-        </button>
-        <span className="action-tooltip">Strikethrough</span>
-      </div>
-      <div className="tooltip-wrapper">
-        <button
-          type="button"
-          onClick={addLink}
-          className={`bubble-menu-button ${editor.isActive("link") ? "is-active" : ""}`}
-        >
-          <Link size={16} />
-        </button>
-        <span className="action-tooltip">Link</span>
-      </div>
-    </div>
+    </BubbleMenu>
   );
 };
 
@@ -227,27 +239,29 @@ const BaseEditor = ({ content, onUpdate }: BaseEditorProps) => {
   };
 
   return (
-    <EditorProvider
-      extensions={extensions}
-      content={content}
-      onCreate={handleCreate}
-      onUpdate={handleUpdate}
-      slotBefore={
-        <div className="editor-toolbar-header">
-          <Toolbar />
-        </div>
-      }
-      editorProps={{
-        attributes: {
-          class: "tiptap-editor",
-        },
-      }}
-    >
-      <BubbleMenu editor={null}>
+    <PromptProvider>
+      <EditorProvider
+        extensions={extensions}
+        content={content}
+        onCreate={handleCreate}
+        onUpdate={handleUpdate}
+        slotBefore={
+          <div className="editor-toolbar-header">
+            <Toolbar />
+          </div>
+        }
+        editorProps={{
+          attributes: {
+            class: "tiptap-editor",
+          },
+        }}
+      >
         <BubbleMenuContent />
-      </BubbleMenu>
-      <TableMenu />
-    </EditorProvider>
+        <LinkBubbleMenu />
+        <ImageBubbleMenu />
+        <TableMenu />
+      </EditorProvider>
+    </PromptProvider>
   );
 };
 

@@ -7,7 +7,7 @@ function useTouchScreenDetection() {
     if ("maxTouchPoints" in navigator) {
       setHasTouchScreen(navigator.maxTouchPoints > 0);
     } else if ("msMaxTouchPoints" in navigator) {
-      setHasTouchScreen(navigator.msMaxTouchPoints > 0);
+      setHasTouchScreen((navigator as any).msMaxTouchPoints > 0);
     } else {
       let mQ = window.matchMedia && matchMedia("(pointer:coarse)");
       if (mQ && mQ.media === "(pointer:coarse)") {
@@ -16,7 +16,7 @@ function useTouchScreenDetection() {
         setHasTouchScreen(true); // deprecated, but good fallback
       } else {
         // Only as a last resort, fall back to user agent sniffing
-        let UA = navigator.userAgent;
+        let UA = (navigator as any).userAgent;
         setHasTouchScreen(
           /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) || /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA)
         );

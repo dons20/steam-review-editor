@@ -53,8 +53,13 @@
     border-color: #fff;
     color: #fff;
     justify-self: flex-end;
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #fff;
+    }
     &:active {
       background: master.$tertiary-color;
+      color: master.$secondary-color;
     }
   }
 
@@ -62,8 +67,11 @@
     background: master.$primary-color;
     color: #fff;
     justify-self: flex-start;
+    &:hover {
+      background: color.adjust(master.$primary-color, $lightness: 8%);
+    }
     &:active {
-      background: color.adjust(master.$primary-color, $lightness: 10%);
+      background: color.adjust(master.$primary-color, $lightness: 14%);
     }
   }
 

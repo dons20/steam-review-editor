@@ -16,6 +16,7 @@ declare module "@tiptap/core" {
 
 export const NoParse = Node.create<NoParseOptions>({
   name: "noParse",
+  priority: 200,
 
   group: "block",
 

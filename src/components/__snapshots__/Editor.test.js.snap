@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`converts an editor value to steam markup 1`] = `"[h1]Write your review here![/h1]"`;

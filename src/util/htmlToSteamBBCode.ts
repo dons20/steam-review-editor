@@ -106,22 +106,22 @@ function processElement(element: HTMLElement): string {
       return "\n";
 
     case "h1":
-      return `[h1]${content}[/h1]\n`;
+      return `[h1]${content}[/h1]\n\n`;
 
     case "h2":
-      return `[h2]${content}[/h2]\n`;
+      return `[h2]${content}[/h2]\n\n`;
 
     case "h3":
-      return `[h3]${content}[/h3]\n`;
+      return `[h3]${content}[/h3]\n\n`;
 
     case "ul":
-      return `[list]\n${content}[/list]\n`;
+      return `[list]\n${content}[/list]\n\n`;
 
     case "ol":
-      return `[olist]\n${content}[/olist]\n`;
+      return `[olist]\n${content}[/olist]\n\n`;
 
     case "li":
-      return `[*]${content}\n`;
+      return `[*]${content.replace(/\n+$/, "")}\n`;
 
     // ── Inline elements ──────────────────────────────────────────────
 
@@ -132,7 +132,7 @@ function processElement(element: HTMLElement): string {
 
     case "img": {
       const src = element.getAttribute("src") || "";
-      return `[img]${src}[/img]\n`;
+      return `[img]${src}[/img]\n\n`;
     }
 
     case "code":
@@ -145,9 +145,9 @@ function processElement(element: HTMLElement): string {
     case "pre": {
       const dataType = element.getAttribute("data-type");
       if (dataType === "noparse") {
-        return `[noparse]${content}[/noparse]\n`;
+        return `[noparse]${content}[/noparse]\n\n`;
       }
-      return `[code]${content}[/code]\n`;
+      return `[code]${content}[/code]\n\n`;
     }
 
     case "blockquote": {
@@ -156,9 +156,9 @@ function processElement(element: HTMLElement): string {
         const author = element.getAttribute("data-author");
         const inner = content.trim();
         if (author) {
-          return `[quote=${author}]${inner}[/quote]\n`;
+          return `[quote=${author}]${inner}[/quote]\n\n`;
         }
-        return `[quote]${inner}[/quote]\n`;
+        return `[quote]${inner}[/quote]\n\n`;
       }
       return content;
     }
@@ -166,13 +166,13 @@ function processElement(element: HTMLElement): string {
     case "div": {
       const dataType = element.getAttribute("data-type");
       if (dataType === "spoiler") {
-        return `[spoiler]${content.trim()}[/spoiler]\n`;
+        return `[spoiler]${content.trim()}[/spoiler]\n\n`;
       }
       return content;
     }
 
     case "hr":
-      return `[hr][/hr]\n`;
+      return `[hr][/hr]\n\n`;
 
     case "table": {
       let tableContent = "";
@@ -194,7 +194,7 @@ function processElement(element: HTMLElement): string {
         tableContent += "[/tr]\n";
       });
 
-      return `[table]\n${tableContent}[/table]\n`;
+      return `[table]\n${tableContent}[/table]\n\n`;
     }
 
     case "thead":

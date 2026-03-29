@@ -1,0 +1,197 @@
+@use "../../assets/styles/master";
+
+// ── Theme variables ─────────────────────────────────────────────────────────
+.prompt-modal-overlay {
+  --pm-bg:          #ffffff;
+  --pm-border:      #e8e8e8;
+  --pm-header-border: #eee;
+  --pm-title:       #1a1a2e;
+  --pm-close-hover-bg: #f0f0f0;
+  --pm-close-hover-color: #333;
+  --pm-footer-border: #eee;
+  
+  --pm-input-bg:    #ffffff;
+  --pm-input-border:#cccccc;
+  --pm-input-text:  #333333;
+  --pm-input-focus: #095ea9;
+
+  --pm-btn-primary-bg:    #0275d8;
+  --pm-btn-primary-hover: #0267be;
+  --pm-btn-primary-color: #fff;
+  
+  --pm-btn-cancel-bg:     #f0f0f0;
+  --pm-btn-cancel-hover:  #e0e0e0;
+  --pm-btn-cancel-color:  #333;
+
+  --pm-shadow:      rgba(0, 0, 0, 0.25);
+
+  // ── Dark mode overrides ────────────────────────────────────────────────────
+  &[data-theme="dark"] {
+    --pm-bg:          #1b2838;
+    --pm-border:      #3d4f5c;
+    --pm-header-border: rgba(61, 79, 92, 0.7);
+    --pm-title:       #c1dbf4;
+    --pm-close-hover-bg: rgba(255, 255, 255, 0.08);
+    --pm-close-hover-color: #c1dbf4;
+    --pm-footer-border: rgba(61, 79, 92, 0.7);
+
+    --pm-input-bg:    #111923;
+    --pm-input-border:#2e4055;
+    --pm-input-text:  #c6d4df;
+    --pm-input-focus: #5aa9d6;
+
+    --pm-btn-primary-bg:    #0275d8;
+    --pm-btn-primary-hover: #0267be;
+    --pm-btn-primary-color: #fff;
+    
+    --pm-btn-cancel-bg:     #2e4055;
+    --pm-btn-cancel-hover:  #3d4f5c;
+    --pm-btn-cancel-color:  #c6d4df;
+
+    --pm-shadow:      rgba(0, 0, 0, 0.55);
+  }
+}
+
+// ── Overlay ─────────────────────────────────────────────────────────────────
+.prompt-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: pm-overlay-in 0.18s ease;
+}
+
+@keyframes pm-overlay-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+// ── Modal card ─────────────────────────────────────────────────────────────
+.prompt-modal {
+  background: var(--pm-bg);
+  border: 1px solid var(--pm-border);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px var(--pm-shadow);
+  display: flex;
+  flex-direction: column;
+  width: min(480px, calc(100vw - 2rem));
+  animation: pm-modal-slide-in 0.2s ease;
+  overflow: hidden;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+@keyframes pm-modal-slide-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+// ── Header ─────────────────────────────────────────────────────────────────
+.prompt-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--pm-header-border);
+  flex-shrink: 0;
+}
+
+.prompt-modal__title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--pm-title);
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.prompt-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #888;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: var(--pm-close-hover-bg);
+    color: var(--pm-close-hover-color);
+  }
+}
+
+// ── Body ───────────────────────────────────────────────────────────────────
+.prompt-modal__body {
+  padding: 1.5rem;
+}
+
+.prompt-modal__input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--pm-input-border);
+  border-radius: 6px;
+  background: var(--pm-input-bg);
+  color: var(--pm-input-text);
+  outline: none;
+  transition: all 0.2s ease;
+
+  &:focus {
+    border-color: var(--pm-input-focus);
+    box-shadow: 0 0 0 3px rgba(9, 94, 169, 0.15);
+  }
+
+  &::placeholder {
+    color: #999;
+  }
+}
+
+// ── Footer ─────────────────────────────────────────────────────────────────
+.prompt-modal__footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--pm-footer-border);
+  background: rgba(0,0,0,0.02);
+  flex-shrink: 0;
+}
+
+.prompt-modal__cancel-btn,
+.prompt-modal__submit-btn {
+  padding: 0.5rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.12s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+.prompt-modal__cancel-btn {
+  background: var(--pm-btn-cancel-bg);
+  color: var(--pm-btn-cancel-color);
+
+  &:hover {
+    background: var(--pm-btn-cancel-hover);
+  }
+}
+
+.prompt-modal__submit-btn {
+  background: var(--pm-btn-primary-bg);
+  color: var(--pm-btn-primary-color);
+
+  &:hover {
+    background: var(--pm-btn-primary-hover);
+  }
+}

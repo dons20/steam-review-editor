@@ -1,8 +1,8 @@
 import React from "react";
-import classes from "./footer.module.scss";
+import { IconBrandGithub, IconClipboardList, IconBrandX, IconCircle } from "components/Icons";
 import IconStack from "components/IconStack";
 import Tooltip from "components/Tooltip";
-import { IconBrandGithub, IconClipboardList, IconBrandX, IconCircle } from "components/Icons";
+import classes from "./footer.module.scss";
 
 function Footer() {
   const date = new Date().getFullYear();
@@ -10,8 +10,8 @@ function Footer() {
   return (
     <footer className={classes.root}>
       <div className={classes.iconRow}>
-        <Tooltip content="X / Twitter" position="top">
-          <a href="http://twitter.com/kcinnovations" target="_none" rel="noopener noreferrer">
+        <Tooltip content="X" position="top">
+          <a href="http://x.com/kcinnovations" target="_none" rel="noopener noreferrer">
             <IconBrandX width={36} height={36} className={classes.icon} />
           </a>
         </Tooltip>

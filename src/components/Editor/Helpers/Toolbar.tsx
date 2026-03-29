@@ -1,6 +1,7 @@
 import React from "react";
 import { useCurrentEditor } from "@tiptap/react";
 import Tooltip from "components/Tooltip";
+import { usePrompt } from "../PromptContext";
 import {
   IconBold,
   IconItalic,
@@ -23,7 +24,6 @@ import {
   IconClearFormatting,
 } from "components/Icons";
 import {
-  addLink,
   addImage,
   addQuote,
   insertTable,
@@ -80,7 +80,19 @@ const ToolbarDivider = () => <div className="toolbar-divider" />;
 
 export const Toolbar: React.FC = () => {
   const { editor } = useCurrentEditor();
+  const { prompt } = usePrompt();
   const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+
+  const handleAddLink = React.useCallback(async () => {
+    if (!editor) return;
+    const previousUrl = editor.getAttributes("link").href || "";
+    const url = await prompt({ title: "Enter Link URL:", defaultValue: previousUrl });
+    if (url) {
+      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+    } else if (url === "") {
+      editor.chain().focus().unsetLink().run();
+    }
+  }, [editor, prompt]);
 
   React.useEffect(() => {
     if (!editor) {
@@ -90,18 +102,28 @@ export const Toolbar: React.FC = () => {
     const update = () => forceUpdate();
     editor.on("transaction", update);
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        e.stopPropagation();
+        handleAddLink();
+      }
+    };
+
+    editor.view.dom.addEventListener("keydown", handleKeyDown);
+
     return () => {
       editor.off("transaction", update);
+      editor.view.dom.removeEventListener("keydown", handleKeyDown);
     };
-  }, [editor]);
+  }, [editor, handleAddLink]);
 
   if (!editor) {
     return null;
   }
 
-  const handleAddLink = React.useCallback(() => addLink(editor), [editor]);
-  const handleAddImage = React.useCallback(() => addImage(editor), [editor]);
-  const handleAddQuote = React.useCallback(() => addQuote(editor), [editor]);
+  const handleAddImage = React.useCallback(() => addImage(editor, prompt), [editor, prompt]);
+  const handleAddQuote = React.useCallback(() => addQuote(editor, prompt), [editor, prompt]);
   const handleInsertTable = React.useCallback(() => insertTable(editor), [editor]);
   const handleClearContent = React.useCallback(() => clearContent(editor), [editor]);
 

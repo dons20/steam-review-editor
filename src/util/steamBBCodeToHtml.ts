@@ -185,6 +185,12 @@ export function steamBBCodeToHtml(bbcode: string): string {
 
   // ── 2. Process remaining text line by line ──────────────────────────
 
+  // Collapse the decorative blank line that follows a block placeholder.
+  // Block tags emit \n\n for readability in the markup textarea, but when
+  // converting back to rich text those extra blank lines would become
+  // spurious empty paragraphs.
+  text = text.replace(/(%%BLOCK_\d+%%)\n+/g, "$1\n");
+
   const lines = text.split("\n");
   const blockPlaceholderPattern = /^%%BLOCK_(\d+)%%$/;
   const result: string[] = [];

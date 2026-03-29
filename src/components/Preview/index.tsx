@@ -105,7 +105,7 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
                 </span>
               </div>
               <div className="middle">
-                <IconStar width={16} height={16} />
+                <IconStar width={16} height={16} display="block" />
               </div>
             </div>
             <div className="content">

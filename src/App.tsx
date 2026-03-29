@@ -1,5 +1,5 @@
 import React, { Suspense } from "react";
-import { Header, Content, Footer } from "./components";
+import { Header, Content, Footer, ProgressiveBackground } from "./components";
 import useEnableHover from "./util/useEnableHover";
 import { toast, Flip, ToastContainer } from "react-toastify";
 import { ThemeProvider } from "./util/ThemeContext";
@@ -28,6 +28,7 @@ function App() {
   return (
     <ThemeProvider>
       <div className={classes.root}>
+        <ProgressiveBackground />
         <Header />
         <Suspense fallback={<div>Editor is now loading...</div>}>
           <Content notify={notify} />

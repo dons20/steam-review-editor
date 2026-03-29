@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "vite",
-    "build": "tsx && vite build",
+    "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "test": "vitest"
   },
@@ -64,6 +64,13 @@
     "vite": "^8.0.3"
   },
   "devDependencies": {
+    "@rolldown/plugin-babel": "^0.2.2",
+    "@types/escape-html": "^1.0.4",
+    "@types/node": "^25.5.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "vite-plugin-babel": "^1.6.0",
     "vitest": "^4.1.2"
   }
 }

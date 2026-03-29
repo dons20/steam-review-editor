@@ -1,26 +1,31 @@
 import { Editor } from "@tiptap/react";
 
-export const addLink = (editor: Editor) => {
-  const url = window.prompt("Enter URL:");
+export const addLink = async (editor: Editor, prompt: any) => {
+  const url = await prompt({ title: "Enter URL:" });
   if (url) {
     editor.chain().focus().setLink({ href: url }).run();
   }
 };
 
-export const addImage = (editor: Editor) => {
-  const url = window.prompt("Enter image URL:");
+export const addImage = async (editor: Editor, prompt: any) => {
+  const url = await prompt({ title: "Enter image URL:" });
   if (url) {
     editor.chain().focus().setImage({ src: url }).run();
   }
 };
 
-export const addQuote = (editor: Editor) => {
-  const author = window.prompt("Enter author name (optional):");
+export const addQuote = async (editor: Editor, prompt: any) => {
+  if (editor.isActive("quote")) {
+    editor.chain().focus().unsetQuote().run();
+    return;
+  }
+
+  const author = await prompt({ title: "Enter author name (optional):" });
   if (author !== null) {
     editor
       .chain()
       .focus()
-      .toggleQuote({ author: author || undefined })
+      .setQuote({ author: author || undefined })
       .run();
   }
 };

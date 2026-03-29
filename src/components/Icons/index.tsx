@@ -40,6 +40,7 @@ export {
   ArrowDown as IconTableDown,
   ArrowUp as IconTableUp,
   Star as IconStar,
+  TableProperties as IconTableHeader,
 } from "lucide-react";
 
 export function IconBrandGithub(props: SVGProps<SVGSVGElement>) {
