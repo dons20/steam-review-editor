@@ -7,7 +7,6 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 .preview {
   display: grid;
   grid-gap: 30px;
-  grid-row: 4;
   grid-template-columns: repeat(auto-fill, minmax(500px, auto));
   margin-top: 2vh;
   max-width: master.$breakpoint-large;

@@ -98,11 +98,10 @@
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
   display: grid;
   font-size: 18px;
-  grid-row: 2;
-  grid-template-rows: auto auto 1fr;
+  grid-template-rows: 50px 50px 1fr;
   grid-template-columns: 100%;
   max-width: master.$breakpoint-large;
-  min-height: 430px;
+  min-height: 61vh;
   height: 100%;
   width: 100%;
   white-space: pre-wrap;
