@@ -103,7 +103,7 @@ function ReviewEditor() {
   const { modalTheme } = useModalTheme();
 
   return (
-    <div className="editor__root" data-theme={modalTheme}>
+    <div className={`editor__root ${isMarkup ? "markup" : ""}`} data-theme={modalTheme}>
       <div className="editor-mode-bar">
         <span className="editor-mode-label">{isMarkup ? "Markup Mode" : "Rich Text Mode"}</span>
         <div className="editor-mode-bar__actions">
@@ -124,7 +124,7 @@ function ReviewEditor() {
               aria-label={isMarkup ? "Switch to Rich Text" : "Switch to Markup"}
             >
               <ArrowLeftRight size={14} />
-              <span>{isMarkup ? "Switch to Rich Text" : "Switch to Markup"}</span>
+              <span>{isMarkup ? "Rich Text" : "Markup"}</span>
             </button>
             <span className="action-tooltip">{isMarkup ? "Switch to Rich Text" : "Switch to Markup"}</span>
           </div>
