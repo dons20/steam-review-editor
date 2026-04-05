@@ -1,6 +1,6 @@
 {
   "name": "steam-review-editor",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
   "engines": {
@@ -37,35 +37,41 @@
   },
   "dependencies": {
     "@floating-ui/dom": "^1.7.6",
-    "@tiptap/core": "^3.21.0",
-    "@tiptap/extension-image": "^3.21.0",
-    "@tiptap/extension-link": "^3.21.0",
-    "@tiptap/extension-placeholder": "^3.21.0",
-    "@tiptap/extension-table": "^3.21.0",
-    "@tiptap/extension-table-cell": "^3.21.0",
-    "@tiptap/extension-table-header": "^3.21.0",
-    "@tiptap/extension-table-row": "^3.21.0",
-    "@tiptap/extension-underline": "^3.21.0",
-    "@tiptap/pm": "^3.21.0",
-    "@tiptap/react": "^3.21.0",
-    "@tiptap/starter-kit": "^3.21.0",
+    "@tiptap/core": "^3.22.2",
+    "@tiptap/extension-image": "^3.22.2",
+    "@tiptap/extension-link": "^3.22.2",
+    "@tiptap/extension-placeholder": "^3.22.2",
+    "@tiptap/extension-table": "^3.22.2",
+    "@tiptap/extension-table-cell": "^3.22.2",
+    "@tiptap/extension-table-header": "^3.22.2",
+    "@tiptap/extension-table-row": "^3.22.2",
+    "@tiptap/extension-underline": "^3.22.2",
+    "@tiptap/pm": "^3.22.2",
+    "@tiptap/react": "^3.22.2",
+    "@tiptap/starter-kit": "^3.22.2",
     "@vitejs/plugin-react": "^6.0.1",
     "lucide-react": "^1.7.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-toastify": "^11.0.5",
-    "sass": "^1.98.0",
+    "sass": "^1.99.0",
     "typescript": "^6.0.2",
     "vite": "^8.0.3"
   },
   "devDependencies": {
     "@rolldown/plugin-babel": "^0.2.2",
     "@types/escape-html": "^1.0.4",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "babel-plugin-react-compiler": "^1.0.0",
     "vite-plugin-babel": "^1.6.0",
     "vitest": "^4.1.2"
+  },
+  "pnpm": {
+    "overrides": {
+      "picomatch": "^4.0.4",
+      "markdown-it": "^14.1.1"
+    }
   }
 }
