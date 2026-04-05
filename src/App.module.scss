@@ -1,4 +1,4 @@
-@use "assets/styles/master";
+@use "assets/styles/breakpoints";
 
 .root {
   display: grid;
@@ -9,12 +9,13 @@
 }
 
 .toast {
-  background: #047a08 !important;
+  background: var(--state-success-strong) !important;
+  color: var(--text-inverse) !important;
 }
 
 .modalOverlay {
   align-items: center;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: var(--overlay-backdrop-strong);
   display: grid;
   justify-items: center;
   left: 0;
@@ -36,8 +37,10 @@
   }
 
   .modal {
-    background-color: #fff;
+    background-color: var(--surface-elevated);
+    border: 1px solid var(--border-default);
     border-radius: 10px;
+    color: var(--text-primary);
     margin: auto;
     padding: 1rem;
     max-height: 800px;
@@ -47,9 +50,9 @@
     width: 100%;
 
     .close {
-      background-color: #333;
+      background-color: var(--surface-hover);
       border-radius: 50%;
-      color: #fff;
+      color: var(--text-inverse);
       font-size: 2.5em;
       font-weight: bolder;
       position: absolute;
@@ -59,7 +62,7 @@
       right: 2vw;
       transition: background-color 0.1s ease-in-out;
       &:hover {
-        background-color: #555;
+        background-color: var(--surface-hover-strong);
       }
     }
   }
@@ -72,12 +75,12 @@
   100% { background-position: 400px 0; }
 }
 
-$skeleton-bg: rgba(255, 255, 255, 0.04);
+$skeleton-bg: var(--surface-muted);
 $skeleton-shine: linear-gradient(
   90deg,
-  rgba(255, 255, 255, 0.02) 25%,
-  rgba(255, 255, 255, 0.08) 50%,
-  rgba(255, 255, 255, 0.02) 75%
+  transparent 25%,
+  var(--surface-hover) 50%,
+  transparent 75%
 );
 
 .skeleton {
@@ -92,7 +95,7 @@ $skeleton-shine: linear-gradient(
 
 .skeletonBar {
   width: 100%;
-  max-width: master.$breakpoint-large;
+  max-width: breakpoints.$breakpoint-large;
   height: 38px;
   border-radius: 6px;
   background: $skeleton-bg;
@@ -103,7 +106,7 @@ $skeleton-shine: linear-gradient(
 
 .skeletonEditor {
   width: 100%;
-  max-width: master.$breakpoint-large;
+  max-width: breakpoints.$breakpoint-large;
   height: 300px;
   border-radius: 6px;
   background: $skeleton-bg;
@@ -118,7 +121,7 @@ $skeleton-shine: linear-gradient(
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
   width: 100%;
-  max-width: master.$breakpoint-large;
+  max-width: breakpoints.$breakpoint-large;
 }
 
 .skeletonBtn {

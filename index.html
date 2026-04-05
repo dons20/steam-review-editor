@@ -47,6 +47,22 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <script type="module" src="/src/index.tsx"></script>
-    <script data-goatcounter="https://kenoc.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+    <script>
+      var code = "";
+      switch (location.hostname) {
+        case "steam-review-editor.netlify.app":
+          code = "sre";
+          break;
+        case "projects.claytoninnovations.com":
+          code = "kenoc";
+          break;
+        default:
+          code = "kenoc";
+      }
+      window.goatcounter = {
+        endpoint: "https://" + code + ".goatcounter.com/count",
+      };
+    </script>
+    <script async src="//gc.zgo.at/count.js"></script>
   </body>
 </html>

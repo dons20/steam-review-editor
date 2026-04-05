@@ -1,20 +1,21 @@
-@use "../../assets/styles/master";
+@use "../../assets/styles/breakpoints";
 
 .main {
-  background-color: #171a21;
-  color: #eee;
+  background-color: var(--color-steam-blue-950);
+  color: var(--color-slate-100);
   cursor: default;
   font-variant: small-caps;
   font-size: 1.5rem;
   padding: 1.5rem 1.5rem;
-  text-shadow: 1px 1px 10px #222;
+  text-shadow: var(--text-shadow-hero);
+  transition: background-color 0.2s ease, color 0.2s ease;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
 
-  @media (max-width: master.$breakpoint-medium) {
+  @media (max-width: breakpoints.$breakpoint-medium) {
     justify-content: flex-start;
   }
 }
@@ -36,10 +37,10 @@
   display: flex;
   align-items: center;
   gap: 0.4rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--color-steam-blue-900);
+  border: 1px solid var(--color-slate-800);
   border-radius: 6px;
-  color: rgba(255, 255, 255, 0.55);
+  color: var(--color-slate-500);
   cursor: pointer;
   font-size: 0.72rem;
   font-variant: normal;
@@ -49,9 +50,9 @@
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.12);
-    border-color: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.9);
+    background: var(--color-steam-blue-800);
+    border-color: var(--color-blue-400);
+    color: var(--color-slate-100);
   }
 }
 
@@ -59,14 +60,14 @@
   font-variant: normal;
 }
 
-@media only screen and (min-width: master.$breakpoint-small) {
+@media only screen and (min-width: breakpoints.$breakpoint-small) {
   .main {
     font-size: 3rem;
     padding: 2rem 1.5rem;
   }
 }
 
-@media only screen and (max-width: master.$breakpoint-medium) {
+@media only screen and (max-width: breakpoints.$breakpoint-medium) {
   .themeLabel {
     display: none;
   }

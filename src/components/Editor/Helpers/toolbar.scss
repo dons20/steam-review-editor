@@ -5,8 +5,10 @@
   overflow-x: auto;
   overflow-y: visible;
   scrollbar-width: thin;
-  scrollbar-color: rgba(0, 0, 0, 0.25) transparent;
+  scrollbar-color: var(--scrollbar-thumb) transparent;
   transition: background 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  align-items: center;
 
   &::-webkit-scrollbar {
     height: 3px;
@@ -18,13 +20,13 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.25);
+    background-color: var(--scrollbar-thumb);
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.6);
+    border: 1px solid var(--scrollbar-thumb-border);
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.35);
+    background-color: var(--scrollbar-thumb-hover);
   }
 
   &::-webkit-scrollbar-corner {
@@ -51,6 +53,7 @@
   align-items: center;
   min-width: min-content;
   justify-content: center;
+  margin: auto;
 }
 
 .toolbar-group {
@@ -89,11 +92,11 @@
 
   &.is-active {
     background-color: var(--accent-color);
-    color: #fff;
-    border-color: #357abd;
+    color: var(--text-inverse);
+    border-color: var(--interactive-accent-strong);
 
     &:hover {
-      background-color: #357abd;
+      background-color: var(--interactive-accent-strong);
     }
   }
 
@@ -119,7 +122,7 @@
   border: 1px solid var(--ed-btn-border);
   border-radius: 6px;
   padding: 0.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .table-menu-button {
@@ -150,11 +153,11 @@
 
   &.is-active {
     background-color: var(--accent-color);
-    color: #fff;
-    border-color: #357abd;
+    color: var(--text-inverse);
+    border-color: var(--interactive-accent-strong);
 
     &:hover {
-      background-color: #357abd;
+      background-color: var(--interactive-accent-strong);
     }
   }
 }

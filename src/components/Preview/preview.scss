@@ -1,18 +1,18 @@
-$background-color: #111a24;
-$body-color: #8091a2;
+$background-color: var(--color-steam-blue-950);
+$body-color: var(--color-slate-500);
 $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
-@use "../../assets/styles/master";
+@use "../../assets/styles/breakpoints";
 
 .preview {
   display: grid;
   grid-gap: 30px;
   grid-template-columns: repeat(auto-fill, minmax(500px, auto));
   margin-top: 2vh;
-  max-width: master.$breakpoint-large;
+  max-width: breakpoints.$breakpoint-large;
   width: 100%;
 
-  @media (max-width: master.$breakpoint-medium) {
+  @media (max-width: breakpoints.$breakpoint-medium) {
     grid-template-columns: 1fr;
   }
 
@@ -22,14 +22,14 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
   .body {
     align-items: flex-start;
-    background: #111a24;
-    background: linear-gradient(to bottom, #111923, #17212e 50%);
+    background: var(--color-steam-blue-950);
+    background: linear-gradient(to bottom, var(--color-slate-950), var(--color-steam-blue-800) 50%);
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-row-gap: 10px;
     padding: 0.5rem;
 
-    @media only screen and (max-width: master.$breakpoint-small) {
+    @media only screen and (max-width: breakpoints.$breakpoint-small) {
       grid-template-columns: 100%;
       grid-template-rows: auto auto 1fr;
       padding: 1rem;
@@ -42,7 +42,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
   }
 
   .profile {
-    color: #fff;
+    color: var(--color-white);
     align-items: flex-start;
     column-gap: 0.5rem;
     display: grid;
@@ -52,8 +52,8 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     padding-right: 1rem;
 
     .avatar-container {
-      background-color: #1a3a5c;
-      border: 1px solid #4b8fc4;
+      background-color: var(--color-steam-blue-600);
+      border: 1px solid var(--color-steam-blue-400);
       border-radius: 3px;
       align-items: center;
       display: inline-flex;
@@ -70,7 +70,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     }
 
     .details {
-      color: #c1dbf4;
+      color: var(--color-slate-300);
       font-size: 1rem;
 
       .username {
@@ -95,15 +95,15 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     color: $body-color;
 
     & a {
-      color: #ebebeb;
+      color: var(--color-slate-100);
       text-decoration: underline;
       &:hover {
-        color: #fff;
+        color: var(--color-white);
       }
     }
     
     & blockquote {
-      border: 1px solid #56707f;
+      border: 1px solid var(--color-slate-500);
       border-radius: 3px;
       display: grid;
       margin: 20px;
@@ -131,24 +131,24 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     }
     
     & h1 {
-      color: #5aa9d6;
+      color: var(--color-blue-400);
       font-size: 18px;
     }
     
     & h2 {
-      color: #5aa9d6;
+      color: var(--color-blue-400);
       font-size: 16px;
     }
     
     & h3 {
-      color: #5aa9d6;
+      color: var(--color-blue-400);
       font-size: 14px;
     }
 
     & pre {
-      background-color: #1b2838;
-      border: 1px solid #3d4f5c;
-      color: #c1dbf4;
+      background-color: var(--color-steam-blue-900);
+      border: 1px solid var(--color-slate-800);
+      color: var(--color-slate-300);
       font-family: "Courier New", monospace;
       padding: 0.5rem;
       white-space: pre-wrap;
@@ -156,8 +156,8 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     }
 
     & code {
-      background-color: #1b2838;
-      color: #c1dbf4;
+      background-color: var(--color-steam-blue-900);
+      color: var(--color-slate-300);
       font-family: "Courier New", monospace;
       padding: 0.2rem 0.4rem;
     }
@@ -173,7 +173,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
     & hr {
       border: none;
-      border-top: 1px solid #3d4f5c;
+      border-top: 1px solid var(--color-slate-800);
       margin: 1rem 0;
     }
 
@@ -184,18 +184,18 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
       
       th,
       td {
-        border: 1px solid #3d4f5c;
+        border: 1px solid var(--color-slate-800);
         padding: 0.5rem;
         text-align: left;
       }
 
       th {
-        background-color: #1b2838;
+        background-color: var(--color-steam-blue-900);
         font-weight: bold;
       }
 
       td {
-        background-color: rgba(27, 40, 56, 0.3);
+        background-color: var(--surface-steam-soft);
       }
     }
 
@@ -209,21 +209,21 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     // Custom Steam elements
     & .spoiler,
     & div[data-type="spoiler"] {
-      background-color: #000;
-      color: #000;
+      background-color: var(--color-black);
+      color: var(--color-black);
       display: inline-block;
       padding: 0 3px;
       cursor: pointer;
       &:hover {
-        color: #fff;
+        color: var(--color-white);
       }
     }
 
     & .noparse,
     & pre[data-type="noparse"] {
-      background-color: #1b2838;
-      border: 1px solid #3d4f5c;
-      color: #c1dbf4;
+      background-color: var(--color-steam-blue-900);
+      border: 1px solid var(--color-slate-800);
+      color: var(--color-slate-300);
       font-family: "Courier New", monospace;
       padding: 0.5rem;
       white-space: pre-wrap;
@@ -231,16 +231,16 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
     & .quote,
     & blockquote[data-type="quote"] {
-      border: 1px solid #56707f;
+      border: 1px solid var(--color-slate-500);
       border-radius: 3px;
       padding: 1rem;
       margin: 1rem 0;
-      background-color: rgba(27, 40, 56, 0.3);
+      background-color: var(--surface-steam-soft);
     }
   }
 
   .code {
-    border: 1px solid #535354;
+    border: 1px solid var(--color-slate-700);
     border-radius: 3px;
     margin: 20px;
     padding: 12px;
@@ -283,10 +283,10 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
   }
 
   .action-tooltip {
-    background: #333;
+    background: var(--surface-tooltip);
     border-radius: 4px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-    color: #fff;
+    box-shadow: 0 3px 8px var(--shadow-color-strong);
+    color: var(--text-tooltip);
     font-size: 0.72rem;
     font-weight: 500;
     left: 50%;
@@ -306,7 +306,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     background: transparent;
     border: 1px solid transparent;
     border-radius: 4px;
-    color: rgba(255,255,255,0.35);
+    color: var(--interactive-ghost-text);
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -314,9 +314,9 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     transition: color 0.15s, border-color 0.15s, background 0.15s;
 
     &:hover {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.8);
+      background: var(--surface-hover);
+      border-color: var(--interactive-ghost-border);
+      color: var(--interactive-ghost-text-strong);
     }
   }
 
@@ -324,7 +324,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     background-image: url("../../assets/img/rule.png");
     background-position: bottom left;
     background-repeat: no-repeat;
-    color: #fff;
+    color: var(--color-white);
     font-size: 17px;
     font-weight: 300;
     letter-spacing: 2px;
@@ -346,9 +346,9 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
   }
 
   .markupBody {
-    background: #111a24;
-    background: linear-gradient(to bottom, #111923, #17212e 50%);
-    color: #f4f4f4;
+    background: var(--color-steam-blue-950);
+    background: linear-gradient(to bottom, var(--color-slate-950), var(--color-steam-blue-800) 50%);
+    color: var(--color-slate-50);
     font-family: monospace;
     margin: 0;
     padding: 1.5rem;
@@ -363,7 +363,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
       justify-content: center;
       text-align: center;
       padding: 2rem;
-      color: #a1adba;
+      color: var(--color-slate-400);
       
       p {
         margin: 0.5rem 0;
@@ -385,13 +385,14 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
   }
 
   .recTitle {
+    color: var(--color-slate-100);
     display: block;
     line-height: normal;
   }
 
   .stats {
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #d6d7d8;
+    background-color: var(--surface-steam-soft);
+    color: var(--color-slate-100);
     display: grid;
     font-size: 16px;
     font-weight: 500;
@@ -403,7 +404,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
   .subtext,
   .datePosted {
-    color: #8091A2;
+    color: var(--color-slate-500);
     display: block;
     font-weight: 300;
     font-size: 11px;
@@ -421,12 +422,12 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
   /* Styles for Preview Elements */
   .spoiler {
-    background-color: #000;
-    color: #000;
+    background-color: var(--color-black);
+    color: var(--color-black);
     display: inline-block;
     padding: 0 3px;
     &:hover {
-      color: #fff;
+      color: var(--color-white);
     }
   }
 }

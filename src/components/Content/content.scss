@@ -1,5 +1,4 @@
-@use "sass:color";
-@use "../../assets/styles/master";
+@use "../../assets/styles/breakpoints";
 
 @keyframes hide {
   0% {
@@ -26,14 +25,14 @@
     grid-gap: 2rem;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     justify-items: center;
-    max-width: master.$breakpoint-large;
+    max-width: breakpoints.$breakpoint-large;
     width: 100%;
   }
 
 
   .markupBtn,
   .previewBtn {
-    border: 1px solid rgba(2, 117, 216, 0.7);
+    border: 1px solid var(--interactive-primary);
     border-radius: 5px;
     cursor: pointer;
     font-weight: bolder;
@@ -48,29 +47,29 @@
   }
 
   .markupBtn {
-    background: rgba(0, 0, 0, 0);
-    border-color: #fff;
-    color: #fff;
+    background: transparent;
+    border-color: var(--text-inverse);
+    color: var(--text-inverse);
     justify-self: flex-end;
     &:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: #fff;
+      background: var(--surface-hover);
+      border-color: var(--text-inverse);
     }
     &:active {
-      background: master.$tertiary-color;
-      color: master.$secondary-color;
+      background: var(--text-inverse);
+      color: var(--color-black);
     }
   }
 
   .previewBtn {
-    background: master.$primary-color;
-    color: #fff;
+    background: var(--interactive-primary);
+    color: var(--text-inverse);
     justify-self: flex-start;
     &:hover {
-      background: color.adjust(master.$primary-color, $lightness: 8%);
+      background: var(--interactive-primary-hover);
     }
     &:active {
-      background: color.adjust(master.$primary-color, $lightness: 14%);
+      background: var(--interactive-accent);
     }
   }
 
@@ -79,7 +78,7 @@
   }
 }
 
-@media only screen and (max-width: master.$breakpoint-small) {
+@media only screen and (max-width: breakpoints.$breakpoint-small) {
   .main {
     row-gap: 3rem;
   }
