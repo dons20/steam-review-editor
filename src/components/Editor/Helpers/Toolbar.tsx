@@ -1,6 +1,7 @@
 import React from "react";
 import { useCurrentEditor } from "@tiptap/react";
 import Tooltip from "components/Tooltip";
+import { trackEvent } from "util/analytics";
 import { usePrompt } from "../PromptContext";
 import {
   IconBold,
@@ -87,6 +88,9 @@ export const Toolbar: React.FC = () => {
 
   const handleAddLink = React.useCallback(async () => {
     if (!editor) return;
+
+    trackEvent("editor-toolbar-used", "Toolbar action: link");
+
     const previousUrl = editor.getAttributes("link").href || "";
     const url = await prompt({ title: "Enter Link URL:", defaultValue: previousUrl });
     if (url) {
@@ -124,29 +128,83 @@ export const Toolbar: React.FC = () => {
     return null;
   }
 
-  const handleAddImage = React.useCallback(() => addImage(editor, prompt), [editor, prompt]);
-  const handleAddQuote = React.useCallback(() => addQuote(editor, prompt), [editor, prompt]);
-  const handleInsertTable = React.useCallback(() => insertTable(editor), [editor]);
-  const handleClearContent = React.useCallback(() => clearContent(editor), [editor]);
+  const handleAddImage = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: image");
+    addImage(editor, prompt);
+  }, [editor, prompt]);
+  const handleAddQuote = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: quote");
+    addQuote(editor, prompt);
+  }, [editor, prompt]);
+  const handleInsertTable = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: table");
+    insertTable(editor);
+  }, [editor]);
+  const handleClearContent = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: clear content");
+    clearContent(editor);
+  }, [editor]);
 
-  const handleToggleBold = React.useCallback(() => toggleBold(editor), [editor]);
-  const handleToggleItalic = React.useCallback(() => toggleItalic(editor), [editor]);
-  const handleToggleUnderline = React.useCallback(() => toggleUnderline(editor), [editor]);
-  const handleToggleStrike = React.useCallback(() => toggleStrike(editor), [editor]);
+  const handleToggleBold = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: bold");
+    toggleBold(editor);
+  }, [editor]);
+  const handleToggleItalic = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: italic");
+    toggleItalic(editor);
+  }, [editor]);
+  const handleToggleUnderline = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: underline");
+    toggleUnderline(editor);
+  }, [editor]);
+  const handleToggleStrike = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: strikethrough");
+    toggleStrike(editor);
+  }, [editor]);
 
-  const handleToggleH1 = React.useCallback(() => toggleHeading1(editor), [editor]);
-  const handleToggleH2 = React.useCallback(() => toggleHeading2(editor), [editor]);
-  const handleToggleH3 = React.useCallback(() => toggleHeading3(editor), [editor]);
+  const handleToggleH1 = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: heading 1");
+    toggleHeading1(editor);
+  }, [editor]);
+  const handleToggleH2 = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: heading 2");
+    toggleHeading2(editor);
+  }, [editor]);
+  const handleToggleH3 = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: heading 3");
+    toggleHeading3(editor);
+  }, [editor]);
 
-  const handleToggleBulletList = React.useCallback(() => toggleBulletList(editor), [editor]);
-  const handleToggleOrderedList = React.useCallback(() => toggleOrderedList(editor), [editor]);
+  const handleToggleBulletList = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: bullet list");
+    toggleBulletList(editor);
+  }, [editor]);
+  const handleToggleOrderedList = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: ordered list");
+    toggleOrderedList(editor);
+  }, [editor]);
 
-  const handleToggleCodeBlock = React.useCallback(() => toggleCodeBlock(editor), [editor]);
-  const handleToggleSpoiler = React.useCallback(() => toggleSpoiler(editor), [editor]);
-  const handleToggleNoParse = React.useCallback(() => toggleNoParse(editor), [editor]);
+  const handleToggleCodeBlock = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: code block");
+    toggleCodeBlock(editor);
+  }, [editor]);
+  const handleToggleSpoiler = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: spoiler");
+    toggleSpoiler(editor);
+  }, [editor]);
+  const handleToggleNoParse = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: no-parse");
+    toggleNoParse(editor);
+  }, [editor]);
 
-  const handleSetHorizontalRule = React.useCallback(() => setHorizontalRule(editor), [editor]);
-  const handleClearFormatting = React.useCallback(() => clearFormatting(editor), [editor]);
+  const handleSetHorizontalRule = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: horizontal rule");
+    setHorizontalRule(editor);
+  }, [editor]);
+  const handleClearFormatting = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: clear formatting");
+    clearFormatting(editor);
+  }, [editor]);
 
   return (
     <div className="toolbar">

@@ -1,11 +1,13 @@
 import React, { useEffect, useRef, useState, useContext, useCallback } from "react";
+import { trackError, trackEvent, trackOncePerSession } from "util/analytics";
 import { htmlToSteamBBCode, cleanBBCode } from "util/htmlToSteamBBCode";
 import { AppContext, type AppContextType } from "components/Content";
 import { ArrowLeftRight, CircleHelp, Check } from "lucide-react";
 import { steamBBCodeToHtml } from "util/steamBBCodeToHtml";
 import { useModalTheme } from "util/ThemeContext";
-const HelpModal = React.lazy(() => import("components/HelpModal"));
 import TiptapEditor from "./BaseEditor";
+
+const HelpModal = React.lazy(() => import("components/HelpModal"));
 
 export type EditorMode = "rich-text" | "markup";
 
@@ -19,6 +21,7 @@ function ReviewEditor() {
     try {
       return JSON.parse(saved);
     } catch {
+      trackError("localstorage", "content-parse-error", "Saved editor content could not be parsed");
       return saved;
     }
   });
@@ -32,6 +35,7 @@ function ReviewEditor() {
 
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const hasTrackedStartRef = useRef(false);
 
   const [showSaved, setShowSaved] = useState(false);
 
@@ -45,15 +49,27 @@ function ReviewEditor() {
       clearTimeout(hideTimerRef.current);
     }
     saveTimerRef.current = setTimeout(() => {
-      localStorage.setItem(key, value);
-      setShowSaved(true);
+      try {
+        localStorage.setItem(key, value);
+        setShowSaved(true);
 
-      // Hide the saved indicator after 3 seconds
-      hideTimerRef.current = setTimeout(() => setShowSaved(false), 3000);
+        // Hide the saved indicator after 3 seconds
+        hideTimerRef.current = setTimeout(() => setShowSaved(false), 3000);
+      } catch {
+        const reason = key === "content" ? "save-content-failed" : "save-markup-failed";
+        trackError("localstorage", reason, "Unable to save review draft locally");
+      }
     }, 2000);
   }, []);
 
   useEffect(() => {
+    trackOncePerSession("core-editor-loaded", "Editor ready");
+
+    const hasSavedDraft = Boolean(initialContent.replace(/<[^>]+>/g, "").trim() || markupText.trim());
+    if (hasSavedDraft) {
+      trackOncePerSession("funnel-review-resumed", "Resumed a saved review draft");
+    }
+
     return () => {
       if (saveTimerRef.current) {
         clearTimeout(saveTimerRef.current);
@@ -69,21 +85,34 @@ function ReviewEditor() {
       latestHtmlRef.current = html;
       setHTMLContent(html);
       scheduleAutoSave("content", html);
+
+      const plainText = html.replace(/<[^>]+>/g, " ").trim();
+      if (plainText && !hasTrackedStartRef.current) {
+        hasTrackedStartRef.current = true;
+        trackOncePerSession("funnel-review-started", "Started writing a review");
+      }
     },
     [setHTMLContent, scheduleAutoSave]
   );
 
   const toggleMode = useCallback(() => {
-    if (editorMode === "rich-text") {
-      const bbcode = cleanBBCode(htmlToSteamBBCode(latestHtmlRef.current));
-      setMarkupText(bbcode);
-      setEditorMode("markup");
-    } else {
-      const html = steamBBCodeToHtml(markupText);
-      setInitialContent(html);
-      setHTMLContent(html);
-      latestHtmlRef.current = html;
-      setEditorMode("rich-text");
+    trackEvent("editor-mode-switched", editorMode === "rich-text" ? "Switched to markup mode" : "Switched to rich text mode");
+
+    try {
+      if (editorMode === "rich-text") {
+        const bbcode = cleanBBCode(htmlToSteamBBCode(latestHtmlRef.current));
+        setMarkupText(bbcode);
+        setEditorMode("markup");
+      } else {
+        const html = steamBBCodeToHtml(markupText);
+        setInitialContent(html);
+        setHTMLContent(html);
+        latestHtmlRef.current = html;
+        setEditorMode("rich-text");
+      }
+    } catch {
+      const reason = editorMode === "rich-text" ? "html-to-bbcode-error" : "bbcode-to-html-error";
+      trackError("conversion", reason, "Editor mode conversion failed");
     }
   }, [editorMode, markupText, setHTMLContent]);
 
@@ -91,8 +120,14 @@ function ReviewEditor() {
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       const value = e.target.value;
       setMarkupText(value);
-      const html = steamBBCodeToHtml(value);
-      setHTMLContent(html);
+
+      try {
+        const html = steamBBCodeToHtml(value);
+        setHTMLContent(html);
+      } catch {
+        trackError("conversion", "bbcode-to-html-error", "Steam BBCode conversion failed");
+      }
+
       scheduleAutoSave("content-markup", value);
     },
     [setHTMLContent, scheduleAutoSave]
@@ -129,7 +164,15 @@ function ReviewEditor() {
             <span className="action-tooltip">{isMarkup ? "Switch to Rich Text" : "Switch to Markup"}</span>
           </div>
           <div className="tooltip-wrapper">
-            <button type="button" className="help-btn" onClick={() => setShowHelp(true)} aria-label="Open guide">
+            <button
+              type="button"
+              className="help-btn"
+              onClick={() => {
+                trackEvent("core-help-opened", "Opened the editor guide");
+                setShowHelp(true);
+              }}
+              aria-label="Open guide"
+            >
               <CircleHelp size={15} />
             </button>
             <span className="action-tooltip">Guide</span>

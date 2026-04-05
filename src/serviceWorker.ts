@@ -1,3 +1,5 @@
+import { trackError } from "./util/analytics";
+
 // This optional code is used to register a service worker.
 // register() is not called by default.
 
@@ -92,6 +94,7 @@ function registerValidSW(swUrl, config) {
       };
     })
     .catch(error => {
+      trackError("service-worker", "registration-error", "Service worker registration failed");
       console.error("Error during service worker registration:", error);
     });
 }

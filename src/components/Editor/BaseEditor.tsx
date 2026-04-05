@@ -12,6 +12,7 @@ import Image from "@tiptap/extension-image";
 import { Extension } from "@tiptap/core";
 import { toast } from "react-toastify";
 import { steamBBCodeToHtml, containsSteamBBCode } from "util/steamBBCodeToHtml";
+import { trackError, trackEvent } from "util/analytics";
 import { PromptProvider, usePrompt } from "./PromptContext";
 import { Spoiler, NoParse, Quote } from "./extensions";
 import ImageBubbleMenu from "./ImageBubbleMenu";
@@ -51,20 +52,27 @@ const SteamPasteExtension = Extension.create({
             // If the pasted text contains Steam BBCode, convert it
             if (plainText && containsSteamBBCode(plainText)) {
               event.preventDefault();
-              const html = steamBBCodeToHtml(plainText);
 
-              // Use TipTap's native insertContent which handles marks correctly
-              // and safely triggers all internal state updates.
-              this.editor.commands.insertContent(html);
+              try {
+                const html = steamBBCodeToHtml(plainText);
 
-              toast.info("Steam markup converted", {
-                autoClose: 2000,
-                position: "bottom-right",
-                toastId: "bbcode-paste",
-                hideProgressBar: true,
-              });
+                // Use TipTap's native insertContent which handles marks correctly
+                // and safely triggers all internal state updates.
+                this.editor.commands.insertContent(html);
+                trackEvent("editor-bbcode-pasted", "Converted pasted Steam markup");
 
-              return true;
+                toast.info("Steam markup converted", {
+                  autoClose: 2000,
+                  position: "bottom-right",
+                  toastId: "bbcode-paste",
+                  hideProgressBar: true,
+                });
+
+                return true;
+              } catch (error) {
+                trackError("conversion", "bbcode-paste-error", "Steam markup paste conversion failed");
+                console.error("Failed to convert pasted Steam markup:", error);
+              }
             }
 
             return false;
@@ -141,6 +149,8 @@ const BubbleMenuContent = () => {
   }
 
   const handleAddLink = async () => {
+    trackEvent("editor-toolbar-used", "Toolbar action: link");
+
     const previousUrl = editor.getAttributes("link").href || "";
     const url = await prompt({
       title: "Enter Link URL:",
@@ -171,7 +181,10 @@ const BubbleMenuContent = () => {
         <div className="tooltip-wrapper">
           <button
             type="button"
-            onClick={() => editor.chain().focus().toggleBold().run()}
+            onClick={() => {
+              trackEvent("editor-toolbar-used", "Toolbar action: bold");
+              editor.chain().focus().toggleBold().run();
+            }}
             className={`bubble-menu-button ${editor.isActive("bold") ? "is-active" : ""}`}
           >
             <Bold size={16} />
@@ -182,7 +195,10 @@ const BubbleMenuContent = () => {
         <div className="tooltip-wrapper">
           <button
             type="button"
-            onClick={() => editor.chain().focus().toggleItalic().run()}
+            onClick={() => {
+              trackEvent("editor-toolbar-used", "Toolbar action: italic");
+              editor.chain().focus().toggleItalic().run();
+            }}
             className={`bubble-menu-button ${editor.isActive("italic") ? "is-active" : ""}`}
           >
             <Italic size={16} />
@@ -193,7 +209,10 @@ const BubbleMenuContent = () => {
         <div className="tooltip-wrapper">
           <button
             type="button"
-            onClick={() => editor.chain().focus().toggleUnderline().run()}
+            onClick={() => {
+              trackEvent("editor-toolbar-used", "Toolbar action: underline");
+              editor.chain().focus().toggleUnderline().run();
+            }}
             className={`bubble-menu-button ${editor.isActive("underline") ? "is-active" : ""}`}
           >
             <Underline size={16} />
@@ -204,7 +223,10 @@ const BubbleMenuContent = () => {
         <div className="tooltip-wrapper">
           <button
             type="button"
-            onClick={() => editor.chain().focus().toggleStrike().run()}
+            onClick={() => {
+              trackEvent("editor-toolbar-used", "Toolbar action: strikethrough");
+              editor.chain().focus().toggleStrike().run();
+            }}
             className={`bubble-menu-button ${editor.isActive("strike") ? "is-active" : ""}`}
           >
             <Strikethrough size={16} />
