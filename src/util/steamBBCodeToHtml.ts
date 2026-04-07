@@ -94,11 +94,29 @@ export function steamBBCodeToHtml(bbcode: string): string {
     }
   );
 
-  // [table] – complex block
+  // [table] – complex block (with optional options: noborder=1, equalcells=1)
   text = text.replace(
-    /\[table\]([\s\S]*?)\[\/table\]/gi,
-    (_match, tableContent: string) => {
-      return addBlock(convertTable(tableContent));
+    /\[table([^\]]*)\]([\s\S]*?)\[\/table\]/gi,
+    (_match, options: string, tableContent: string) => {
+      const noborder = /noborder\s*=\s*1/i.test(options) ? "1" : null;
+      const equalcells = /equalcells\s*=\s*1/i.test(options) ? "1" : null;
+      return addBlock(convertTable(tableContent, noborder, equalcells));
+    }
+  );
+
+  // Steam Store URL embed: [url=...store.steampowered.com/app/ID/...]...[/url]
+  text = text.replace(
+    /\[url=["']?https?:\/\/store\.steampowered\.com\/app\/([\d]+)\/?[^\]]*["']?\][\s\S]*?\[\/url\]/gi,
+    (_match, appid: string) => {
+      return addBlock(buildStoreEmbedHtml(appid));
+    }
+  );
+
+  // Steam Workshop URL embed: [url=...steamcommunity.com/sharedfiles/filedetails/?id=ID...]...[/url]
+  text = text.replace(
+    /\[url=["']?https?:\/\/steamcommunity\.com\/sharedfiles\/filedetails\/\?id=([\d]+)[^\]]*["']?\][\s\S]*?\[\/url\]/gi,
+    (_match, workshopid: string) => {
+      return addBlock(buildWorkshopEmbedHtml(workshopid));
     }
   );
 
@@ -212,6 +230,16 @@ export function steamBBCodeToHtml(bbcode: string): string {
       continue;
     }
 
+    // Bare YouTube URL on its own line → YouTube embed block
+    const ytMatch =
+      trimmed.match(/^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=([-\w]+)/i) ||
+      trimmed.match(/^https?:\/\/youtu\.be\/([-\w]+)/i);
+    if (ytMatch) {
+      const videoid = ytMatch[2] ?? ytMatch[1];
+      result.push(buildYouTubeEmbedHtml(videoid));
+      continue;
+    }
+
     // Text/inline content → apply inline tags and wrap in <p>
     // First restore any embedded block placeholders (rare but possible)
     let processed = applyInlineTags(trimmed);
@@ -236,8 +264,24 @@ export function steamBBCodeToHtml(bbcode: string): string {
 // Table converter
 // ---------------------------------------------------------------------------
 
-function convertTable(raw: string): string {
-  let html = "<table>";
+function buildStoreEmbedHtml(appid: string): string {
+  return `<div data-type="steam-store-embed" data-appid="${appid}" class="steam-store-embed"><div class="steam-embed-cover"></div><div class="steam-embed-info"><div class="steam-embed-title">Example Game</div><div class="steam-embed-meta">App #${appid}</div></div></div>`;
+}
+
+function buildWorkshopEmbedHtml(workshopid: string): string {
+  return `<div data-type="steam-workshop-embed" data-workshopid="${workshopid}" class="steam-workshop-embed"><div class="steam-embed-cover"></div><div class="steam-embed-info"><div class="steam-embed-title">Example Workshop Item</div><div class="steam-embed-meta">Workshop #${workshopid}</div></div></div>`;
+}
+
+function buildYouTubeEmbedHtml(videoid: string): string {
+  return `<div data-type="youtube-embed" data-videoid="${videoid}" class="youtube-embed"><div class="youtube-embed-thumbnail"><div class="youtube-embed-play"></div></div><div class="youtube-embed-caption">youtube.com/watch?v=${videoid}</div></div>`;
+}
+
+function convertTable(raw: string, noborder: string | null = null, equalcells: string | null = null): string {
+  const attrs: string[] = [];
+  if (noborder) attrs.push(`data-noborder="${noborder}"`);
+  if (equalcells) attrs.push(`data-equalcells="${equalcells}"`);
+  const attrStr = attrs.length > 0 ? " " + attrs.join(" ") : "";
+  let html = `<table${attrStr}>`;
 
   const headerRegex = /\[th\]([\s\S]*?)\[\/th\]/gi;
   const headerMatches = [...raw.matchAll(headerRegex)];

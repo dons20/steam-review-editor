@@ -6,8 +6,14 @@ interface PromptOptions {
   defaultValue?: string;
 }
 
+interface ConfirmOptions {
+  title: string;
+  message: string;
+}
+
 interface PromptContextType {
   prompt: (options: PromptOptions | string) => Promise<string | null>;
+  confirm: (options: ConfirmOptions) => Promise<boolean>;
 }
 
 const PromptContext = createContext<PromptContextType | undefined>(undefined);
@@ -24,6 +30,8 @@ export const PromptProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState("");
   const [defaultValue, setDefaultValue] = useState("");
+  const [mode, setMode] = useState<"prompt" | "confirm">("prompt");
+  const [confirmMessage, setConfirmMessage] = useState("");
   const [resolvePromise, setResolvePromise] = useState<(value: string | null) => void>();
 
   const prompt = (options: PromptOptions | string): Promise<string | null> => {
@@ -31,7 +39,20 @@ export const PromptProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       const opts = typeof options === "string" ? { title: options } : options;
       setTitle(opts.title);
       setDefaultValue(opts.defaultValue || "");
+      setMode("prompt");
+      setConfirmMessage("");
       setResolvePromise(() => resolve);
+      setIsOpen(true);
+    });
+  };
+
+  const confirm = (options: ConfirmOptions): Promise<boolean> => {
+    return new Promise((resolve) => {
+      setTitle(options.title);
+      setConfirmMessage(options.message);
+      setDefaultValue("");
+      setMode("confirm");
+      setResolvePromise(() => (value: string | null) => resolve(value !== null));
       setIsOpen(true);
     });
   };
@@ -44,12 +65,14 @@ export const PromptProvider: React.FC<{ children: ReactNode }> = ({ children }) 
   };
 
   return (
-    <PromptContext.Provider value={{ prompt }}>
+    <PromptContext.Provider value={{ prompt, confirm }}>
       {children}
       <PromptModal
         open={isOpen}
         title={title}
         defaultValue={defaultValue}
+        mode={mode}
+        confirmMessage={confirmMessage}
         onClose={() => handleClose(null)}
         onSubmit={(val) => handleClose(val)}
       />

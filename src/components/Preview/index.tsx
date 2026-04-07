@@ -1,6 +1,7 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect, useRef } from "react";
 import { User, Settings, Shuffle } from "lucide-react";
 import { IconRecommended, IconNotRecommended, IconStar } from "components/Icons";
+import { trackError, trackEvent } from "util/analytics";
 import { AppContext } from "../Content";
 import type { PreviewSettings } from "./PreviewSettingsModal";
 import { randomizeSettings } from "./previewUtils";
@@ -42,7 +43,7 @@ function loadSettings(): PreviewSettings {
     const raw = localStorage.getItem(LS_KEY);
     if (raw) return JSON.parse(raw) as PreviewSettings;
   } catch {
-    // ignore parse errors
+    trackError("localstorage", "preview-settings-parse-error", "Preview settings could not be restored");
   }
   return randomizeSettings();
 }
@@ -52,16 +53,24 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
 
   const [settings, setSettings] = useState<PreviewSettings>(loadSettings);
   const [modalOpen, setModalOpen] = useState(false);
+  const hasPersistedInitialSettings = useRef(false);
 
   useEffect(() => {
     try {
       localStorage.setItem(LS_KEY, JSON.stringify(settings));
+
+      if (hasPersistedInitialSettings.current) {
+        trackEvent("preview-used", "Preview settings updated");
+      } else {
+        hasPersistedInitialSettings.current = true;
+      }
     } catch {
-      // quota exceeded or private browsing
+      trackError("localstorage", "preview-settings-save-error", "Unable to save preview settings");
     }
   }, [settings]);
 
   const handleRandomize = () => {
+    trackEvent("preview-used", "Preview randomized");
     setSettings(randomizeSettings());
   };
 
@@ -78,7 +87,14 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
               <span className="action-tooltip">Randomize</span>
             </div>
             <div className="tooltip-wrapper">
-              <button className="preview-action-btn" onClick={() => setModalOpen(true)} aria-label="Preview settings">
+              <button
+                className="preview-action-btn"
+                onClick={() => {
+                  trackEvent("preview-used", "Preview settings opened");
+                  setModalOpen(true);
+                }}
+                aria-label="Preview settings"
+              >
                 <Settings size={15} />
               </button>
               <span className="action-tooltip">Preview Settings</span>
@@ -144,6 +160,7 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
           settings={settings}
           onChange={setSettings}
           onRandomize={() => {
+            trackEvent("preview-used", "Preview randomized from settings");
             setSettings(randomizeSettings());
           }}
         />

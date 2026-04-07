@@ -1,0 +1,266 @@
+// ── Overlay ─────────────────────────────────────────────────────────────────
+.tm-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay-backdrop);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: tm-overlay-in 0.18s ease;
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html.can-use-backdrop-filter .tm-overlay {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+}
+
+@keyframes tm-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// ── Modal card ───────────────────────────────────────────────────────────────
+.tm-modal {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  width: min(560px, calc(100vw - 2rem));
+  animation: tm-modal-in 0.2s ease;
+  overflow: hidden;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
+}
+
+@keyframes tm-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// ── Header ───────────────────────────────────────────────────────────────────
+.tm-modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border-default);
+  flex-shrink: 0;
+}
+
+.tm-modal__title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--text-strong);
+  margin: 0;
+  transition: color 0.2s ease;
+}
+
+.tm-modal__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text-strong);
+  }
+}
+
+// ── Body (template card list) ────────────────────────────────────────────────
+.tm-modal__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+// ── Template card ────────────────────────────────────────────────────────────
+.tm-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: var(--surface-panel);
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
+
+  &:hover {
+    background: var(--surface-hover);
+    border-color: var(--interactive-accent);
+  }
+
+  &:active {
+    transform: scale(0.99);
+  }
+
+  &--pending {
+    border-color: var(--interactive-accent);
+    background: var(--surface-selection);
+  }
+
+  &__label {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text-strong);
+    transition: color 0.15s ease;
+  }
+
+  &__desc {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    transition: color 0.15s ease;
+  }
+}
+
+// ── Confirmation footer ──────────────────────────────────────────────────────
+.tm-modal__confirm {
+  border-top: 1px solid var(--border-default);
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-shrink: 0;
+  background: var(--surface-panel);
+  animation: tm-confirm-in 0.15s ease;
+}
+
+@keyframes tm-confirm-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.tm-confirm__message {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  font-size: 0.83rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  flex: 1;
+
+  strong {
+    color: var(--text-strong);
+    font-weight: 600;
+  }
+}
+
+.tm-confirm__icon {
+  color: var(--state-warning, #f59e0b);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.tm-confirm__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.tm-confirm__cancel {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid var(--border-default);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+
+  &:hover {
+    background: var(--surface-hover);
+    color: var(--text-strong);
+    border-color: var(--border-subtle);
+  }
+}
+
+.tm-confirm__ok {
+  padding: 0.4rem 0.9rem;
+  border: none;
+  border-radius: 5px;
+  background: var(--state-danger, #ef4444);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.12s ease;
+
+  &:hover {
+    background: var(--state-danger-hover, #dc2626);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+}
+
+// ── Mobile ───────────────────────────────────────────────────────────────────
+@media (max-width: 480px) {
+  .tm-modal {
+    max-height: 95vh;
+    width: calc(100vw - 1rem);
+    border-radius: 10px 10px 0 0;
+    align-self: flex-end;
+  }
+
+  .tm-modal__confirm {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .tm-confirm__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

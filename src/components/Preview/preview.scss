@@ -1,18 +1,18 @@
-$background-color: #111a24;
-$body-color: #8091a2;
+$background-color: var(--color-steam-blue-950);
+$body-color: var(--color-slate-500);
 $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
-@use "../../assets/styles/master";
+@use "../../assets/styles/breakpoints";
 
 .preview {
   display: grid;
   grid-gap: 30px;
-  grid-template-columns: repeat(auto-fill, minmax(500px, auto));
+  grid-template-columns: minmax(550px, auto) minmax(300px, 1fr);
   margin-top: 2vh;
-  max-width: master.$breakpoint-large;
+  max-width: breakpoints.$breakpoint-large;
   width: 100%;
 
-  @media (max-width: master.$breakpoint-medium) {
+  @media (max-width: breakpoints.$breakpoint-medium-large) {
     grid-template-columns: 1fr;
   }
 
@@ -22,14 +22,14 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
   .body {
     align-items: flex-start;
-    background: #111a24;
-    background: linear-gradient(to bottom, #111923, #17212e 50%);
+    background: var(--color-steam-blue-950);
+    background: linear-gradient(to bottom, var(--color-slate-950), var(--color-steam-blue-800) 50%);
     display: grid;
-    grid-template-columns: 1fr 2fr;
+    grid-template-columns: minmax(0, 229px) minmax(0, 2fr);
     grid-row-gap: 10px;
     padding: 0.5rem;
 
-    @media only screen and (max-width: master.$breakpoint-small) {
+    @media only screen and (max-width: breakpoints.$breakpoint-medium) {
       grid-template-columns: 100%;
       grid-template-rows: auto auto 1fr;
       padding: 1rem;
@@ -42,7 +42,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
   }
 
   .profile {
-    color: #fff;
+    color: var(--color-white);
     align-items: flex-start;
     column-gap: 0.5rem;
     display: grid;
@@ -52,8 +52,8 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     padding-right: 1rem;
 
     .avatar-container {
-      background-color: #1a3a5c;
-      border: 1px solid #4b8fc4;
+      background-color: var(--color-steam-blue-600);
+      border: 1px solid var(--color-steam-blue-400);
       border-radius: 3px;
       align-items: center;
       display: inline-flex;
@@ -70,7 +70,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     }
 
     .details {
-      color: #c1dbf4;
+      color: var(--color-slate-300);
       font-size: 1rem;
 
       .username {
@@ -95,15 +95,15 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     color: $body-color;
 
     & a {
-      color: #ebebeb;
+      color: var(--color-slate-100);
       text-decoration: underline;
       &:hover {
-        color: #fff;
+        color: var(--color-white);
       }
     }
-    
+
     & blockquote {
-      border: 1px solid #56707f;
+      border: 1px solid var(--color-slate-500);
       border-radius: 3px;
       display: grid;
       margin: 20px;
@@ -124,31 +124,32 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
         content: attr(data-author) ": ";
         font-size: 11px;
         font-weight: bold;
+        font-style: italic;
         position: absolute;
-        margin-left: 32%;
+        margin-left: 120px;
         top: 5px;
       }
     }
-    
+
     & h1 {
-      color: #5aa9d6;
+      color: var(--color-blue-400);
       font-size: 18px;
     }
-    
+
     & h2 {
-      color: #5aa9d6;
+      color: var(--color-blue-400);
       font-size: 16px;
     }
-    
+
     & h3 {
-      color: #5aa9d6;
+      color: var(--color-blue-400);
       font-size: 14px;
     }
 
     & pre {
-      background-color: #1b2838;
-      border: 1px solid #3d4f5c;
-      color: #c1dbf4;
+      background-color: var(--color-steam-blue-900);
+      border: 1px solid var(--color-slate-800);
+      color: var(--color-slate-300);
       font-family: "Courier New", monospace;
       padding: 0.5rem;
       white-space: pre-wrap;
@@ -156,8 +157,8 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     }
 
     & code {
-      background-color: #1b2838;
-      color: #c1dbf4;
+      background-color: var(--color-steam-blue-900);
+      color: var(--color-slate-300);
       font-family: "Courier New", monospace;
       padding: 0.2rem 0.4rem;
     }
@@ -173,7 +174,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
     & hr {
       border: none;
-      border-top: 1px solid #3d4f5c;
+      border-top: 1px solid var(--color-slate-800);
       margin: 1rem 0;
     }
 
@@ -181,21 +182,517 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
       border-collapse: collapse;
       width: 100%;
       margin: 1rem 0;
-      
+
       th,
       td {
-        border: 1px solid #3d4f5c;
+        border: 1px solid var(--color-slate-800);
         padding: 0.5rem;
         text-align: left;
       }
 
       th {
-        background-color: #1b2838;
+        background-color: var(--color-steam-blue-900);
         font-weight: bold;
       }
 
       td {
-        background-color: rgba(27, 40, 56, 0.3);
+        background-color: var(--surface-steam-soft);
+      }
+
+      &[data-noborder="1"] {
+        th,
+        td {
+          border: none;
+        }
+      }
+
+      &[data-equalcells="1"] {
+        table-layout: fixed;
+      }
+    }
+
+    // Steam widget palette
+    $_sw-bg: #1b2838;
+    $_sw-bg-deep: #16202d;
+    $_sw-surface: #233246;
+    $_sw-surface-alt: #2d4359;
+    $_sw-border: #31485f;
+    $_sw-border-soft: rgba(255, 255, 255, 0.08);
+    $_sw-text: #c0c0c0;
+    $_sw-text-strong: #f4f7fb;
+    $_sw-link: #66c0f4;
+    $_sw-muted: #93a2b3;
+    $_sw-green: #6fa720;
+    $_sw-green-dark: #588a1b;
+    $_sw-green-text: #d2efa9;
+    $_sw-price-bg: #070b11;
+    $_sw-shadow: rgba(0, 0, 0, 0.34);
+
+    // Shared card base
+    & .steam-workshop-embed,
+    & .steam-store-embed,
+    & .youtube-embed {
+      border: 1px solid $_sw-border;
+      border-radius: 6px;
+      box-shadow:
+        0 12px 28px $_sw-shadow,
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0.85rem 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    // ── Workshop embed ──
+    & .steam-workshop-embed {
+      align-items: stretch;
+      background: linear-gradient(180deg, #223246 0%, $_sw-bg 100%);
+      display: flex;
+      padding: 14px;
+
+      .sw-thumbnail {
+        background: linear-gradient(145deg, #7ab7c9 0%, #4d8195 48%, #243949 100%);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        flex-shrink: 0;
+        height: 88px;
+        margin-right: 14px;
+        overflow: hidden;
+        position: relative;
+        width: 88px;
+      }
+
+      .sw-thumbnail-art {
+        background: linear-gradient(180deg, #8f86ac 0 48%, #2b3746 48% 100%);
+        inset: 0;
+        position: absolute;
+      }
+
+      .sw-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 6px;
+        justify-content: center;
+        min-width: 0;
+        padding: 4px 4px 4px 0;
+      }
+
+      .sw-title {
+        color: $_sw-link;
+        font-size: 18px;
+        line-height: 1.2;
+        overflow: hidden;
+        text-decoration-color: rgba(109, 207, 246, 0.6);
+        text-decoration-line: underline;
+        text-decoration-style: dotted;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .sw-subtitle {
+        color: $_sw-text-strong;
+        font-size: 15px;
+        line-height: 1.2;
+      }
+
+      .sw-author {
+        color: #9fb2c3;
+        font-size: 13px;
+        line-height: 1.2;
+      }
+
+      .sw-description {
+        color: $_sw-text;
+        display: -webkit-box;
+        font-size: 13px;
+        line-clamp: 2;
+        line-height: 1.45;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
+    }
+
+    // ── Store embed ──
+    & .steam-store-embed {
+      background: linear-gradient(180deg, #39424d 0%, #323a45 100%);
+      border-color: #495261;
+      color: $_sw-text;
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+      margin: 30px 0;
+
+      .ss-header {
+        align-items: flex-start;
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        padding: 18px 16px 10px 20px;
+      }
+
+      .ss-header-title {
+        color: #ffffff;
+        font-size: 28px;
+        font-weight: 400;
+        letter-spacing: -0.02em;
+        line-height: 1.05;
+      }
+
+      .ss-header-badge {
+        color: #9aa7b3;
+        flex-shrink: 0;
+        display: flex;
+        justify-content: center;
+        line-height: 0;
+      }
+
+      .ss-header-badge svg {
+        display: block;
+        height: 28px;
+        width: 28px;
+      }
+
+      .ss-body {
+        align-items: flex-start;
+        display: flex;
+        gap: 14px;
+        padding: 0 16px 14px 20px;
+      }
+
+      .ss-cover {
+        background: linear-gradient(135deg, #1e3043 0%, #203849 40%, #101722 100%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        flex-shrink: 0;
+        height: 69px;
+        overflow: hidden;
+        position: relative;
+        width: 184px;
+      }
+
+      .ss-cover-art {
+        background: linear-gradient(180deg, #b1836b 0 47%, #2b2f3a 47% 100%);
+        inset: 0;
+        position: absolute;
+      }
+
+      .ss-cover-accent {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
+        clip-path: polygon(0 0, 22% 0, 36% 100%, 0 100%);
+        inset: 0;
+        mix-blend-mode: screen;
+        opacity: 0.28;
+        position: absolute;
+      }
+
+      .ss-description {
+        color: #d2d7dd;
+        display: -webkit-box;
+        flex: 1;
+        font-size: 13px;
+        font-weight: 400;
+        line-clamp: 4;
+        line-height: 1.35;
+        min-width: 0;
+        padding-top: 4px;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        overflow: hidden;
+      }
+
+      .ss-footer {
+        align-items: flex-end;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        justify-content: space-between;
+        padding: 0 16px 14px 20px;
+      }
+
+      .ss-utility {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .ss-platforms {
+        display: flex;
+        gap: 6px;
+      }
+
+      .ss-platform {
+        align-items: center;
+        background: #eff2f5;
+        border-radius: 2px;
+        box-shadow:
+          0 1px 0 rgba(255, 255, 255, 0.12),
+          inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+        display: flex;
+        height: 22px;
+        justify-content: center;
+        position: relative;
+        width: 30px;
+      }
+
+      .ss-platform svg {
+        color: #526173;
+        display: block;
+        height: 15px;
+        width: 15px;
+      }
+
+      .ss-cta {
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.22);
+        display: flex;
+        margin-left: auto;
+        position: absolute;
+        right: 20px;
+        bottom: -20px;
+        font-family: "Motiva Sans Test", "Raleway", sans-serif;
+      }
+
+      .ss-price {
+        align-items: center;
+        background: $_sw-price-bg;
+        color: #ffffff;
+        display: flex;
+        font-size: 13px;
+        line-height: 1;
+        padding: 12px;
+        white-space: nowrap;
+        border-radius: 2px 0 0 2px;
+      }
+
+      .ss-buy {
+        align-items: center;
+        background: linear-gradient(to right, $_sw-green 5%, $_sw-green-dark 95%);
+        color: $_sw-green-text;
+        display: flex;
+        font-size: 14px;
+        justify-content: center;
+        line-height: 1;
+        min-width: 120px;
+        padding: 12px;
+        white-space: nowrap;
+        border-radius: 0 2px 2px 0;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    // ── YouTube embed ──
+    & .youtube-embed {
+      align-items: stretch;
+      background: linear-gradient(60deg, rgba(87, 92, 104, 0.3) 5%, rgba(255, 255, 255, 0.05) 95%);
+      display: flex;
+      padding: 14px 16px 16px 12px;
+
+      .yt-thumbnail {
+        background: linear-gradient(135deg, #334d60 0%, #1b2c3d 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        flex-shrink: 0;
+        height: 88px;
+        margin-right: 14px;
+        overflow: hidden;
+        position: relative;
+        width: 117px;
+      }
+
+      .yt-thumbnail::after {
+        background: rgba(12, 15, 19, 0.42);
+        border-radius: 999px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+        content: "";
+        height: 46px;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 46px;
+      }
+
+      .yt-thumbnail-art {
+        background: linear-gradient(180deg, #69a579 0 47%, #273343 47% 100%);
+        inset: 0;
+        position: absolute;
+      }
+
+      .yt-badge {
+        background: linear-gradient(180deg, rgba(16, 20, 24, 0.88) 0%, rgba(8, 10, 12, 0.92) 100%);
+        border-radius: 999px;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        height: 20px;
+        left: 10px;
+        position: absolute;
+        top: 10px;
+        width: 34px;
+        z-index: 1;
+      }
+
+      .yt-badge::before,
+      .yt-badge::after {
+        background: rgba(255, 255, 255, 0.75);
+        border-radius: 999px;
+        content: "";
+        height: 2px;
+        left: 9px;
+        position: absolute;
+        width: 16px;
+      }
+
+      .yt-badge::before {
+        top: 7px;
+      }
+
+      .yt-badge::after {
+        top: 11px;
+      }
+
+      .yt-play {
+        border-color: transparent transparent transparent rgba(255, 255, 255, 0.92);
+        border-style: solid;
+        border-width: 10px 0 10px 17px;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35));
+        height: 0;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-40%, -50%);
+        width: 0;
+        z-index: 1;
+      }
+
+      .yt-body {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        min-width: 0;
+        padding-top: 2px;
+      }
+
+      .yt-title {
+        border-bottom: 1px dotted rgba(109, 207, 246, 0.6);
+        font-size: 15px;
+        margin-bottom: 6px;
+        overflow: hidden;
+        font-weight: 300;
+        font-family: $primary-font;
+      }
+
+      .yt-title-label,
+      .yt-title-text {
+        display: inline;
+      }
+
+      .yt-title-label {
+        color: #c6d4df;
+      }
+
+      .yt-title-text {
+        color: #aad8ec;
+      }
+
+      .yt-views {
+        color: $_sw-text;
+        font-size: 14px;
+        padding: 4px 0;
+      }
+
+      .yt-description {
+        color: $_sw-text;
+        display: -webkit-box;
+        font-size: 14px;
+        line-clamp: 3;
+        line-height: 1.45;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+        overflow: hidden;
+      }
+    }
+
+    @media (max-width: 700px) {
+      & .steam-workshop-embed,
+      & .youtube-embed {
+        flex-direction: column;
+      }
+
+      & .steam-workshop-embed {
+        .sw-thumbnail {
+          height: 140px;
+          margin-right: 0;
+          width: 100%;
+        }
+
+        .sw-title {
+          white-space: normal;
+        }
+      }
+
+      & .steam-store-embed {
+        .ss-header {
+          padding-bottom: 12px;
+        }
+
+        .ss-header-title {
+          font-size: 24px;
+        }
+
+        .ss-header-badge {
+          height: 52px;
+          width: 52px;
+        }
+
+        .ss-body {
+          flex-direction: column;
+        }
+
+        .ss-cover {
+          height: 144px;
+          width: 100%;
+        }
+
+        .ss-description {
+          font-size: 13px;
+        }
+
+        .ss-footer {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .ss-cta {
+          margin-left: 0;
+          width: 100%;
+        }
+
+        .ss-price,
+        .ss-buy {
+          justify-content: center;
+        }
+
+        .ss-price {
+          flex: 0 0 auto;
+        }
+
+        .ss-buy {
+          flex: 1;
+        }
+      }
+
+      & .youtube-embed {
+        .yt-thumbnail {
+          height: 168px;
+          margin-right: 0;
+          width: 100%;
+        }
+
+        .yt-title {
+          font-size: 17px;
+        }
       }
     }
 
@@ -209,21 +706,21 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     // Custom Steam elements
     & .spoiler,
     & div[data-type="spoiler"] {
-      background-color: #000;
-      color: #000;
+      background-color: var(--color-black);
+      color: var(--color-black);
       display: inline-block;
       padding: 0 3px;
       cursor: pointer;
       &:hover {
-        color: #fff;
+        color: var(--color-white);
       }
     }
 
     & .noparse,
     & pre[data-type="noparse"] {
-      background-color: #1b2838;
-      border: 1px solid #3d4f5c;
-      color: #c1dbf4;
+      background-color: var(--color-steam-blue-900);
+      border: 1px solid var(--color-slate-800);
+      color: var(--color-slate-300);
       font-family: "Courier New", monospace;
       padding: 0.5rem;
       white-space: pre-wrap;
@@ -231,16 +728,16 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
     & .quote,
     & blockquote[data-type="quote"] {
-      border: 1px solid #56707f;
+      border: 1px solid var(--color-slate-500);
       border-radius: 3px;
-      padding: 1rem;
+      padding: 12px;
       margin: 1rem 0;
-      background-color: rgba(27, 40, 56, 0.3);
+      background-color: var(--surface-steam-soft);
     }
   }
 
   .code {
-    border: 1px solid #535354;
+    border: 1px solid var(--color-slate-700);
     border-radius: 3px;
     margin: 20px;
     padding: 12px;
@@ -283,10 +780,10 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
   }
 
   .action-tooltip {
-    background: #333;
+    background: var(--surface-tooltip);
     border-radius: 4px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
-    color: #fff;
+    box-shadow: 0 3px 8px var(--shadow-color-strong);
+    color: var(--text-tooltip);
     font-size: 0.72rem;
     font-weight: 500;
     left: 50%;
@@ -296,7 +793,9 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     position: absolute;
     top: calc(100% + 6px);
     transform: translateY(-4px) translateX(-50%);
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
     white-space: nowrap;
     z-index: 10;
   }
@@ -306,17 +805,20 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     background: transparent;
     border: 1px solid transparent;
     border-radius: 4px;
-    color: rgba(255,255,255,0.35);
+    color: var(--interactive-ghost-text);
     cursor: pointer;
     display: flex;
     justify-content: center;
     padding: 0.3rem;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    transition:
+      color 0.15s,
+      border-color 0.15s,
+      background 0.15s;
 
     &:hover {
-      background: rgba(255,255,255,0.07);
-      border-color: rgba(255,255,255,0.15);
-      color: rgba(255,255,255,0.8);
+      background: var(--surface-hover);
+      border-color: var(--interactive-ghost-border);
+      color: var(--interactive-ghost-text-strong);
     }
   }
 
@@ -324,7 +826,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     background-image: url("../../assets/img/rule.png");
     background-position: bottom left;
     background-repeat: no-repeat;
-    color: #fff;
+    color: var(--color-white);
     font-size: 17px;
     font-weight: 300;
     letter-spacing: 2px;
@@ -340,22 +842,26 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
     font-family: $primary-font;
     font-display: swap;
     font-size: 1rem;
-    line-height: 1.7rem;
+    line-height: 1.1rem;
     white-space: pre-line;
     overflow: hidden;
+    max-width: 780px;
+    width: 100%;
+    margin: 0 auto;
   }
 
   .markupBody {
-    background: #111a24;
-    background: linear-gradient(to bottom, #111923, #17212e 50%);
-    color: #f4f4f4;
+    background: var(--color-steam-blue-950);
+    background: linear-gradient(to bottom, var(--color-slate-950), var(--color-steam-blue-800) 50%);
+    color: var(--color-slate-50);
     font-family: monospace;
     margin: 0;
     padding: 1.5rem;
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow-x: auto;
-    
+    max-width: 780px;
+
     .empty-preview-message {
       display: flex;
       flex-direction: column;
@@ -363,14 +869,14 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
       justify-content: center;
       text-align: center;
       padding: 2rem;
-      color: #a1adba;
-      
+      color: var(--color-slate-400);
+
       p {
         margin: 0.5rem 0;
         font-family: Arial, sans-serif;
         white-space: normal;
       }
-      
+
       .hint {
         font-size: 0.9rem;
         opacity: 0.7;
@@ -385,13 +891,14 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
   }
 
   .recTitle {
+    color: var(--color-slate-100);
     display: block;
     line-height: normal;
   }
 
   .stats {
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #d6d7d8;
+    background-color: var(--surface-steam-soft);
+    color: var(--color-slate-100);
     display: grid;
     font-size: 16px;
     font-weight: 500;
@@ -403,13 +910,13 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
   .subtext,
   .datePosted {
-    color: #8091A2;
+    color: var(--color-slate-500);
     display: block;
     font-weight: 300;
     font-size: 11px;
     line-height: 1rem;
   }
-  
+
   .datePosted {
     font-size: 10px;
     opacity: 0.6;
@@ -421,12 +928,12 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
   /* Styles for Preview Elements */
   .spoiler {
-    background-color: #000;
-    color: #000;
+    background-color: var(--color-black);
+    color: var(--color-black);
     display: inline-block;
     padding: 0 3px;
     &:hover {
-      color: #fff;
+      color: var(--color-white);
     }
   }
 }

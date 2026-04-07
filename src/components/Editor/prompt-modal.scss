@@ -1,62 +1,8 @@
-@use "../../assets/styles/master";
-
-// ── Theme variables ─────────────────────────────────────────────────────────
-.prompt-modal-overlay {
-  --pm-bg:          #ffffff;
-  --pm-border:      #e8e8e8;
-  --pm-header-border: #eee;
-  --pm-title:       #1a1a2e;
-  --pm-close-hover-bg: #f0f0f0;
-  --pm-close-hover-color: #333;
-  --pm-footer-border: #eee;
-  
-  --pm-input-bg:    #ffffff;
-  --pm-input-border:#cccccc;
-  --pm-input-text:  #333333;
-  --pm-input-focus: #095ea9;
-
-  --pm-btn-primary-bg:    #0275d8;
-  --pm-btn-primary-hover: #0267be;
-  --pm-btn-primary-color: #fff;
-  
-  --pm-btn-cancel-bg:     #f0f0f0;
-  --pm-btn-cancel-hover:  #e0e0e0;
-  --pm-btn-cancel-color:  #333;
-
-  --pm-shadow:      rgba(0, 0, 0, 0.25);
-
-  // ── Dark mode overrides ────────────────────────────────────────────────────
-  &[data-theme="dark"] {
-    --pm-bg:          #1b2838;
-    --pm-border:      #3d4f5c;
-    --pm-header-border: rgba(61, 79, 92, 0.7);
-    --pm-title:       #c1dbf4;
-    --pm-close-hover-bg: rgba(255, 255, 255, 0.08);
-    --pm-close-hover-color: #c1dbf4;
-    --pm-footer-border: rgba(61, 79, 92, 0.7);
-
-    --pm-input-bg:    #111923;
-    --pm-input-border:#2e4055;
-    --pm-input-text:  #c6d4df;
-    --pm-input-focus: #5aa9d6;
-
-    --pm-btn-primary-bg:    #0275d8;
-    --pm-btn-primary-hover: #0267be;
-    --pm-btn-primary-color: #fff;
-    
-    --pm-btn-cancel-bg:     #2e4055;
-    --pm-btn-cancel-hover:  #3d4f5c;
-    --pm-btn-cancel-color:  #c6d4df;
-
-    --pm-shadow:      rgba(0, 0, 0, 0.55);
-  }
-}
-
 // ── Overlay ─────────────────────────────────────────────────────────────────
 .prompt-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--overlay-backdrop);
   backdrop-filter: blur(3px);
   z-index: 2000;
   display: flex;
@@ -72,10 +18,10 @@
 
 // ── Modal card ─────────────────────────────────────────────────────────────
 .prompt-modal {
-  background: var(--pm-bg);
-  border: 1px solid var(--pm-border);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-default);
   border-radius: 12px;
-  box-shadow: 0 20px 60px var(--pm-shadow);
+  box-shadow: var(--shadow-xl);
   display: flex;
   flex-direction: column;
   width: min(480px, calc(100vw - 2rem));
@@ -95,14 +41,14 @@
   align-items: center;
   justify-content: space-between;
   padding: 1.2rem 1.5rem 1rem;
-  border-bottom: 1px solid var(--pm-header-border);
+  border-bottom: 1px solid var(--border-default);
   flex-shrink: 0;
 }
 
 .prompt-modal__title {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--pm-title);
+  color: var(--text-strong);
   margin: 0;
   transition: color 0.2s ease;
 }
@@ -116,13 +62,13 @@
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #888;
+  color: var(--text-muted);
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
 
   &:hover {
-    background: var(--pm-close-hover-bg);
-    color: var(--pm-close-hover-color);
+    background: var(--surface-hover);
+    color: var(--text-strong);
   }
 }
 
@@ -135,21 +81,28 @@
   width: 100%;
   padding: 0.75rem 1rem;
   font-size: 1rem;
-  border: 1px solid var(--pm-input-border);
+  border: 1px solid var(--border-subtle);
   border-radius: 6px;
-  background: var(--pm-input-bg);
-  color: var(--pm-input-text);
+  background: var(--surface-panel-alt);
+  color: var(--text-primary);
   outline: none;
   transition: all 0.2s ease;
 
   &:focus {
-    border-color: var(--pm-input-focus);
-    box-shadow: 0 0 0 3px rgba(9, 94, 169, 0.15);
+    border-color: var(--interactive-accent);
+    box-shadow: 0 0 0 3px var(--focus-ring);
   }
 
   &::placeholder {
-    color: #999;
+    color: var(--text-muted);
   }
+}
+
+.prompt-modal__message {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  line-height: 1.5;
 }
 
 // ── Footer ─────────────────────────────────────────────────────────────────
@@ -158,8 +111,8 @@
   justify-content: flex-end;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid var(--pm-footer-border);
-  background: rgba(0,0,0,0.02);
+  border-top: 1px solid var(--border-default);
+  background: var(--surface-tint);
   flex-shrink: 0;
 }
 
@@ -179,19 +132,19 @@
 }
 
 .prompt-modal__cancel-btn {
-  background: var(--pm-btn-cancel-bg);
-  color: var(--pm-btn-cancel-color);
+  background: var(--surface-muted);
+  color: var(--text-primary);
 
   &:hover {
-    background: var(--pm-btn-cancel-hover);
+    background: var(--surface-hover);
   }
 }
 
 .prompt-modal__submit-btn {
-  background: var(--pm-btn-primary-bg);
-  color: var(--pm-btn-primary-color);
+  background: var(--interactive-primary);
+  color: var(--text-inverse);
 
   &:hover {
-    background: var(--pm-btn-primary-hover);
+    background: var(--interactive-primary-hover);
   }
 }

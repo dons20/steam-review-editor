@@ -1,3 +1,5 @@
+@use "./assets/styles/tokens";
+
 *,
 *:before,
 *:after {
@@ -8,13 +10,15 @@ html,
 body,
 #root {
   width: 100%;
+  min-height: 100%;
 }
 
 a {
-  color: #0275d8;
+  color: var(--interactive-primary);
   cursor: pointer;
   font-weight: bold;
   text-decoration: none;
+  transition: color 0.2s ease;
 
   :hover {
     text-decoration: underline;
@@ -22,11 +26,13 @@ a {
 }
 
 body {
-  background-color: #1b2838;
+  background-color: var(--color-slate-900);
   box-sizing: border-box;
+  color: var(--color-slate-200);
   margin: 0;
   padding: 0;
   font-size: 16px;
+  transition: background-color 0.2s ease, color 0.2s ease;
   font-family:
     "Raleway",
     -apple-system,
@@ -214,13 +220,3 @@ button {
   cursor: pointer;
 }
 
-:root {
-  --white: #fff;
-  --black: #000;
-  --gray-1: rgba(61, 37, 20, .05);
-  --gray-2: rgba(61, 37, 20, .08);
-  --gray-3: rgba(61, 37, 20, .12);
-  --gray-4: rgba(53, 38, 28, .3);
-  --gray-5: rgba(28, 25, 23, .6);
-  --light-gray: rgba(255, 255, 255, .3);
-}

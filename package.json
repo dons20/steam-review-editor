@@ -1,6 +1,6 @@
 {
   "name": "steam-review-editor",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -10,6 +10,7 @@
     "start": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
+    "generate-pwa-assets": "pwa-assets-generator --preset minimal-2023 public/favicon.svg",
     "test": "vitest"
   },
   "eslintConfig": {
@@ -56,7 +57,7 @@
     "react-toastify": "^11.0.5",
     "sass": "^1.99.0",
     "typescript": "^6.0.2",
-    "vite": "^8.0.3"
+    "vite": "^8.0.5"
   },
   "devDependencies": {
     "@rolldown/plugin-babel": "^0.2.2",
@@ -64,8 +65,11 @@
     "@types/node": "^25.5.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
+    "@vite-pwa/assets-generator": "^1.0.2",
     "babel-plugin-react-compiler": "^1.0.0",
+    "jsdom": "^29.0.1",
     "vite-plugin-babel": "^1.6.0",
+    "vite-plugin-pwa": "^1.2.0",
     "vitest": "^4.1.2"
   },
   "pnpm": {

@@ -35,9 +35,16 @@ export const insertTable = (editor: Editor) => {
   // editor.chain().blur().run();
 };
 
-export const clearContent = (editor: Editor) => {
-  if (window.confirm("Are you sure you want to clear all content?")) {
-    editor.commands.clearContent();
+export const clearContent = async (editor: Editor, confirm: any) => {
+  const confirmed = await confirm({
+    title: "Clear All Content",
+    message: "Are you sure you want to clear all content? This action cannot be undone.",
+  });
+  if (confirmed) {
+    editor.chain().focus().clearContent(true).run();
+    // Signal the editor host to cancel the pending debounced save and wipe
+    // localStorage immediately, so a page refresh won't restore old content.
+    window.dispatchEvent(new CustomEvent("steameditor:clearall"));
   }
 };
 
@@ -99,4 +106,53 @@ export const setHorizontalRule = (editor: Editor) => {
 
 export const clearFormatting = (editor: Editor) => {
   editor.chain().focus().unsetAllMarks().clearNodes().run();
+};
+
+export const insertSteamStore = async (editor: Editor, prompt: any) => {
+  const input = await prompt({ title: "Enter Steam store URL:" });
+  if (!input) return;
+  const match = String(input).match(/app\/(\d+)/i);
+  if (!match) return;
+  const appid = match[1];
+  editor
+    .chain()
+    .focus()
+    .insertContent({
+      type: "steamStoreEmbed",
+      attrs: { appid },
+    })
+    .run();
+};
+
+export const insertSteamWorkshop = async (editor: Editor, prompt: any) => {
+  const input = await prompt({ title: "Enter Steam Workshop URL:" });
+  if (!input) return;
+  const match = String(input).match(/[?&]id=(\d+)/i);
+  if (!match) return;
+  const workshopid = match[1];
+  editor
+    .chain()
+    .focus()
+    .insertContent({
+      type: "steamWorkshopEmbed",
+      attrs: { workshopid },
+    })
+    .run();
+};
+
+export const insertYouTube = async (editor: Editor, prompt: any) => {
+  const input = await prompt({ title: "Enter YouTube URL:" });
+  if (!input) return;
+  const str = String(input);
+  const match = str.match(/[?&]v=([-\w]+)/i) || str.match(/youtu\.be\/([-\w]+)/i);
+  if (!match) return;
+  const videoid = match[1];
+  editor
+    .chain()
+    .focus()
+    .insertContent({
+      type: "youtubeEmbed",
+      attrs: { videoid },
+    })
+    .run();
 };

@@ -7,11 +7,13 @@ interface PromptModalProps {
   open: boolean;
   title: string;
   defaultValue?: string;
+  mode?: "prompt" | "confirm";
+  confirmMessage?: string;
   onClose: () => void;
   onSubmit: (value: string) => void;
 }
 
-function PromptModal({ open, title, defaultValue = "", onClose, onSubmit }: PromptModalProps) {
+function PromptModal({ open, title, defaultValue = "", mode = "prompt", confirmMessage, onClose, onSubmit }: PromptModalProps) {
   const { modalTheme } = useModalTheme();
   const [value, setValue] = useState(defaultValue);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -19,9 +21,11 @@ function PromptModal({ open, title, defaultValue = "", onClose, onSubmit }: Prom
   useEffect(() => {
     if (open) {
       setValue(defaultValue);
-      setTimeout(() => inputRef.current?.focus(), 50);
+      if (mode === "prompt") {
+        setTimeout(() => inputRef.current?.focus(), 50);
+      }
     }
-  }, [open, defaultValue]);
+  }, [open, defaultValue, mode]);
 
   if (!open) return null;
 
@@ -42,14 +46,18 @@ function PromptModal({ open, title, defaultValue = "", onClose, onSubmit }: Prom
 
         <form onSubmit={handleSubmit}>
           <div className="prompt-modal__body">
-            <input
-              ref={inputRef}
-              type="text"
-              className="prompt-modal__input"
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-              placeholder="Enter value..."
-            />
+            {mode === "confirm" ? (
+              <p className="prompt-modal__message">{confirmMessage}</p>
+            ) : (
+              <input
+                ref={inputRef}
+                type="text"
+                className="prompt-modal__input"
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                placeholder="Enter value..."
+              />
+            )}
           </div>
 
           <div className="prompt-modal__footer">
@@ -57,7 +65,7 @@ function PromptModal({ open, title, defaultValue = "", onClose, onSubmit }: Prom
               Cancel
             </button>
             <button type="submit" className="prompt-modal__submit-btn">
-              OK
+              {mode === "confirm" ? "Confirm" : "OK"}
             </button>
           </div>
         </form>

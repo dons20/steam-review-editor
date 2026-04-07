@@ -168,6 +168,18 @@ function processElement(element: HTMLElement): string {
       if (dataType === "spoiler") {
         return `[spoiler]${content.trim()}[/spoiler]\n\n`;
       }
+      if (dataType === "steam-store-embed") {
+        const appid = element.getAttribute("data-appid") || "";
+        return `https://store.steampowered.com/app/${appid}/\n\n`;
+      }
+      if (dataType === "steam-workshop-embed") {
+        const workshopid = element.getAttribute("data-workshopid") || "";
+        return `https://steamcommunity.com/sharedfiles/filedetails/?id=${workshopid}\n\n`;
+      }
+      if (dataType === "youtube-embed") {
+        const videoid = element.getAttribute("data-videoid") || "";
+        return `https://www.youtube.com/watch?v=${videoid}\n\n`;
+      }
       return content;
     }
 
@@ -175,6 +187,13 @@ function processElement(element: HTMLElement): string {
       return `[hr][/hr]\n\n`;
 
     case "table": {
+      const noborder = element.getAttribute("data-noborder");
+      const equalcells = element.getAttribute("data-equalcells");
+      let options = "";
+      if (noborder === "1" && equalcells === "1") options = " noborder=1 equalcells=1";
+      else if (noborder === "1") options = " noborder=1";
+      else if (equalcells === "1") options = " equalcells=1";
+
       let tableContent = "";
       const rows = element.querySelectorAll("tr");
 
@@ -194,7 +213,7 @@ function processElement(element: HTMLElement): string {
         tableContent += "[/tr]\n";
       });
 
-      return `[table]\n${tableContent}[/table]\n\n`;
+      return `[table${options}]\n${tableContent}[/table]\n\n`;
     }
 
     case "thead":

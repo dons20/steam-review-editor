@@ -1,8 +1,7 @@
 .root {
   align-items: center;
-  background: rgba(0, 0, 0, 0.3);
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.3) 0, rgba(0, 0, 0, 0.5) 100%);
-  color: #b8b6b4;
+  background: linear-gradient(180deg, var(--overlay-panel-start) 0, var(--overlay-panel-end) 100%);
+  color: var(--color-slate-500);
   display: grid;
   justify-content: center;
   line-height: 1.69rem;
@@ -18,7 +17,7 @@
   }
 
   & .icon {
-    color: #fff;
+    color: var(--text-inverse);
     position: relative;
   }
 }
