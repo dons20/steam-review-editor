@@ -41,6 +41,11 @@ export {
   ArrowUp as IconTableUp,
   Star as IconStar,
   TableProperties as IconTableHeader,
+  RectangleHorizontal as IconBorderNone,
+  Columns2 as IconColumns,
+  Store as IconStore,
+  Wrench as IconWorkshop,
+  Clapperboard as IconYoutube,
 } from "lucide-react";
 
 export function IconBrandGithub(props: SVGProps<SVGSVGElement>) {

@@ -23,6 +23,9 @@ import {
   IconMinus,
   IconTrash,
   IconClearFormatting,
+  IconStore,
+  IconWorkshop,
+  IconYoutube,
 } from "components/Icons";
 import {
   addImage,
@@ -43,6 +46,9 @@ import {
   toggleNoParse,
   setHorizontalRule,
   clearFormatting,
+  insertSteamStore,
+  insertSteamWorkshop,
+  insertYouTube,
 } from "./tools";
 import "./toolbar.scss";
 import { useEditorReady } from "../useEditorReady";
@@ -83,7 +89,7 @@ const ToolbarDivider = () => <div className="toolbar-divider" />;
 export const Toolbar: React.FC = () => {
   const { editor } = useCurrentEditor();
   const ready = useEditorReady();
-  const { prompt } = usePrompt();
+  const { prompt, confirm } = usePrompt();
   const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   const handleAddLink = React.useCallback(async () => {
@@ -142,8 +148,8 @@ export const Toolbar: React.FC = () => {
   }, [editor]);
   const handleClearContent = React.useCallback(() => {
     trackEvent("editor-toolbar-used", "Toolbar action: clear content");
-    clearContent(editor);
-  }, [editor]);
+    clearContent(editor, confirm);
+  }, [editor, confirm]);
 
   const handleToggleBold = React.useCallback(() => {
     trackEvent("editor-toolbar-used", "Toolbar action: bold");
@@ -205,6 +211,18 @@ export const Toolbar: React.FC = () => {
     trackEvent("editor-toolbar-used", "Toolbar action: clear formatting");
     clearFormatting(editor);
   }, [editor]);
+  const handleInsertSteamStore = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: steam store");
+    insertSteamStore(editor, prompt);
+  }, [editor, prompt]);
+  const handleInsertSteamWorkshop = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: steam workshop");
+    insertSteamWorkshop(editor, prompt);
+  }, [editor, prompt]);
+  const handleInsertYouTube = React.useCallback(() => {
+    trackEvent("editor-toolbar-used", "Toolbar action: youtube");
+    insertYouTube(editor, prompt);
+  }, [editor, prompt]);
 
   return (
     <div className="toolbar">
@@ -292,6 +310,20 @@ export const Toolbar: React.FC = () => {
       <div className="toolbar-group">
         <ToolbarButton onClick={handleSetHorizontalRule} tooltip="Horizontal Rule">
           <IconMinus />
+        </ToolbarButton>
+      </div>
+
+      <ToolbarDivider />
+
+      <div className="toolbar-group">
+        <ToolbarButton onClick={handleInsertSteamStore} tooltip="Insert Steam Store">
+          <IconStore />
+        </ToolbarButton>
+        <ToolbarButton onClick={handleInsertSteamWorkshop} tooltip="Insert Steam Workshop">
+          <IconWorkshop />
+        </ToolbarButton>
+        <ToolbarButton onClick={handleInsertYouTube} tooltip="Insert YouTube">
+          <IconYoutube />
         </ToolbarButton>
       </div>
 

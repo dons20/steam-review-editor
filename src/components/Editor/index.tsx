@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState, useContext, useCallback } from "rea
 import { trackError, trackEvent, trackOncePerSession } from "util/analytics";
 import { htmlToSteamBBCode, cleanBBCode } from "util/htmlToSteamBBCode";
 import { AppContext, type AppContextType } from "components/Content";
-import { ArrowLeftRight, CircleHelp, Check } from "lucide-react";
+import { ArrowLeftRight, CircleHelp, Check, LayoutTemplate } from "lucide-react";
 import { steamBBCodeToHtml } from "util/steamBBCodeToHtml";
 import { useModalTheme } from "util/ThemeContext";
 import TiptapEditor from "./BaseEditor";
+import type { Template } from "components/TemplateModal/templates";
 
 const HelpModal = React.lazy(() => import("components/HelpModal"));
+const TemplateModal = React.lazy(() => import("components/TemplateModal"));
 
 export type EditorMode = "rich-text" | "markup";
 
@@ -70,6 +72,27 @@ function ReviewEditor() {
       trackOncePerSession("funnel-review-resumed", "Resumed a saved review draft");
     }
 
+    const handleClearAll = () => {
+      // Cancel any pending debounced save so the old content is never written back.
+      if (saveTimerRef.current) {
+        clearTimeout(saveTimerRef.current);
+        saveTimerRef.current = null;
+      }
+      if (hideTimerRef.current) {
+        clearTimeout(hideTimerRef.current);
+        hideTimerRef.current = null;
+      }
+      latestHtmlRef.current = "";
+      try {
+        localStorage.removeItem("content");
+        localStorage.removeItem("content-markup");
+      } catch {
+        // ignore storage access errors
+      }
+    };
+
+    window.addEventListener("steameditor:clearall", handleClearAll);
+
     return () => {
       if (saveTimerRef.current) {
         clearTimeout(saveTimerRef.current);
@@ -77,6 +100,7 @@ function ReviewEditor() {
       if (hideTimerRef.current) {
         clearTimeout(hideTimerRef.current);
       }
+      window.removeEventListener("steameditor:clearall", handleClearAll);
     };
   }, []);
 
@@ -134,8 +158,35 @@ function ReviewEditor() {
   );
 
   const isMarkup = editorMode === "markup";
+  const [contentKey, setContentKey] = useState(0);
   const [showHelp, setShowHelp] = useState(false);
+  const [showTemplates, setShowTemplates] = useState(false);
   const { modalTheme } = useModalTheme();
+
+  const hasContent = isMarkup
+    ? markupText.trim() !== ""
+    : latestHtmlRef.current.replace(/<[^>]+>/g, "").trim() !== "";
+
+  const handleTemplateInsert = useCallback(
+    (template: Template) => {
+      trackEvent("template-inserted", `Inserted template: ${template.label}`);
+      const html = template.html;
+      if (isMarkup) {
+        const bbcode = cleanBBCode(htmlToSteamBBCode(html));
+        setMarkupText(bbcode);
+        setHTMLContent(html);
+        scheduleAutoSave("content-markup", bbcode);
+      } else {
+        setInitialContent(html);
+        setHTMLContent(html);
+        latestHtmlRef.current = html;
+        scheduleAutoSave("content", html);
+        setContentKey(k => k + 1);
+      }
+      setShowTemplates(false);
+    },
+    [isMarkup, setHTMLContent, scheduleAutoSave]
+  );
 
   return (
     <div className={`editor__root ${isMarkup ? "markup" : ""}`} data-theme={modalTheme}>
@@ -151,6 +202,21 @@ function ReviewEditor() {
               </span>
             </div>
           )}
+          <div className="tooltip-wrapper">
+            <button
+              type="button"
+              className="mode-switch-btn"
+              onClick={() => {
+                trackEvent("template-modal-opened", "Opened the template picker");
+                setShowTemplates(true);
+              }}
+              aria-label="Open template picker"
+            >
+              <LayoutTemplate size={14} />
+              <span>Templates</span>
+            </button>
+            <span className="action-tooltip">Templates</span>
+          </div>
           <div className="tooltip-wrapper">
             <button
               type="button"
@@ -184,7 +250,16 @@ function ReviewEditor() {
         <HelpModal open={showHelp} onClose={() => setShowHelp(false)} />
       </React.Suspense>
 
-      {!isMarkup && <TiptapEditor content={initialContent} onUpdate={handleUpdate} />}
+      <React.Suspense fallback={null}>
+        <TemplateModal
+          open={showTemplates}
+          hasContent={hasContent}
+          onClose={() => setShowTemplates(false)}
+          onInsert={handleTemplateInsert}
+        />
+      </React.Suspense>
+
+      {!isMarkup && <TiptapEditor key={contentKey} content={initialContent} onUpdate={handleUpdate} />}
 
       {isMarkup && (
         <div className="markup-editor-wrapper">

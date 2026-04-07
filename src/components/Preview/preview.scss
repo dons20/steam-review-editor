@@ -197,6 +197,246 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
       td {
         background-color: var(--surface-steam-soft);
       }
+
+      &[data-noborder="1"] {
+        th,
+        td {
+          border: none;
+        }
+      }
+
+      &[data-equalcells="1"] {
+        table-layout: fixed;
+      }
+    }
+
+    // Steam widget palette (accurate to Steam community page styling)
+    $_sw-bg:          #1b2838;
+    $_sw-bg-alt:      #2a475e;
+    $_sw-border:      #4a6b8a;
+    $_sw-text:        #c6d4df;
+    $_sw-link:        #66c0f4;
+    $_sw-muted:       #8f98a0;
+    $_sw-green:       #75b022;
+    $_sw-green-text:  #d2e885;
+
+    // Shared card base
+    & .steam-workshop-embed,
+    & .steam-store-embed,
+    & .youtube-embed {
+      border-radius: 3px;
+      font-family: "Arial", sans-serif;
+      font-size: 13px;
+      margin: 0.5rem 0;
+      overflow: hidden;
+    }
+
+    // ── Workshop embed ──
+    & .steam-workshop-embed {
+      background: $_sw-bg;
+      border: 1px solid $_sw-border;
+      display: flex;
+
+      .sw-thumbnail {
+        background: $_sw-bg-alt;
+        flex-shrink: 0;
+        width: 82px;
+        height: 82px;
+      }
+
+      .sw-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
+        padding: 8px 12px;
+        overflow: hidden;
+        min-width: 0;
+      }
+
+      .sw-title {
+        color: $_sw-link;
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .sw-subtitle {
+        color: $_sw-text;
+        font-size: 12px;
+      }
+
+      .sw-author {
+        color: $_sw-muted;
+        font-size: 12px;
+      }
+
+      .sw-description {
+        color: $_sw-muted;
+        font-size: 12px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+    }
+
+    // ── Store embed ──
+    & .steam-store-embed {
+      background: $_sw-bg;
+      border: 1px solid $_sw-border;
+      display: flex;
+      flex-direction: column;
+
+      .ss-header {
+        background: $_sw-bg-alt;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 12px;
+        gap: 8px;
+      }
+
+      .ss-header-title {
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: bold;
+        line-height: 1;
+      }
+
+      .ss-header-badge {
+        background: #000000;
+        border-radius: 50%;
+        color: #c6d4df;
+        font-size: 8px;
+        font-weight: bold;
+        letter-spacing: 0.04em;
+        width: 28px;
+        height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .ss-body {
+        display: flex;
+        gap: 12px;
+        padding: 8px 12px;
+      }
+
+      .ss-cover {
+        background: $_sw-bg-alt;
+        flex-shrink: 0;
+        width: 130px;
+        height: 62px;
+      }
+
+      .ss-description {
+        color: $_sw-text;
+        font-size: 12px;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .ss-footer {
+        background: rgba(0, 0, 0, 0.2);
+        border-top: 1px solid rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+        padding: 6px 12px;
+        gap: 8px;
+      }
+
+      .ss-platforms {
+        color: $_sw-muted;
+        font-size: 11px;
+        flex: 1;
+      }
+
+      .ss-appid {
+        color: $_sw-muted;
+        font-size: 11px;
+      }
+
+      .ss-buy {
+        background: $_sw-green;
+        color: $_sw-green-text;
+        font-size: 11px;
+        font-weight: bold;
+        padding: 4px 10px;
+        border-radius: 2px;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+    }
+
+    // ── YouTube embed ──
+    & .youtube-embed {
+      background: $_sw-bg;
+      border: 1px solid $_sw-border;
+      display: flex;
+
+      .yt-thumbnail {
+        background: $_sw-bg-alt;
+        flex-shrink: 0;
+        width: 120px;
+        height: 90px;
+        position: relative;
+      }
+
+      .yt-play {
+        border-style: solid;
+        border-width: 11px 0 11px 20px;
+        border-color: transparent transparent transparent rgba(255, 255, 255, 0.65);
+        height: 0;
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 0;
+      }
+
+      .yt-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
+        padding: 8px 12px;
+        overflow: hidden;
+        min-width: 0;
+      }
+
+      .yt-label {
+        color: $_sw-muted;
+        font-size: 12px;
+      }
+
+      .yt-title {
+        color: $_sw-link;
+        font-size: 13px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .yt-views {
+        color: $_sw-muted;
+        font-size: 12px;
+      }
+
+      .yt-description {
+        color: $_sw-muted;
+        font-size: 12px;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
     }
 
     & img {

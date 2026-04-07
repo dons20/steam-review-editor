@@ -7,6 +7,8 @@ import {
   IconTableUp,
   IconTrash,
   IconTableHeader,
+  IconBorderNone,
+  IconColumns,
 } from "components/Icons";
 import Tooltip from "components/Tooltip";
 import { useEditorReady } from "../useEditorReady";
@@ -54,10 +56,12 @@ export const TableMenu: React.FC = () => {
     return isInTable && !hasTextSelection;
   };
 
-  const { isHeaderActive } = useEditorState({
+  const { isHeaderActive, isNoBorder, isEqualCells } = useEditorState({
     editor,
     selector: ({ editor }) => ({
       isHeaderActive: editor.isActive("tableHeader"),
+      isNoBorder: editor.getAttributes("table").noborder === "1",
+      isEqualCells: editor.getAttributes("table").equalcells === "1",
     }),
   });
 
@@ -90,6 +94,24 @@ export const TableMenu: React.FC = () => {
           tooltip={isHeaderActive ? "Remove Header Row" : "Add Header Row"}
         >
           <IconTableHeader />
+        </TableMenuButton>
+        <TableMenuButton
+          onClick={() =>
+            editor.chain().focus().updateAttributes("table", { noborder: isNoBorder ? null : "1" }).run()
+          }
+          active={isNoBorder}
+          tooltip={isNoBorder ? "Show Borders" : "No Border"}
+        >
+          <IconBorderNone />
+        </TableMenuButton>
+        <TableMenuButton
+          onClick={() =>
+            editor.chain().focus().updateAttributes("table", { equalcells: isEqualCells ? null : "1" }).run()
+          }
+          active={isEqualCells}
+          tooltip={isEqualCells ? "Variable Column Widths" : "Equal Cells"}
+        >
+          <IconColumns />
         </TableMenuButton>
         <TableMenuButton onClick={() => editor.chain().focus().deleteTable().run()} tooltip="Delete Table">
           <IconTrash />

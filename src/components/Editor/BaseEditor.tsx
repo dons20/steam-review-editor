@@ -1,5 +1,7 @@
 import React from "react";
-import { TableKit } from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
 import { Bold, Italic, Underline, Strikethrough, Link } from "lucide-react";
 import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import TiptapUnderline from "@tiptap/extension-underline";
@@ -14,8 +16,10 @@ import { toast } from "react-toastify";
 import { steamBBCodeToHtml, containsSteamBBCode } from "util/steamBBCodeToHtml";
 import { trackError, trackEvent } from "util/analytics";
 import { PromptProvider, usePrompt } from "./PromptContext";
-import { Spoiler, NoParse, Quote } from "./extensions";
+import { Spoiler, NoParse, Quote, SteamTable, SteamStoreEmbed, SteamWorkshopEmbed, YouTubeEmbed } from "./extensions";
 import ImageBubbleMenu from "./ImageBubbleMenu";
+import EmbedBubbleMenu from "./EmbedBubbleMenu";
+import QuoteBubbleMenu from "./QuoteBubbleMenu";
 import { useEditorReady } from "./useEditorReady";
 import { Toolbar, TableMenu } from "./Helpers";
 import LinkBubbleMenu from "./LinkBubbleMenu";
@@ -43,11 +47,11 @@ const SteamPasteExtension = Extension.create({
       new Plugin({
         key: new PluginKey("steamPasteExtension"),
         props: {
-          handlePaste: (view, event) => {
+          handlePaste: (_view, event) => {
             const clipboardData = event.clipboardData;
             if (!clipboardData) return false;
 
-            const plainText = clipboardData.getData("text/plain");
+            const plainText = clipboardData.getData("text/plain").trim();
 
             // If the pasted text contains Steam BBCode, convert it
             if (plainText && containsSteamBBCode(plainText)) {
@@ -100,15 +104,13 @@ const extensions = [
       class: "steam-image",
     },
   }),
-  TableKit.configure({
-    table: {
-      allowTableNodeSelection: true,
-      resizable: true,
-      HTMLAttributes: {
-        class: "steam-table",
-      },
-    },
-  }),
+  SteamTable,
+  TableRow,
+  TableCell,
+  TableHeader,
+  SteamStoreEmbed,
+  SteamWorkshopEmbed,
+  YouTubeEmbed,
   Spoiler,
   NoParse,
   Quote,
@@ -144,7 +146,7 @@ const BubbleMenuContent = () => {
     };
   }, [editor]);
 
-  if (!ready || !editor || editor.isActive("image") || editor.isActive("link")) {
+  if (!ready || !editor || editor.isActive("image") || editor.isActive("link") || editor.isActive("youtubeEmbed") || editor.isActive("steamStoreEmbed") || editor.isActive("steamWorkshopEmbed") || editor.isActive("quote")) {
     return null;
   }
 
@@ -283,6 +285,8 @@ const BaseEditor = ({ content, onUpdate }: BaseEditorProps) => {
         <BubbleMenuContent />
         <LinkBubbleMenu />
         <ImageBubbleMenu />
+        <EmbedBubbleMenu />
+        <QuoteBubbleMenu />
         <TableMenu />
       </EditorProvider>
     </PromptProvider>

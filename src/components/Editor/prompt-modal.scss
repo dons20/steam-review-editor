@@ -98,6 +98,13 @@
   }
 }
 
+.prompt-modal__message {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
 // ── Footer ─────────────────────────────────────────────────────────────────
 .prompt-modal__footer {
   display: flex;
