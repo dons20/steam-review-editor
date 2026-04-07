@@ -59,6 +59,7 @@ export const TEMPLATES: Template[] = [
     label: "Workshop Item",
     description: "A showcase-style write-up for a mod, map, or other Steam Workshop item.",
     html: `<h1>Replace this with the workshop item name</h1>
+<div data-type="steam-workshop-embed" data-workshopid="123456789"></div>
 <p>Write a brief summary of what this workshop item is and what it's for. What game does it belong to, and what does it do at a high level? Replace this with your own description.</p>
 <h2>What It Adds</h2>
 <p>Go into detail about the content or changes this item introduces. Does it add new levels, characters, mechanics, textures, or something else entirely? Replace this paragraph with a thorough description of the item's content.</p>
@@ -94,6 +95,10 @@ export const TEMPLATES: Template[] = [
 Use it for console commands, config snippets, or any monospaced text.</code></pre>
 <h2>No-Parse Block</h2>
 <pre data-type="noparse" class="noparse">This is a no-parse block. Steam will not apply any BBCode formatting inside it. [b]This will not be bold.[/b]</pre>
+<h2>Embeds</h2>
+<div data-type="steam-store-embed" data-appid="400"></div>
+<div data-type="steam-workshop-embed" data-workshopid="123456789"></div>
+<div data-type="youtube-embed" data-videoid="dQw4w9WgXcQ"></div>
 <h2>Horizontal Rule</h2>
 <p>A horizontal rule creates a visual divider between sections.</p>
 <hr>

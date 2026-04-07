@@ -9,8 +9,54 @@
 }
 
 .toast {
-  background: var(--state-success-strong) !important;
+  background: var(--color-steam-blue-700) !important;
   color: var(--text-inverse) !important;
+}
+
+.pwaToastBody {
+  display: grid;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+.pwaToastText {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.pwaToastActions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.pwaToastAction {
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  min-height: 2rem;
+  min-width: 6.25rem;
+  padding: 0.35rem 0.9rem;
+  transition:
+    background-color 0.12s ease,
+    border-color 0.12s ease,
+    transform 0.12s ease;
+
+  &:hover {
+    background: var(--surface-hover-strong);
+    border-color: var(--border-focus);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
 }
 
 .modalOverlay {
@@ -71,17 +117,16 @@
 /* ── Skeleton loader (shown during lazy Content load) ── */
 
 @keyframes shimmer {
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
 }
 
 $skeleton-bg: var(--surface-muted);
-$skeleton-shine: linear-gradient(
-  90deg,
-  transparent 25%,
-  var(--surface-hover) 50%,
-  transparent 75%
-);
+$skeleton-shine: linear-gradient(90deg, transparent 25%, var(--surface-hover) 50%, transparent 75%);
 
 .skeleton {
   display: grid;

@@ -117,6 +117,7 @@ const extensions = [
   TiptapUnderline,
   TiptapLink.configure({
     openOnClick: false,
+    defaultProtocol: "https",
     enableClickSelection: true,
     HTMLAttributes: {
       target: "_blank",
@@ -146,7 +147,16 @@ const BubbleMenuContent = () => {
     };
   }, [editor]);
 
-  if (!ready || !editor || editor.isActive("image") || editor.isActive("link") || editor.isActive("youtubeEmbed") || editor.isActive("steamStoreEmbed") || editor.isActive("steamWorkshopEmbed") || editor.isActive("quote")) {
+  if (
+    !ready ||
+    !editor ||
+    editor.isActive("image") ||
+    editor.isActive("link") ||
+    editor.isActive("youtubeEmbed") ||
+    editor.isActive("steamStoreEmbed") ||
+    editor.isActive("steamWorkshopEmbed") ||
+    editor.isActive("quote")
+  ) {
     return null;
   }
 

@@ -12,27 +12,23 @@ import { trackError } from "./util/analytics";
 // To learn more about the benefits of this model and instructions on how to
 // opt-in, read http://bit.ly/CRA-PWA
 
+type ServiceWorkerConfig = {
+  onSuccess?: (registration: ServiceWorkerRegistration) => void;
+  onUpdate?: (registration: ServiceWorkerRegistration) => void;
+};
+
 const isLocalhost = Boolean(
   window.location.hostname === "localhost" ||
-    // [::1] is the IPv6 localhost address.
-    window.location.hostname === "[::1]" ||
-    // 127.0.0.1/8 is considered localhost for IPv4.
-    window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
+  // [::1] is the IPv6 localhost address.
+  window.location.hostname === "[::1]" ||
+  // 127.0.0.1/8 is considered localhost for IPv4.
+  window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
 );
 
-export function register(config) {
-  if (import.meta.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
-    // The URL constructor is available in all browsers that support SW.
-    const publicUrl = new URL(import.meta.env.PUBLIC_URL, window.location.href);
-    if (publicUrl.origin !== window.location.origin) {
-      // Our service worker won't work if PUBLIC_URL is on a different origin
-      // from what our page is served on. This might happen if a CDN is used to
-      // serve assets; see https://github.com/facebook/create-react-app/issues/2374
-      return;
-    }
-
+export function register(config: ServiceWorkerConfig = {}) {
+  if (import.meta.env.PROD && "serviceWorker" in navigator) {
     window.addEventListener("load", () => {
-      const swUrl = `${import.meta.env.PUBLIC_URL}/service-worker.js`;
+      const swUrl = new URL("service-worker.js", `${window.location.origin}${import.meta.env.BASE_URL}`).toString();
 
       if (isLocalhost) {
         // This is running on localhost. Let's check if a service worker still exists or not.
@@ -54,7 +50,7 @@ export function register(config) {
   }
 }
 
-function registerValidSW(swUrl, config) {
+function registerValidSW(swUrl: string, config: ServiceWorkerConfig) {
   navigator.serviceWorker
     .register(swUrl)
     .then(registration => {
@@ -99,7 +95,7 @@ function registerValidSW(swUrl, config) {
     });
 }
 
-function checkValidServiceWorker(swUrl, config) {
+function checkValidServiceWorker(swUrl: string, config: ServiceWorkerConfig) {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl)
     .then(response => {

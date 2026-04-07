@@ -316,13 +316,13 @@ export const Toolbar: React.FC = () => {
       <ToolbarDivider />
 
       <div className="toolbar-group">
-        <ToolbarButton onClick={handleInsertSteamStore} tooltip="Insert Steam Store">
+        <ToolbarButton onClick={handleInsertSteamStore} tooltip="Insert Steam Store Link">
           <IconStore />
         </ToolbarButton>
-        <ToolbarButton onClick={handleInsertSteamWorkshop} tooltip="Insert Steam Workshop">
+        <ToolbarButton onClick={handleInsertSteamWorkshop} tooltip="Insert Steam Workshop Link">
           <IconWorkshop />
         </ToolbarButton>
-        <ToolbarButton onClick={handleInsertYouTube} tooltip="Insert YouTube">
+        <ToolbarButton onClick={handleInsertYouTube} tooltip="Insert YouTube Link">
           <IconYoutube />
         </ToolbarButton>
       </div>

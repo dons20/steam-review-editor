@@ -1,4 +1,8 @@
 import { Node, mergeAttributes, nodePasteRule } from "@tiptap/core";
+import { NodeSelection } from "@tiptap/pm/state";
+import React from "react";
+import { CircleDot, Disc3, Monitor } from "lucide-react";
+import { renderToStaticMarkup } from "react-dom/server";
 
 export interface SteamStoreEmbedOptions {
   HTMLAttributes: Record<string, any>;
@@ -12,9 +16,23 @@ function div(className: string, text?: string): HTMLDivElement {
   return el;
 }
 
+function platformIcon(className: string, icon: typeof Monitor | typeof Disc3): HTMLDivElement {
+  const el = div(`ss-platform ${className}`);
+  el.setAttribute("aria-hidden", "true");
+  el.innerHTML = renderToStaticMarkup(React.createElement(icon, { size: 15, strokeWidth: 2 }));
+  return el;
+}
+
+function badgeIcon(): HTMLDivElement {
+  const el = div("ss-header-badge");
+  el.setAttribute("aria-hidden", "true");
+  el.innerHTML = renderToStaticMarkup(React.createElement(CircleDot, { size: 24, strokeWidth: 2 }));
+  return el;
+}
+
 export const SteamStoreEmbed = Node.create<SteamStoreEmbedOptions>({
   name: "steamStoreEmbed",
-//   priority: 1000,
+  //   priority: 1000,
   group: "block",
   atom: true,
   selectable: true,
@@ -55,42 +73,64 @@ export const SteamStoreEmbed = Node.create<SteamStoreEmbedOptions>({
   },
 
   renderHTML({ node, HTMLAttributes }) {
-    const appid = node.attrs.appid ?? "";
     return [
       "div",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         "data-type": "steam-store-embed",
         class: "steam-store-embed",
       }),
-      [
-        "div",
-        { class: "ss-header" },
-        ["div", { class: "ss-header-title" }, "Buy Example Game"],
-        ["div", { class: "ss-header-badge" }, "STEAM"],
-      ],
+      ["div", { class: "ss-header" }, ["div", { class: "ss-header-title" }, "Buy Placeholder Arena 6"], badgeIcon()],
       [
         "div",
         { class: "ss-body" },
-        ["div", { class: "ss-cover" }],
-        ["div", { class: "ss-description" }, "This game is available on Steam. Visit the store page for pricing, reviews, and more details about the game."],
+        ["div", { class: "ss-cover" }, ["div", { class: "ss-cover-art" }], ["div", { class: "ss-cover-accent" }]],
+        [
+          "div",
+          { class: "ss-description" },
+          "A bold action showcase with three distinct modes, dramatic arenas, and a flexible combat system built for long sessions and fast rematches.",
+        ],
       ],
       [
         "div",
         { class: "ss-footer" },
-        ["div", { class: "ss-platforms" }, "PC \xb7 Mac \xb7 Linux"],
-        ["div", { class: "ss-appid" }, `App #${appid}`],
-        ["div", { class: "ss-buy" }, "View on Steam"],
+        [
+          "div",
+          { class: "ss-utility" },
+          [
+            "div",
+            { class: "ss-platforms", "aria-hidden": "true" },
+            platformIcon("ss-platform-monitor", Monitor),
+            platformIcon("ss-platform-disc", Disc3),
+          ],
+        ],
+        [
+          "div",
+          { class: "ss-cta" },
+          ["div", { class: "ss-price" }, "$59.99 USD"],
+          ["div", { class: "ss-buy" }, "Buy on Steam"],
+        ],
       ],
     ];
   },
 
   addNodeView() {
-    return ({ node, HTMLAttributes }) => {
+    return ({ node, HTMLAttributes, getPos, editor }) => {
       const appid = String(node.attrs.appid ?? "");
       const dom = document.createElement("div");
       dom.classList.add("steam-store-embed");
+      dom.contentEditable = "false";
       dom.setAttribute("data-type", "steam-store-embed");
       if (appid) dom.setAttribute("data-appid", appid);
+
+      dom.addEventListener("mousedown", event => {
+        event.preventDefault();
+        const pos = typeof getPos === "function" ? getPos() : getPos;
+        if (typeof pos !== "number") return;
+
+        const { state, view } = editor;
+        view.dispatch(state.tr.setSelection(NodeSelection.create(state.doc, pos)));
+        view.focus();
+      });
 
       // Apply any extra HTML attributes
       for (const [key, value] of Object.entries(HTMLAttributes)) {
@@ -98,17 +138,35 @@ export const SteamStoreEmbed = Node.create<SteamStoreEmbedOptions>({
       }
 
       const header = div("ss-header");
-      header.appendChild(div("ss-header-title", "Buy Example Game"));
-      header.appendChild(div("ss-header-badge", "STEAM"));
+      header.appendChild(div("ss-header-title", "Buy Placeholder Arena 6"));
+      header.appendChild(badgeIcon());
 
       const body = div("ss-body");
-      body.appendChild(div("ss-cover"));
-      body.appendChild(div("ss-description", "This game is available on Steam. Visit the store page for pricing, reviews, and more details about the game."));
+      const cover = div("ss-cover");
+      cover.appendChild(div("ss-cover-art"));
+      cover.appendChild(div("ss-cover-accent"));
+      body.appendChild(cover);
+      body.appendChild(
+        div(
+          "ss-description",
+          "A bold action showcase with three distinct modes, dramatic arenas, and a flexible combat system built for long sessions and fast rematches."
+        )
+      );
 
       const footer = div("ss-footer");
-      footer.appendChild(div("ss-platforms", "PC \xb7 Mac \xb7 Linux"));
-      footer.appendChild(div("ss-appid", `App #${appid}`));
-      footer.appendChild(div("ss-buy", "View on Steam"));
+      const utility = div("ss-utility");
+      const platforms = div("ss-platforms");
+      platforms.setAttribute("aria-hidden", "true");
+      platforms.appendChild(platformIcon("ss-platform-monitor", Monitor));
+      platforms.appendChild(platformIcon("ss-platform-disc", Disc3));
+      utility.appendChild(platforms);
+
+      const cta = div("ss-cta");
+      cta.appendChild(div("ss-price", "$59.99 USD"));
+      cta.appendChild(div("ss-buy", "Buy on Steam"));
+
+      footer.appendChild(utility);
+      footer.appendChild(cta);
 
       dom.appendChild(header);
       dom.appendChild(body);

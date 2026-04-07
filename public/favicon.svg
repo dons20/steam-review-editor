@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Steam Review Editor icon</title>
+  <desc id="desc">A dark rounded square containing a review card and accent mark.</desc>
+  <defs>
+    <linearGradient id="bg" x1="64" y1="48" x2="448" y2="464" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#1d2b37" />
+      <stop offset="1" stop-color="#0f1419" />
+    </linearGradient>
+    <linearGradient id="accent" x1="120" y1="128" x2="384" y2="384" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#67c1f5" />
+      <stop offset="1" stop-color="#8de0ff" />
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="112" fill="url(#bg)" />
+  <path
+    d="M140 146c0-18.778 15.222-34 34-34h140c18.778 0 34 15.222 34 34v147c0 18.778-15.222 34-34 34H223.828L162.971 379.77c-8.933 7.717-22.971 1.369-22.971-10.436V146Z"
+    fill="#f5fbff"
+    opacity="0.97"
+  />
+  <rect x="184" y="166" width="108" height="24" rx="12" fill="#0f1419" opacity="0.88" />
+  <rect x="184" y="210" width="132" height="20" rx="10" fill="#5f7386" opacity="0.72" />
+  <rect x="184" y="246" width="96" height="20" rx="10" fill="#5f7386" opacity="0.56" />
+  <path
+    d="M342.866 295.920 300 272.994l-42.866 22.927 8.188-48.04-34.679-33.795 48.061-7.007L300 163.5l21.296 43.579 48.061 7.007-34.679 33.795 8.188 48.04Z"
+    fill="url(#accent)"
+  />
+  <circle cx="366" cy="144" r="34" fill="#67c1f5" opacity="0.22" />
+  <circle cx="392" cy="388" r="18" fill="#8de0ff" opacity="0.22" />
+</svg>

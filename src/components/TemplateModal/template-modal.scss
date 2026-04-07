@@ -3,7 +3,6 @@
   position: fixed;
   inset: 0;
   background: var(--overlay-backdrop);
-  backdrop-filter: blur(3px);
   z-index: 1000;
   display: flex;
   align-items: center;
@@ -11,9 +10,20 @@
   animation: tm-overlay-in 0.18s ease;
 }
 
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html.can-use-backdrop-filter .tm-overlay {
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+  }
+}
+
 @keyframes tm-overlay-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 // ── Modal card ───────────────────────────────────────────────────────────────
@@ -28,12 +38,20 @@
   width: min(560px, calc(100vw - 2rem));
   animation: tm-modal-in 0.2s ease;
   overflow: hidden;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease;
 }
 
 @keyframes tm-modal-in {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 // ── Header ───────────────────────────────────────────────────────────────────
@@ -65,7 +83,9 @@
   background: transparent;
   color: var(--text-muted);
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
 
   &:hover {
     background: var(--surface-hover);
@@ -96,7 +116,10 @@
   cursor: pointer;
   text-align: left;
   width: 100%;
-  transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
 
   &:hover {
     background: var(--surface-hover);
@@ -141,8 +164,14 @@
 }
 
 @keyframes tm-confirm-in {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .tm-confirm__message {
@@ -181,7 +210,10 @@
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
 
   &:hover {
     background: var(--surface-hover);
@@ -199,7 +231,9 @@
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s ease, transform 0.12s ease;
+  transition:
+    background 0.15s ease,
+    transform 0.12s ease;
 
   &:hover {
     background: var(--state-danger-hover, #dc2626);

@@ -1,4 +1,5 @@
 import { Node, mergeAttributes, nodePasteRule } from "@tiptap/core";
+import { NodeSelection } from "@tiptap/pm/state";
 
 export interface YouTubeEmbedOptions {
   HTMLAttributes: Record<string, any>;
@@ -7,6 +8,13 @@ export interface YouTubeEmbedOptions {
 /** Helper: create a div with a class and optional text content */
 function div(className: string, text?: string): HTMLDivElement {
   const el = document.createElement("div");
+  el.className = className;
+  if (text !== undefined) el.textContent = text;
+  return el;
+}
+
+function span(className: string, text?: string): HTMLSpanElement {
+  const el = document.createElement("span");
   el.className = className;
   if (text !== undefined) el.textContent = text;
   return el;
@@ -45,13 +53,11 @@ export const YouTubeEmbed = Node.create<YouTubeEmbedOptions>({
 
   addPasteRules() {
     return [
-      // youtube.com/watch?v=ID
       nodePasteRule({
         find: /https?:\/\/(www\.)?youtube\.com\/watch\?[^\s]*v=([-\w]+)[^\s]*/gi,
         type: this.type,
         getAttributes: match => ({ videoid: match[2] }),
       }),
-      // youtu.be/ID
       nodePasteRule({
         find: /https?:\/\/youtu\.be\/([-\w]+)[^\s]*/gi,
         type: this.type,
@@ -71,40 +77,72 @@ export const YouTubeEmbed = Node.create<YouTubeEmbedOptions>({
       [
         "div",
         { class: "yt-thumbnail" },
+        ["div", { class: "yt-thumbnail-art" }],
+        ["div", { class: "yt-badge", "aria-hidden": "true" }],
         ["div", { class: "yt-play" }],
       ],
       [
         "div",
         { class: "yt-body" },
-        ["div", { class: "yt-label" }, "YouTube\u2122 Video:"],
-        ["div", { class: "yt-title" }, `youtube.com/watch?v=${videoid}`],
-        ["div", { class: "yt-views" }, "Views: \u2014"],
-        ["div", { class: "yt-description" }, "Click to watch this video on YouTube."],
+        [
+          "div",
+          { class: "yt-title" },
+          ["span", { class: "yt-title-label" }, "YouTube™ Video: "],
+          ["span", { class: "yt-title-text" }, "Gameplay Breakdown: Action Fighter Review"],
+        ],
+        ["div", { class: "yt-views" }, "Views: 4,589"],
+        [
+          "div",
+          { class: "yt-description" },
+          `Original footage: https://video.example/watch?v=${videoid} Follow: https://social.example/reviewer Watch more at https://stream.example/live`,
+        ],
       ],
     ];
   },
 
   addNodeView() {
-    return ({ node, HTMLAttributes }) => {
+    return ({ node, HTMLAttributes, getPos, editor }) => {
       const videoid = String(node.attrs.videoid ?? "");
       const dom = document.createElement("div");
       dom.classList.add("youtube-embed");
+      dom.contentEditable = "false";
       dom.setAttribute("data-type", "youtube-embed");
       if (videoid) dom.setAttribute("data-videoid", videoid);
+
+      dom.addEventListener("mousedown", event => {
+        event.preventDefault();
+        const pos = typeof getPos === "function" ? getPos() : getPos;
+        if (typeof pos !== "number") return;
+
+        const { state, view } = editor;
+        view.dispatch(state.tr.setSelection(NodeSelection.create(state.doc, pos)));
+        view.focus();
+      });
 
       for (const [key, value] of Object.entries(HTMLAttributes)) {
         if (value != null) dom.setAttribute(key, String(value));
       }
 
       const thumbnail = div("yt-thumbnail");
+      thumbnail.appendChild(div("yt-thumbnail-art"));
+      const badge = div("yt-badge");
+      badge.setAttribute("aria-hidden", "true");
+      thumbnail.appendChild(badge);
       thumbnail.appendChild(div("yt-play"));
       dom.appendChild(thumbnail);
 
       const body = div("yt-body");
-      body.appendChild(div("yt-label", "YouTube\u2122 Video:"));
-      body.appendChild(div("yt-title", `youtube.com/watch?v=${videoid}`));
-      body.appendChild(div("yt-views", "Views: \u2014"));
-      body.appendChild(div("yt-description", "Click to watch this video on YouTube."));
+      const title = div("yt-title");
+      title.appendChild(span("yt-title-label", "YouTube™ Video: "));
+      title.appendChild(span("yt-title-text", "Gameplay Breakdown: Action Fighter Review"));
+      body.appendChild(title);
+      body.appendChild(div("yt-views", "Views: 4,589"));
+      body.appendChild(
+        div(
+          "yt-description",
+          `Original footage: https://video.example/watch?v=${videoid} Follow: https://social.example/reviewer Watch more at https://stream.example/live`
+        )
+      );
       dom.appendChild(body);
 
       return { dom };

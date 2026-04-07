@@ -109,41 +109,50 @@ export const clearFormatting = (editor: Editor) => {
 };
 
 export const insertSteamStore = async (editor: Editor, prompt: any) => {
-  const input = await prompt({ title: "Enter Steam App ID or store URL:" });
+  const input = await prompt({ title: "Enter Steam store URL:" });
   if (!input) return;
-  const match = String(input).match(/app\/(\d+)/i) || String(input).match(/^(\d+)$/);
+  const match = String(input).match(/app\/(\d+)/i);
   if (!match) return;
   const appid = match[1];
-  editor.chain().focus().insertContent({
-    type: "steamStoreEmbed",
-    attrs: { appid },
-  }).run();
+  editor
+    .chain()
+    .focus()
+    .insertContent({
+      type: "steamStoreEmbed",
+      attrs: { appid },
+    })
+    .run();
 };
 
 export const insertSteamWorkshop = async (editor: Editor, prompt: any) => {
-  const input = await prompt({ title: "Enter Workshop item ID or URL:" });
+  const input = await prompt({ title: "Enter Steam Workshop URL:" });
   if (!input) return;
-  const match = String(input).match(/[?&]id=(\d+)/i) || String(input).match(/^(\d+)$/);
+  const match = String(input).match(/[?&]id=(\d+)/i);
   if (!match) return;
   const workshopid = match[1];
-  editor.chain().focus().insertContent({
-    type: "steamWorkshopEmbed",
-    attrs: { workshopid },
-  }).run();
+  editor
+    .chain()
+    .focus()
+    .insertContent({
+      type: "steamWorkshopEmbed",
+      attrs: { workshopid },
+    })
+    .run();
 };
 
 export const insertYouTube = async (editor: Editor, prompt: any) => {
-  const input = await prompt({ title: "Enter YouTube URL or video ID:" });
+  const input = await prompt({ title: "Enter YouTube URL:" });
   if (!input) return;
   const str = String(input);
-  const match =
-    str.match(/[?&]v=([-\w]+)/i) ||
-    str.match(/youtu\.be\/([-\w]+)/i) ||
-    str.match(/^([-\w]{11})$/);
+  const match = str.match(/[?&]v=([-\w]+)/i) || str.match(/youtu\.be\/([-\w]+)/i);
   if (!match) return;
   const videoid = match[1];
-  editor.chain().focus().insertContent({
-    type: "youtubeEmbed",
-    attrs: { videoid },
-  }).run();
+  editor
+    .chain()
+    .focus()
+    .insertContent({
+      type: "youtubeEmbed",
+      attrs: { videoid },
+    })
+    .run();
 };
