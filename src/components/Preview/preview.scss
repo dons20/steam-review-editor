@@ -705,11 +705,10 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
 
     // Custom Steam elements
     & .spoiler,
-    & div[data-type="spoiler"] {
+    & span[data-type="spoiler"] {
       background-color: var(--color-black);
       color: var(--color-black);
-      display: inline-block;
-      padding: 0 3px;
+      padding: 2px 3px;
       cursor: pointer;
       &:hover {
         color: var(--color-white);
@@ -930,8 +929,7 @@ $primary-font: "Motiva Sans Test", "Raleway", sans-serif;
   .spoiler {
     background-color: var(--color-black);
     color: var(--color-black);
-    display: inline-block;
-    padding: 0 3px;
+    padding: 2px 3px;
     &:hover {
       color: var(--color-white);
     }

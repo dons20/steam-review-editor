@@ -36,16 +36,16 @@ const ImageBubbleMenu = () => {
 
   return (
     <BubbleMenu editor={undefined} pluginKey="imageBubbleMenu" shouldShow={({ editor: e }) => e.isActive("image")}>
-      <div className="link-bubble-menu">
+      <div className="link-bubble-menu" data-testid="bubble-menu-image">
         <span className="link-bubble-menu__url" style={{ color: "#aaa", cursor: "default", textDecoration: "none" }}>
           Image Options
         </span>
         <div className="link-bubble-menu__divider" />
         <div className="link-bubble-menu__actions">
-          <button type="button" onClick={handleEdit} title="Edit Image URL">
+          <button type="button" onClick={handleEdit} title="Edit Image URL" data-testid="bubble-menu-image-edit">
             <Edit2 size={14} />
           </button>
-          <button type="button" onClick={handleRemove} title="Remove Image">
+          <button type="button" onClick={handleRemove} title="Remove Image" data-testid="bubble-menu-image-remove">
             <Trash2 size={14} />
           </button>
         </div>

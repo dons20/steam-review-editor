@@ -186,24 +186,11 @@
   .spoiler {
     background-color: var(--color-gray-900);
     color: var(--text-muted);
-    display: block;
-    line-height: 2.5rem;
-    padding: 5px 10px;
-    position: relative;
-    margin: 5px 0;
+    line-height: inherit;
+    padding: 0 0.35rem;
+    border-radius: 3px;
     &:hover {
       color: var(--text-inverse);
-    }
-    &::before {
-      background-color: var(--surface-elevated);
-      color: var(--text-inverse);
-      content: "spoiler";
-      font-size: 11px;
-      left: 5px;
-      line-height: 0;
-      padding: 0;
-      position: absolute;
-      top: 10px;
     }
   }
 
@@ -430,9 +417,9 @@
     background-color: var(--color-gray-900);
     color: var(--text-concealed);
     text-shadow: var(--text-concealed-shadow);
-    padding: 0.5rem;
-    margin: 0.5rem 0;
-    border-radius: 4px;
+    padding: 0 0.35rem;
+    margin: 0;
+    border-radius: 3px;
     cursor: text;
     transition: all 0.2s;
 

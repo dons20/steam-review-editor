@@ -42,11 +42,16 @@ function TemplateModal({ open, hasContent, onClose, onInsert }: TemplateModalPro
   };
 
   return (
-    <div className="tm-overlay" data-theme={modalTheme} onClick={handleClose}>
+    <div className="tm-overlay" data-theme={modalTheme} onClick={handleClose} data-testid="template-modal">
       <div className="tm-modal" onClick={e => e.stopPropagation()}>
         <div className="tm-modal__header">
           <h2 className="tm-modal__title">Templates</h2>
-          <button className="tm-modal__close" onClick={handleClose} aria-label="Close templates">
+          <button
+            className="tm-modal__close"
+            onClick={handleClose}
+            aria-label="Close templates"
+            data-testid="template-modal-close"
+          >
             <X size={20} />
           </button>
         </div>
@@ -56,6 +61,7 @@ function TemplateModal({ open, hasContent, onClose, onInsert }: TemplateModalPro
             <button
               key={template.id}
               className={`tm-card${pendingTemplate?.id === template.id ? " tm-card--pending" : ""}`}
+              data-testid={`template-card-${template.id}`}
               onClick={() => handleCardClick(template)}
               type="button"
             >
@@ -66,18 +72,28 @@ function TemplateModal({ open, hasContent, onClose, onInsert }: TemplateModalPro
         </div>
 
         {pendingTemplate && (
-          <div className="tm-modal__confirm">
-            <div className="tm-confirm__message">
+          <div className="tm-modal__confirm" data-testid="template-modal-confirm">
+            <div className="tm-confirm__message" data-testid="template-modal-confirm-message">
               <AlertTriangle size={15} className="tm-confirm__icon" />
               <span>
                 This will replace your current content with the <strong>{pendingTemplate.label}</strong> template.
               </span>
             </div>
             <div className="tm-confirm__actions">
-              <button type="button" className="tm-confirm__cancel" onClick={handleCancelConfirm}>
+              <button
+                type="button"
+                className="tm-confirm__cancel"
+                onClick={handleCancelConfirm}
+                data-testid="template-modal-cancel-replace"
+              >
                 Cancel
               </button>
-              <button type="button" className="tm-confirm__ok" onClick={handleConfirm}>
+              <button
+                type="button"
+                className="tm-confirm__ok"
+                onClick={handleConfirm}
+                data-testid="template-modal-confirm-replace"
+              >
                 Replace Content
               </button>
             </div>

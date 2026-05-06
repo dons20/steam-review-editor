@@ -3,6 +3,7 @@ import { htmlToSteamBBCode, cleanBBCode } from "util/htmlToSteamBBCode";
 import { trackError, trackEvent } from "util/analytics";
 import ReviewEditor from "components/Editor";
 import Preview from "components/Preview";
+import { normalizePreviewSpoilers } from "./normalizePreviewSpoilers";
 import "./content.scss";
 
 export type AppContextType = null | {
@@ -65,13 +66,16 @@ function Content({ notify }) {
         const bbcode = htmlToSteamBBCode(htmlContent);
         const cleanedBBCode = cleanBBCode(bbcode);
         setMarkup(cleanedBBCode);
+
+        setPreviewContent(normalizePreviewSpoilers(htmlContent));
       } catch {
         trackError("conversion", "html-to-bbcode-error", "Steam BBCode conversion failed");
         setMarkup(null);
+        setPreviewContent(null);
       }
-
-      // Set preview content (HTML for Store Preview)
-      setPreviewContent(htmlContent);
+    } else {
+      setMarkup(null);
+      setPreviewContent(null);
     }
   }, [htmlContent]);
 
@@ -80,10 +84,10 @@ function Content({ notify }) {
       <main className={"content-root"}>
         <ReviewEditor />
         <div className="buttons">
-          <button className="previewBtn ripple" onClick={togglePreview}>
+          <button className="previewBtn ripple" onClick={togglePreview} data-testid="content-toggle-preview">
             {`${showPreview ? "Hide" : "Show"} Preview`}
           </button>
-          <button className="markupBtn ripple" onClick={copyToClipboard}>
+          <button className="markupBtn ripple" onClick={copyToClipboard} data-testid="content-copy-markup">
             Copy Markup to Clipboard
           </button>
         </div>

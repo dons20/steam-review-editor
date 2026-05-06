@@ -89,7 +89,7 @@ export const TEMPLATES: Template[] = [
 <h2>Quote</h2>
 <blockquote data-type="quote" class="quote" data-author="Author Name"><p>This is a quote block. Use it to highlight a memorable line or attribute a statement to someone. The author attribute is optional.</p></blockquote>
 <h2>Spoiler</h2>
-<div data-type="spoiler" class="spoiler"><p>This content is hidden behind a spoiler tag. Readers hover over it to reveal the text. Use it to avoid spoiling plot points.</p></div>
+<p><span data-type="spoiler" class="spoiler">This content is hidden behind a spoiler tag. Readers hover over it to reveal the text. Use it to avoid spoiling plot points.</span></p>
 <h2>Code Block</h2>
 <pre><code>This is a code block.
 Use it for console commands, config snippets, or any monospaced text.</code></pre>

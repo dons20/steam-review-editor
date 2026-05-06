@@ -13,17 +13,22 @@ function HelpModal({ open, onClose }: HelpModalProps) {
   if (!open) return null;
 
   return (
-    <div className="help-modal-overlay" data-theme={modalTheme} onClick={onClose}>
+    <div className="help-modal-overlay" data-theme={modalTheme} onClick={onClose} data-testid="guide-modal">
       <div className="help-modal" onClick={e => e.stopPropagation()}>
         <div className="help-modal__header">
           <h2 className="help-modal__title">Guide</h2>
-          <button className="help-modal__close" onClick={onClose} aria-label="Close guide">
+          <button
+            className="help-modal__close"
+            onClick={onClose}
+            aria-label="Close guide"
+            data-testid="guide-modal-close"
+          >
             <X size={20} />
           </button>
         </div>
 
         <div className="help-modal__body">
-          <section className="help-section">
+          <section className="help-section" data-testid="guide-section-writing">
             <div className="help-section__icon">
               <FileText size={22} />
             </div>
@@ -37,7 +42,7 @@ function HelpModal({ open, onClose }: HelpModalProps) {
             </div>
           </section>
 
-          <section className="help-section">
+          <section className="help-section" data-testid="guide-section-modes">
             <div className="help-section__icon">
               <ArrowLeftRight size={22} />
             </div>
@@ -51,7 +56,7 @@ function HelpModal({ open, onClose }: HelpModalProps) {
             </div>
           </section>
 
-          <section className="help-section">
+          <section className="help-section" data-testid="guide-section-preview">
             <div className="help-section__icon">
               <Eye size={22} />
             </div>
@@ -66,7 +71,7 @@ function HelpModal({ open, onClose }: HelpModalProps) {
             </div>
           </section>
 
-          <section className="help-section">
+          <section className="help-section" data-testid="guide-section-randomize">
             <div className="help-section__icon">
               <Shuffle size={22} />
             </div>
@@ -80,7 +85,7 @@ function HelpModal({ open, onClose }: HelpModalProps) {
             </div>
           </section>
 
-          <section className="help-section">
+          <section className="help-section" data-testid="guide-section-autosave">
             <div className="help-section__icon">
               <Save size={22} />
             </div>
@@ -93,24 +98,28 @@ function HelpModal({ open, onClose }: HelpModalProps) {
               </p>
             </div>
           </section>
-          <section className="help-section">
+          <section className="help-section" data-testid="guide-section-compatibility">
             <div className="help-section__icon">
               <AlertTriangle size={22} />
             </div>
             <div className="help-section__content">
               <h3>Steam Compatibility</h3>
               <p>
-                Please note that <strong>not all formatting options are supported across the entire Steam ecosystem</strong>. 
-                Some options (like images) only show up when creating a Guide or Workshop description and will not appear in User Reviews. 
-                <br /><br />
-                It is heavily recommended to check over your content before publishing to avoid any formatting mistakes in your final post.
+                Please note that{" "}
+                <strong>not all formatting options are supported across the entire Steam ecosystem</strong>. Some
+                options (like images) only show up when creating a Guide or Workshop description and will not appear in
+                User Reviews.
+                <br />
+                <br />
+                It is heavily recommended to check over your content before publishing to avoid any formatting mistakes
+                in your final post.
               </p>
             </div>
           </section>
         </div>
 
         <div className="help-modal__footer">
-          <button className="help-modal__done-btn" onClick={onClose}>
+          <button className="help-modal__done-btn" onClick={onClose} data-testid="guide-modal-done">
             Got it
           </button>
         </div>

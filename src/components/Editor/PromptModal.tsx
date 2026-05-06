@@ -13,7 +13,15 @@ interface PromptModalProps {
   onSubmit: (value: string) => void;
 }
 
-function PromptModal({ open, title, defaultValue = "", mode = "prompt", confirmMessage, onClose, onSubmit }: PromptModalProps) {
+function PromptModal({
+  open,
+  title,
+  defaultValue = "",
+  mode = "prompt",
+  confirmMessage,
+  onClose,
+  onSubmit,
+}: PromptModalProps) {
   const { modalTheme } = useModalTheme();
   const [value, setValue] = useState(defaultValue);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -35,11 +43,18 @@ function PromptModal({ open, title, defaultValue = "", mode = "prompt", confirmM
   };
 
   return (
-    <div className="prompt-modal-overlay" data-theme={modalTheme} onClick={onClose}>
+    <div className="prompt-modal-overlay" data-theme={modalTheme} onClick={onClose} data-testid="prompt-modal">
       <div className="prompt-modal" onClick={e => e.stopPropagation()}>
         <div className="prompt-modal__header">
-          <h2 className="prompt-modal__title">{title}</h2>
-          <button className="prompt-modal__close" onClick={onClose} aria-label="Close dialog">
+          <h2 className="prompt-modal__title" data-testid="prompt-modal-title">
+            {title}
+          </h2>
+          <button
+            className="prompt-modal__close"
+            onClick={onClose}
+            aria-label="Close dialog"
+            data-testid="prompt-modal-close"
+          >
             <X size={20} />
           </button>
         </div>
@@ -47,24 +62,32 @@ function PromptModal({ open, title, defaultValue = "", mode = "prompt", confirmM
         <form onSubmit={handleSubmit}>
           <div className="prompt-modal__body">
             {mode === "confirm" ? (
-              <p className="prompt-modal__message">{confirmMessage}</p>
+              <p className="prompt-modal__message" data-testid="prompt-modal-message">
+                {confirmMessage}
+              </p>
             ) : (
               <input
                 ref={inputRef}
                 type="text"
                 className="prompt-modal__input"
+                data-testid="prompt-modal-input"
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={e => setValue(e.target.value)}
                 placeholder="Enter value..."
               />
             )}
           </div>
 
           <div className="prompt-modal__footer">
-            <button type="button" className="prompt-modal__cancel-btn" onClick={onClose}>
+            <button
+              type="button"
+              className="prompt-modal__cancel-btn"
+              onClick={onClose}
+              data-testid="prompt-modal-cancel"
+            >
               Cancel
             </button>
-            <button type="submit" className="prompt-modal__submit-btn">
+            <button type="submit" className="prompt-modal__submit-btn" data-testid="prompt-modal-submit">
               {mode === "confirm" ? "Confirm" : "OK"}
             </button>
           </div>

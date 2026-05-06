@@ -120,7 +120,10 @@ function ReviewEditor() {
   );
 
   const toggleMode = useCallback(() => {
-    trackEvent("editor-mode-switched", editorMode === "rich-text" ? "Switched to markup mode" : "Switched to rich text mode");
+    trackEvent(
+      "editor-mode-switched",
+      editorMode === "rich-text" ? "Switched to markup mode" : "Switched to rich text mode"
+    );
 
     try {
       if (editorMode === "rich-text") {
@@ -163,9 +166,7 @@ function ReviewEditor() {
   const [showTemplates, setShowTemplates] = useState(false);
   const { modalTheme } = useModalTheme();
 
-  const hasContent = isMarkup
-    ? markupText.trim() !== ""
-    : latestHtmlRef.current.replace(/<[^>]+>/g, "").trim() !== "";
+  const hasContent = isMarkup ? markupText.trim() !== "" : latestHtmlRef.current.replace(/<[^>]+>/g, "").trim() !== "";
 
   const handleTemplateInsert = useCallback(
     (template: Template) => {
@@ -194,7 +195,7 @@ function ReviewEditor() {
         <span className="editor-mode-label">{isMarkup ? "Markup Mode" : "Rich Text Mode"}</span>
         <div className="editor-mode-bar__actions">
           {showSaved && (
-            <div className="editor-save-indicator">
+            <div className="editor-save-indicator" data-testid="editor-save-indicator">
               <Check size={14} className="save-icon" />
               <span className="save-text">
                 <span className="save-text-main">All changes </span>
@@ -206,6 +207,7 @@ function ReviewEditor() {
             <button
               type="button"
               className="mode-switch-btn"
+              data-testid="editor-open-templates"
               onClick={() => {
                 trackEvent("template-modal-opened", "Opened the template picker");
                 setShowTemplates(true);
@@ -221,6 +223,7 @@ function ReviewEditor() {
             <button
               type="button"
               className="mode-switch-btn"
+              data-testid="editor-mode-toggle"
               onClick={toggleMode}
               aria-label={isMarkup ? "Switch to Rich Text" : "Switch to Markup"}
             >
@@ -233,6 +236,7 @@ function ReviewEditor() {
             <button
               type="button"
               className="help-btn"
+              data-testid="editor-open-guide"
               onClick={() => {
                 trackEvent("core-help-opened", "Opened the editor guide");
                 setShowHelp(true);
@@ -265,6 +269,7 @@ function ReviewEditor() {
         <div className="markup-editor-wrapper">
           <textarea
             className="markup-editor-textarea"
+            data-testid="editor-markup-input"
             value={markupText}
             onChange={handleMarkupChange}
             spellCheck={false}

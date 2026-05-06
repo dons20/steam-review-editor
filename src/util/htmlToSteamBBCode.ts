@@ -16,13 +16,28 @@ export function htmlToSteamBBCode(html: string): string {
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
 
-  return processNode(doc.body);
+  return mergeAdjacentSpoilerTags(processNode(doc.body));
+}
+
+function mergeAdjacentSpoilerTags(bbcode: string): string {
+  let normalized = bbcode;
+
+  normalized = normalized.replace(
+    /\[(b|i|u|strike)\]\[spoiler\]([\s\S]*?)\[\/spoiler\]\[\/\1\]/gi,
+    (_match, tagName: string, content: string) => `[spoiler][${tagName}]${content}[/${tagName}][/spoiler]`
+  );
+
+  while (/\[\/spoiler\]\s*\[spoiler\]/i.test(normalized)) {
+    normalized = normalized.replace(/\[\/spoiler\](\s*)\[spoiler\]/gi, "$1");
+  }
+
+  return normalized;
 }
 
 function processNode(node: Node): string {
   let result = "";
 
-  node.childNodes.forEach((child) => {
+  node.childNodes.forEach(child => {
     if (child.nodeType === Node.TEXT_NODE) {
       result += child.textContent || "";
     } else if (child.nodeType === Node.ELEMENT_NODE) {
@@ -53,6 +68,17 @@ function trimInnerSpaces(content: string): {
 function processElement(element: HTMLElement): string {
   const tagName = element.tagName.toLowerCase();
   const content = processNode(element);
+  const dataType = element.getAttribute("data-type");
+
+  if (tagName === "span" && dataType === "spoiler") {
+    const { before, trimmed, after } = trimInnerSpaces(content);
+
+    if (!trimmed) {
+      return content;
+    }
+
+    return `${before}[spoiler]${trimmed}[/spoiler]${after}`;
+  }
 
   // For inline formatting tags, handle spacing properly
   const inlineFormattingTags = ["strong", "b", "em", "i", "u", "s", "strike"];
@@ -143,7 +169,6 @@ function processElement(element: HTMLElement): string {
       return `[code]${content}[/code]`;
 
     case "pre": {
-      const dataType = element.getAttribute("data-type");
       if (dataType === "noparse") {
         return `[noparse]${content}[/noparse]\n\n`;
       }
@@ -151,7 +176,6 @@ function processElement(element: HTMLElement): string {
     }
 
     case "blockquote": {
-      const dataType = element.getAttribute("data-type");
       if (dataType === "quote") {
         const author = element.getAttribute("data-author");
         const inner = content.trim();
@@ -164,7 +188,6 @@ function processElement(element: HTMLElement): string {
     }
 
     case "div": {
-      const dataType = element.getAttribute("data-type");
       if (dataType === "spoiler") {
         return `[spoiler]${content.trim()}[/spoiler]\n\n`;
       }
@@ -197,16 +220,16 @@ function processElement(element: HTMLElement): string {
       let tableContent = "";
       const rows = element.querySelectorAll("tr");
 
-      rows.forEach((row) => {
+      rows.forEach(row => {
         tableContent += "[tr]\n";
 
         const headers = row.querySelectorAll("th");
-        headers.forEach((th) => {
+        headers.forEach(th => {
           tableContent += `[th]${processNode(th).trim()}[/th]\n`;
         });
 
         const cells = row.querySelectorAll("td");
-        cells.forEach((td) => {
+        cells.forEach(td => {
           tableContent += `[td]${processNode(td).trim()}[/td]\n`;
         });
 

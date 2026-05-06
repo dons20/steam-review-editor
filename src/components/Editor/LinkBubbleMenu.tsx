@@ -9,8 +9,8 @@ const LinkBubbleMenu = () => {
   const { editor } = useCurrentEditor();
   const { prompt } = usePrompt();
   const ready = useEditorReady();
-  
-  const [, forceUpdate] = React.useReducer((x) => x + 1, 0);
+
+  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
 
   useEffect(() => {
     if (!editor) return;
@@ -37,16 +37,16 @@ const LinkBubbleMenu = () => {
       title: "Edit Link URL:",
       defaultValue: rawHref,
     });
-    
+
     // User clicked cancel
     if (url === null) return;
-    
+
     // User cleared the URL -> remove link
     if (url === "") {
       editor.chain().focus().unsetLink().run();
       return;
     }
-    
+
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
 
@@ -59,15 +59,13 @@ const LinkBubbleMenu = () => {
   };
 
   return (
-    <BubbleMenu
-      editor={undefined}
-      pluginKey="linkBubbleMenu"
-    >
-      <div className="link-bubble-menu">
-        <a 
-          href={href} 
-          className="link-bubble-menu__url" 
-          onClick={(e) => {
+    <BubbleMenu editor={undefined} pluginKey="linkBubbleMenu">
+      <div className="link-bubble-menu" data-testid="bubble-menu-link">
+        <a
+          href={href}
+          className="link-bubble-menu__url"
+          data-testid="bubble-menu-link-url"
+          onClick={e => {
             e.preventDefault();
             handleOpen();
           }}
@@ -77,13 +75,13 @@ const LinkBubbleMenu = () => {
         </a>
         <div className="link-bubble-menu__divider" />
         <div className="link-bubble-menu__actions">
-          <button type="button" onClick={handleOpen} title="Open link in new tab">
+          <button type="button" onClick={handleOpen} title="Open link in new tab" data-testid="bubble-menu-link-open">
             <ExternalLink size={14} />
           </button>
-          <button type="button" onClick={handleEdit} title="Edit link">
+          <button type="button" onClick={handleEdit} title="Edit link" data-testid="bubble-menu-link-edit">
             <Edit2 size={14} />
           </button>
-          <button type="button" onClick={handleRemove} title="Remove link">
+          <button type="button" onClick={handleRemove} title="Remove link" data-testid="bubble-menu-link-remove">
             <Trash2 size={14} />
           </button>
         </div>

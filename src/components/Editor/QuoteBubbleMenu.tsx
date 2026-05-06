@@ -18,7 +18,11 @@ const QuoteBubbleMenu = () => {
       defaultValue: currentAuthor,
     });
     if (author === null) return;
-    editor.chain().focus().updateQuoteAuthor(author || "").run();
+    editor
+      .chain()
+      .focus()
+      .updateQuoteAuthor(author || "")
+      .run();
   };
 
   const handleRemove = () => {
@@ -27,16 +31,16 @@ const QuoteBubbleMenu = () => {
 
   return (
     <BubbleMenu editor={undefined} pluginKey="quoteBubbleMenu" shouldShow={({ editor: e }) => e.isActive("quote")}>
-      <div className="link-bubble-menu" onMouseDown={(e) => e.preventDefault()}>
+      <div className="link-bubble-menu" onMouseDown={e => e.preventDefault()} data-testid="bubble-menu-quote">
         <span className="link-bubble-menu__url" style={{ color: "#aaa", cursor: "default", textDecoration: "none" }}>
           Quote Options
         </span>
         <div className="link-bubble-menu__divider" />
         <div className="link-bubble-menu__actions">
-          <button type="button" onClick={handleEditAuthor} title="Edit Author">
+          <button type="button" onClick={handleEditAuthor} title="Edit Author" data-testid="bubble-menu-quote-edit">
             <Edit2 size={14} />
           </button>
-          <button type="button" onClick={handleRemove} title="Remove Quote">
+          <button type="button" onClick={handleRemove} title="Remove Quote" data-testid="bubble-menu-quote-remove">
             <Trash2 size={14} />
           </button>
         </div>

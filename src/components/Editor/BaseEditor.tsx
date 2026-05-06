@@ -2,7 +2,7 @@ import React from "react";
 import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
-import { Bold, Italic, Underline, Strikethrough, Link } from "lucide-react";
+import { Bold, Italic, Underline, Strikethrough, Link, EyeOff } from "lucide-react";
 import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import TiptapUnderline from "@tiptap/extension-underline";
 import Placeholder from "@tiptap/extension-placeholder";
@@ -178,12 +178,13 @@ const BubbleMenuContent = () => {
 
   return (
     <BubbleMenu editor={undefined} pluginKey="baseBubbleMenu">
-      <div className="bubble-menu">
+      <div className="bubble-menu" onMouseDown={event => event.preventDefault()} data-testid="bubble-menu-inline">
         <div className="tooltip-wrapper">
           <button
             type="button"
             onClick={handleAddLink}
             className={`bubble-menu-button ${editor.isActive("link") ? "is-active" : ""}`}
+            data-testid="bubble-menu-inline-link"
           >
             <Link size={16} />
           </button>
@@ -198,6 +199,7 @@ const BubbleMenuContent = () => {
               editor.chain().focus().toggleBold().run();
             }}
             className={`bubble-menu-button ${editor.isActive("bold") ? "is-active" : ""}`}
+            data-testid="bubble-menu-inline-bold"
           >
             <Bold size={16} />
           </button>
@@ -212,6 +214,7 @@ const BubbleMenuContent = () => {
               editor.chain().focus().toggleItalic().run();
             }}
             className={`bubble-menu-button ${editor.isActive("italic") ? "is-active" : ""}`}
+            data-testid="bubble-menu-inline-italic"
           >
             <Italic size={16} />
           </button>
@@ -226,6 +229,7 @@ const BubbleMenuContent = () => {
               editor.chain().focus().toggleUnderline().run();
             }}
             className={`bubble-menu-button ${editor.isActive("underline") ? "is-active" : ""}`}
+            data-testid="bubble-menu-inline-underline"
           >
             <Underline size={16} />
           </button>
@@ -240,10 +244,26 @@ const BubbleMenuContent = () => {
               editor.chain().focus().toggleStrike().run();
             }}
             className={`bubble-menu-button ${editor.isActive("strike") ? "is-active" : ""}`}
+            data-testid="bubble-menu-inline-strikethrough"
           >
             <Strikethrough size={16} />
           </button>
           <span className="action-tooltip">Strikethrough</span>
+        </div>
+
+        <div className="tooltip-wrapper">
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent("editor-toolbar-used", "Toolbar action: spoiler");
+              editor.chain().focus().toggleSpoiler().run();
+            }}
+            className={`bubble-menu-button ${editor.isActive("spoiler") ? "is-active" : ""}`}
+            data-testid="bubble-menu-inline-spoiler"
+          >
+            <EyeOff size={16} />
+          </button>
+          <span className="action-tooltip">Spoiler</span>
         </div>
       </div>
     </BubbleMenu>
@@ -289,6 +309,7 @@ const BaseEditor = ({ content, onUpdate }: BaseEditorProps) => {
         editorProps={{
           attributes: {
             class: "tiptap-editor",
+            "data-testid": "editor-rich-text-input",
           },
         }}
       >

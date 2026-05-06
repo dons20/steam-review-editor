@@ -17,7 +17,7 @@ const Markup = React.lazy(() => import("./Markup"));
 
 const months = [
   "JANUARY",
-  "FEBUARY",
+  "FEBRUARY",
   "MARCH",
   "APRIL",
   "MAY",
@@ -75,13 +75,18 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
   };
 
   return (
-    <div className={`preview ${visible ? "" : "hidden"}`}>
-      <div className="store">
+    <div className={`preview ${visible ? "" : "hidden"}`} data-testid="preview-root">
+      <div className="store" data-testid="store-preview">
         <div className="heading-row">
           <h1 className="heading">Store Preview</h1>
           <div className="heading-actions">
             <div className="tooltip-wrapper">
-              <button className="preview-action-btn" onClick={handleRandomize} aria-label="Randomize preview">
+              <button
+                className="preview-action-btn"
+                onClick={handleRandomize}
+                aria-label="Randomize preview"
+                data-testid="preview-randomize"
+              >
                 <Shuffle size={15} />
               </button>
               <span className="action-tooltip">Randomize</span>
@@ -94,6 +99,7 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
                   setModalOpen(true);
                 }}
                 aria-label="Preview settings"
+                data-testid="preview-open-settings"
               >
                 <Settings size={15} />
               </button>
@@ -107,9 +113,15 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
               <User size={18} />
             </div>
             <div className="details">
-              <p className="username">{settings.username}</p>
-              <p className="sampleDetail">{settings.productsInAccount} games</p>
-              <p className="sampleDetail">{settings.numReviews} reviews</p>
+              <p className="username" data-testid="preview-username">
+                {settings.username}
+              </p>
+              <p className="sampleDetail" data-testid="preview-products">
+                {settings.productsInAccount} games
+              </p>
+              <p className="sampleDetail" data-testid="preview-reviews">
+                {settings.numReviews} reviews
+              </p>
             </div>
           </div>
           <div className="rightColumn">
@@ -120,8 +132,10 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
                 <IconNotRecommended width={40} height={40} />
               )}
               <div>
-                <span className="recTitle">{settings.isRecommended ? "Recommended" : "Not Recommended"}</span>
-                <span className="subtext">
+                <span className="recTitle" data-testid="preview-recommendation">
+                  {settings.isRecommended ? "Recommended" : "Not Recommended"}
+                </span>
+                <span className="subtext" data-testid="preview-hours">
                   {settings.hoursOnRecord.toFixed(1)} hrs on record ({settings.hoursAtReview.toFixed(1)} hrs at review
                   time)
                 </span>
@@ -130,22 +144,26 @@ function Preview({ markupRef, visible }: { markupRef: React.RefObject<any>; visi
                 <IconStar width={16} height={16} display="block" />
               </div>
             </div>
-            <div className="content">
-              <p className="datePosted">POSTED: {formatDate(settings.datePosted)}</p>
-              {previewContent && <div dangerouslySetInnerHTML={{ __html: previewContent }} />}
+            <div className="content" data-testid="preview-content">
+              <p className="datePosted" data-testid="preview-date">
+                POSTED: {formatDate(settings.datePosted)}
+              </p>
+              {previewContent && (
+                <div data-testid="preview-rendered-html" dangerouslySetInnerHTML={{ __html: previewContent }} />
+              )}
             </div>
           </div>
         </div>
       </div>
-      <div className="markup">
+      <div className="markup" data-testid="markup-preview">
         <h1 className="heading" style={{ marginBottom: 10 }}>
           Markup Preview
         </h1>
-        <pre className="markupBody" ref={markupRef}>
+        <pre className="markupBody" ref={markupRef} data-testid="markup-preview-body">
           {markup ? (
             <React.Suspense fallback={<>Loading...</>}>{<Markup value={markup} />}</React.Suspense>
           ) : (
-            <div className="empty-preview-message">
+            <div className="empty-preview-message" data-testid="markup-preview-empty">
               <p>Start typing in the editor to see your Steam BBCode markup here.</p>
               <p className="hint">This is the text you'll copy and paste into your Steam review.</p>
             </div>
