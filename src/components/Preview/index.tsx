@@ -17,7 +17,7 @@ const Markup = React.lazy(() => import("./Markup"));
 
 const months = [
   "JANUARY",
-  "FEBUARY",
+  "FEBRUARY",
   "MARCH",
   "APRIL",
   "MAY",
