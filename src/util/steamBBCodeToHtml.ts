@@ -18,11 +18,7 @@
 
 /** Escapes HTML entities so literal text doesn't get interpreted as HTML. */
 function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 /** Apply inline BBCode tags (bold, italic, etc.) to a string */
@@ -32,9 +28,10 @@ function applyInlineTags(text: string): string {
   result = result.replace(/\[b\]([\s\S]*?)\[\/b\]/gi, "<strong>$1</strong>");
   result = result.replace(/\[i\]([\s\S]*?)\[\/i\]/gi, "<em>$1</em>");
   result = result.replace(/\[u\]([\s\S]*?)\[\/u\]/gi, "<u>$1</u>");
+  result = result.replace(/\[strike\]([\s\S]*?)\[\/strike\]/gi, "<s>$1</s>");
   result = result.replace(
-    /\[strike\]([\s\S]*?)\[\/strike\]/gi,
-    "<s>$1</s>"
+    /\[spoiler\]([\s\S]*?)\[\/spoiler\]/gi,
+    (_match, content: string) => `<span data-type="spoiler" class="spoiler">${applyInlineTags(content.trim())}</span>`
   );
 
   // URLs
@@ -47,10 +44,7 @@ function applyInlineTags(text: string): string {
   );
 
   // Images (inline context)
-  result = result.replace(
-    /\[img\]([\s\S]*?)\[\/img\]/gi,
-    '<img src="$1" class="steam-image" />'
-  );
+  result = result.replace(/\[img\]([\s\S]*?)\[\/img\]/gi, '<img src="$1" class="steam-image" />');
 
   return result;
 }
@@ -77,32 +71,21 @@ export function steamBBCodeToHtml(bbcode: string): string {
   // ── 1. Replace block-level tags with placeholders ────────────────────
 
   // [noparse] – content displayed verbatim (no tag parsing)
-  text = text.replace(
-    /\[noparse\]([\s\S]*?)\[\/noparse\]/gi,
-    (_match, content: string) => {
-      return addBlock(
-        `<pre data-type="noparse" class="noparse">${escapeHtml(content)}</pre>`
-      );
-    }
-  );
+  text = text.replace(/\[noparse\]([\s\S]*?)\[\/noparse\]/gi, (_match, content: string) => {
+    return addBlock(`<pre data-type="noparse" class="noparse">${escapeHtml(content)}</pre>`);
+  });
 
   // [code] – fixed-width font, content preserved verbatim
-  text = text.replace(
-    /\[code\]([\s\S]*?)\[\/code\]/gi,
-    (_match, content: string) => {
-      return addBlock(`<pre><code>${escapeHtml(content)}</code></pre>`);
-    }
-  );
+  text = text.replace(/\[code\]([\s\S]*?)\[\/code\]/gi, (_match, content: string) => {
+    return addBlock(`<pre><code>${escapeHtml(content)}</code></pre>`);
+  });
 
   // [table] – complex block (with optional options: noborder=1, equalcells=1)
-  text = text.replace(
-    /\[table([^\]]*)\]([\s\S]*?)\[\/table\]/gi,
-    (_match, options: string, tableContent: string) => {
-      const noborder = /noborder\s*=\s*1/i.test(options) ? "1" : null;
-      const equalcells = /equalcells\s*=\s*1/i.test(options) ? "1" : null;
-      return addBlock(convertTable(tableContent, noborder, equalcells));
-    }
-  );
+  text = text.replace(/\[table([^\]]*)\]([\s\S]*?)\[\/table\]/gi, (_match, options: string, tableContent: string) => {
+    const noborder = /noborder\s*=\s*1/i.test(options) ? "1" : null;
+    const equalcells = /equalcells\s*=\s*1/i.test(options) ? "1" : null;
+    return addBlock(convertTable(tableContent, noborder, equalcells));
+  });
 
   // Steam Store URL embed: [url=...store.steampowered.com/app/ID/...]...[/url]
   text = text.replace(
@@ -121,73 +104,36 @@ export function steamBBCodeToHtml(bbcode: string): string {
   );
 
   // Headings
-  text = text.replace(
-    /\[h1\]([\s\S]*?)\[\/h1\]/gi,
-    (_m, c: string) => addBlock(`<h1>${applyInlineTags(c.trim())}</h1>`)
+  text = text.replace(/\[h1\]([\s\S]*?)\[\/h1\]/gi, (_m, c: string) =>
+    addBlock(`<h1>${applyInlineTags(c.trim())}</h1>`)
   );
-  text = text.replace(
-    /\[h2\]([\s\S]*?)\[\/h2\]/gi,
-    (_m, c: string) => addBlock(`<h2>${applyInlineTags(c.trim())}</h2>`)
+  text = text.replace(/\[h2\]([\s\S]*?)\[\/h2\]/gi, (_m, c: string) =>
+    addBlock(`<h2>${applyInlineTags(c.trim())}</h2>`)
   );
-  text = text.replace(
-    /\[h3\]([\s\S]*?)\[\/h3\]/gi,
-    (_m, c: string) => addBlock(`<h3>${applyInlineTags(c.trim())}</h3>`)
+  text = text.replace(/\[h3\]([\s\S]*?)\[\/h3\]/gi, (_m, c: string) =>
+    addBlock(`<h3>${applyInlineTags(c.trim())}</h3>`)
   );
 
   // Lists
-  text = text.replace(
-    /\[list\]([\s\S]*?)\[\/list\]/gi,
-    (_match, inner: string) => {
-      const items = inner.split(/\[\*\]/gi).filter((s) => s.trim());
-      return addBlock(
-        "<ul>" +
-          items
-            .map((item) => `<li><p>${applyInlineTags(item.trim())}</p></li>`)
-            .join("") +
-          "</ul>"
-      );
-    }
-  );
+  text = text.replace(/\[list\]([\s\S]*?)\[\/list\]/gi, (_match, inner: string) => {
+    const items = inner.split(/\[\*\]/gi).filter(s => s.trim());
+    return addBlock("<ul>" + items.map(item => `<li><p>${applyInlineTags(item.trim())}</p></li>`).join("") + "</ul>");
+  });
 
-  text = text.replace(
-    /\[olist\]([\s\S]*?)\[\/olist\]/gi,
-    (_match, inner: string) => {
-      const items = inner.split(/\[\*\]/gi).filter((s) => s.trim());
-      return addBlock(
-        "<ol>" +
-          items
-            .map((item) => `<li><p>${applyInlineTags(item.trim())}</p></li>`)
-            .join("") +
-          "</ol>"
-      );
-    }
-  );
+  text = text.replace(/\[olist\]([\s\S]*?)\[\/olist\]/gi, (_match, inner: string) => {
+    const items = inner.split(/\[\*\]/gi).filter(s => s.trim());
+    return addBlock("<ol>" + items.map(item => `<li><p>${applyInlineTags(item.trim())}</p></li>`).join("") + "</ol>");
+  });
 
   // Quote (with optional author)
-  text = text.replace(
-    /\[quote=([^\]]+)\]([\s\S]*?)\[\/quote\]/gi,
-    (_match, author: string, content: string) => {
-      const cleanAuthor = author.replace(/^["']|["']$/g, "");
-      return addBlock(
-        `<blockquote data-type="quote" class="quote" data-author="${escapeHtml(cleanAuthor)}"><p>${applyInlineTags(content.trim())}</p></blockquote>`
-      );
-    }
-  );
-  text = text.replace(
-    /\[quote\]([\s\S]*?)\[\/quote\]/gi,
-    (_m, c: string) =>
-      addBlock(
-        `<blockquote data-type="quote" class="quote"><p>${applyInlineTags(c.trim())}</p></blockquote>`
-      )
-  );
-
-  // Spoiler
-  text = text.replace(
-    /\[spoiler\]([\s\S]*?)\[\/spoiler\]/gi,
-    (_m, c: string) =>
-      addBlock(
-        `<div data-type="spoiler" class="spoiler"><p>${applyInlineTags(c.trim())}</p></div>`
-      )
+  text = text.replace(/\[quote=([^\]]+)\]([\s\S]*?)\[\/quote\]/gi, (_match, author: string, content: string) => {
+    const cleanAuthor = author.replace(/^["']|["']$/g, "");
+    return addBlock(
+      `<blockquote data-type="quote" class="quote" data-author="${escapeHtml(cleanAuthor)}"><p>${applyInlineTags(content.trim())}</p></blockquote>`
+    );
+  });
+  text = text.replace(/\[quote\]([\s\S]*?)\[\/quote\]/gi, (_m, c: string) =>
+    addBlock(`<blockquote data-type="quote" class="quote"><p>${applyInlineTags(c.trim())}</p></blockquote>`)
   );
 
   // Horizontal rule
@@ -195,10 +141,8 @@ export function steamBBCodeToHtml(bbcode: string): string {
   text = text.replace(/\[hr\]/gi, () => addBlock("<hr>"));
 
   // [img] as block-level
-  text = text.replace(
-    /\[img\]([\s\S]*?)\[\/img\]/gi,
-    (_m, src: string) =>
-      addBlock(`<img src="${src.trim()}" class="steam-image" />`)
+  text = text.replace(/\[img\]([\s\S]*?)\[\/img\]/gi, (_m, src: string) =>
+    addBlock(`<img src="${src.trim()}" class="steam-image" />`)
   );
 
   // ── 2. Process remaining text line by line ──────────────────────────
@@ -230,6 +174,20 @@ export function steamBBCodeToHtml(bbcode: string): string {
       continue;
     }
 
+    const storeMatch = trimmed.match(/^https?:\/\/store\.steampowered\.com\/app\/(\d+)\/?[^\s]*$/i);
+    if (storeMatch) {
+      result.push(buildStoreEmbedHtml(storeMatch[1]));
+      continue;
+    }
+
+    const workshopMatch = trimmed.match(
+      /^https?:\/\/steamcommunity\.com\/sharedfiles\/filedetails\/\?id=(\d+)[^\s]*$/i
+    );
+    if (workshopMatch) {
+      result.push(buildWorkshopEmbedHtml(workshopMatch[1]));
+      continue;
+    }
+
     // Bare YouTube URL on its own line → YouTube embed block
     const ytMatch =
       trimmed.match(/^https?:\/\/(www\.)?youtube\.com\/watch\?.*v=([-\w]+)/i) ||
@@ -243,10 +201,7 @@ export function steamBBCodeToHtml(bbcode: string): string {
     // Text/inline content → apply inline tags and wrap in <p>
     // First restore any embedded block placeholders (rare but possible)
     let processed = applyInlineTags(trimmed);
-    processed = processed.replace(
-      /%%BLOCK_(\d+)%%/g,
-      (_m, idxStr: string) => blocks[parseInt(idxStr, 10)]
-    );
+    processed = processed.replace(/%%BLOCK_(\d+)%%/g, (_m, idxStr: string) => blocks[parseInt(idxStr, 10)]);
 
     result.push(`<p>${processed}</p>`);
   }
@@ -254,8 +209,7 @@ export function steamBBCodeToHtml(bbcode: string): string {
   // Filter out leading/trailing empty paragraphs from the overall document
   // to avoid extra blank lines at the very start/end
   while (result.length > 0 && result[0] === "<p></p>") result.shift();
-  while (result.length > 0 && result[result.length - 1] === "<p></p>")
-    result.pop();
+  while (result.length > 0 && result[result.length - 1] === "<p></p>") result.pop();
 
   return result.join("");
 }
@@ -288,7 +242,7 @@ function convertTable(raw: string, noborder: string | null = null, equalcells: s
 
   if (headerMatches.length > 0) {
     html += "<tr>";
-    headerMatches.forEach((m) => {
+    headerMatches.forEach(m => {
       html += `<th><p>${applyInlineTags(m[1].trim())}</p></th>`;
     });
     html += "</tr>";
@@ -319,7 +273,6 @@ function convertTable(raw: string, noborder: string | null = null, equalcells: s
 
 /** Returns true if the text probably contains Steam BBCode */
 export function containsSteamBBCode(text: string): boolean {
-  const bbcodePattern =
-    /\[(h[1-3]|b|i|u|strike|url|img|code|noparse|spoiler|quote|table|list|olist|hr)\b/i;
+  const bbcodePattern = /\[(h[1-3]|b|i|u|strike|url|img|code|noparse|spoiler|quote|table|list|olist|hr)\b/i;
   return bbcodePattern.test(text);
 }

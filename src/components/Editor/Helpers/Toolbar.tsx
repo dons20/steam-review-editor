@@ -1,7 +1,6 @@
 import React from "react";
-import { useCurrentEditor } from "@tiptap/react";
+import { useCurrentEditor, useEditorState } from "@tiptap/react";
 import Tooltip from "components/Tooltip";
-import { trackEvent } from "util/analytics";
 import { usePrompt } from "../PromptContext";
 import {
   IconBold,
@@ -27,47 +26,38 @@ import {
   IconWorkshop,
   IconYoutube,
 } from "components/Icons";
-import {
-  addImage,
-  addQuote,
-  insertTable,
-  clearContent,
-  toggleBold,
-  toggleItalic,
-  toggleUnderline,
-  toggleStrike,
-  toggleHeading1,
-  toggleHeading2,
-  toggleHeading3,
-  toggleBulletList,
-  toggleOrderedList,
-  toggleCodeBlock,
-  toggleSpoiler,
-  toggleNoParse,
-  setHorizontalRule,
-  clearFormatting,
-  insertSteamStore,
-  insertSteamWorkshop,
-  insertYouTube,
-} from "./tools";
 import "./toolbar.scss";
 import { useEditorReady } from "../useEditorReady";
+import { toolbarStateSelector } from "./ToolbarStateSelector";
+import { useToolbarActions } from "./useToolbarActions";
 
 interface ToolbarButtonProps {
   onClick: () => void;
   active?: boolean;
   disabled?: boolean;
   tooltip?: string;
+  testId?: string;
   children: React.ReactNode;
 }
 
-const ToolbarButton: React.FC<ToolbarButtonProps> = React.memo(({ onClick, active, disabled, tooltip, children }) => {
+interface ToolbarActionItem {
+  key: string;
+  onClick: () => void;
+  icon: React.ComponentType;
+  tooltip?: string;
+  testId?: string;
+  active?: boolean;
+  disabled?: boolean;
+}
+
+const ToolbarButton: React.FC<ToolbarButtonProps> = ({ onClick, active, disabled, tooltip, testId, children }) => {
   const button = (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
       className={`toolbar-button ${active ? "is-active" : ""}`}
+      data-testid={testId}
     >
       {children}
     </button>
@@ -82,37 +72,48 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = React.memo(({ onClick, activ
   }
 
   return button;
-});
+};
 
 const ToolbarDivider = () => <div className="toolbar-divider" />;
 
 export const Toolbar: React.FC = () => {
-  const { editor } = useCurrentEditor();
   const ready = useEditorReady();
+  const { editor } = useCurrentEditor();
   const { prompt, confirm } = usePrompt();
-  const [, forceUpdate] = React.useReducer(x => x + 1, 0);
+  const editorState = useEditorState({
+    editor,
+    selector: toolbarStateSelector,
+  });
 
-  const handleAddLink = React.useCallback(async () => {
-    if (!editor) return;
-
-    trackEvent("editor-toolbar-used", "Toolbar action: link");
-
-    const previousUrl = editor.getAttributes("link").href || "";
-    const url = await prompt({ title: "Enter Link URL:", defaultValue: previousUrl });
-    if (url) {
-      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-    } else if (url === "") {
-      editor.chain().focus().unsetLink().run();
-    }
-  }, [editor, prompt]);
+  const {
+    handleAddLink,
+    handleAddImage,
+    handleAddQuote,
+    handleInsertTable,
+    handleClearContent,
+    handleToggleBold,
+    handleToggleItalic,
+    handleToggleUnderline,
+    handleToggleStrike,
+    handleToggleH1,
+    handleToggleH2,
+    handleToggleH3,
+    handleToggleBulletList,
+    handleToggleOrderedList,
+    handleToggleCodeBlock,
+    handleToggleSpoiler,
+    handleToggleNoParse,
+    handleSetHorizontalRule,
+    handleClearFormatting,
+    handleInsertSteamStore,
+    handleInsertSteamWorkshop,
+    handleInsertYouTube,
+  } = useToolbarActions({ editor, prompt, confirm });
 
   React.useEffect(() => {
     if (!editor || !ready) {
       return;
     }
-
-    const update = () => forceUpdate();
-    editor.on("transaction", update);
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
@@ -125,218 +126,222 @@ export const Toolbar: React.FC = () => {
     editor.view.dom.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      editor.off("transaction", update);
       editor.view.dom.removeEventListener("keydown", handleKeyDown);
     };
   }, [editor, ready, handleAddLink]);
+
+  const toolbarGroups: ToolbarActionItem[][] = [
+    [
+      {
+        key: "bold",
+        onClick: handleToggleBold,
+        active: editorState.isBold,
+        tooltip: "Bold (Ctrl+B)",
+        testId: "toolbar-bold",
+        icon: IconBold,
+      },
+      {
+        key: "italic",
+        onClick: handleToggleItalic,
+        active: editorState.isItalic,
+        tooltip: "Italic (Ctrl+I)",
+        testId: "toolbar-italic",
+        icon: IconItalic,
+      },
+      {
+        key: "underline",
+        onClick: handleToggleUnderline,
+        active: editorState.isUnderline,
+        tooltip: "Underline (Ctrl+U)",
+        testId: "toolbar-underline",
+        icon: IconUnderline,
+      },
+      {
+        key: "strikethrough",
+        onClick: handleToggleStrike,
+        active: editorState.isStrike,
+        tooltip: "Strikethrough (Ctrl+Shift+X)",
+        testId: "toolbar-strikethrough",
+        icon: IconStrikethrough,
+      },
+    ],
+    [
+      {
+        key: "heading-1",
+        onClick: handleToggleH1,
+        active: editorState.isHeading1,
+        tooltip: "Heading 1",
+        testId: "toolbar-heading-1",
+        icon: IconH1,
+      },
+      {
+        key: "heading-2",
+        onClick: handleToggleH2,
+        active: editorState.isHeading2,
+        tooltip: "Heading 2",
+        testId: "toolbar-heading-2",
+        icon: IconH2,
+      },
+      {
+        key: "heading-3",
+        onClick: handleToggleH3,
+        active: editorState.isHeading3,
+        tooltip: "Heading 3",
+        testId: "toolbar-heading-3",
+        icon: IconH3,
+      },
+    ],
+    [
+      {
+        key: "bullet-list",
+        onClick: handleToggleBulletList,
+        active: editorState.isBulletList,
+        tooltip: "Bullet List",
+        testId: "toolbar-bullet-list",
+        icon: IconList,
+      },
+      {
+        key: "ordered-list",
+        onClick: handleToggleOrderedList,
+        active: editorState.isOrderedList,
+        tooltip: "Ordered List",
+        testId: "toolbar-ordered-list",
+        icon: IconListNumbers,
+      },
+    ],
+    [
+      {
+        key: "link",
+        onClick: handleAddLink,
+        active: editorState.isLink,
+        tooltip: "Insert Link (Ctrl+K)",
+        testId: "toolbar-link",
+        icon: IconLink,
+      },
+      {
+        key: "image",
+        onClick: handleAddImage,
+        tooltip: "Insert Image",
+        testId: "toolbar-image",
+        icon: IconPhoto,
+      },
+      {
+        key: "table",
+        onClick: handleInsertTable,
+        tooltip: "Insert Table",
+        testId: "toolbar-table",
+        icon: IconTable,
+      },
+    ],
+    [
+      {
+        key: "code-block",
+        onClick: handleToggleCodeBlock,
+        active: editorState.isCodeBlock,
+        tooltip: "Code Block",
+        testId: "toolbar-code-block",
+        icon: IconCode,
+      },
+      {
+        key: "quote",
+        onClick: handleAddQuote,
+        active: editorState.isQuote,
+        tooltip: "Quote",
+        testId: "toolbar-quote",
+        icon: IconQuote,
+      },
+      {
+        key: "spoiler",
+        onClick: handleToggleSpoiler,
+        active: editorState.isSpoiler,
+        tooltip: "Spoiler",
+        testId: "toolbar-spoiler",
+        icon: IconEyeOff,
+      },
+      {
+        key: "no-parse",
+        onClick: handleToggleNoParse,
+        active: editorState.isNoParse,
+        tooltip: "No Parse",
+        testId: "toolbar-no-parse",
+        icon: IconCircleOff,
+      },
+    ],
+    [
+      {
+        key: "horizontal-rule",
+        onClick: handleSetHorizontalRule,
+        tooltip: "Horizontal Rule",
+        testId: "toolbar-horizontal-rule",
+        icon: IconMinus,
+      },
+    ],
+    [
+      {
+        key: "steam-store",
+        onClick: handleInsertSteamStore,
+        tooltip: "Insert Steam Store Link",
+        testId: "toolbar-steam-store",
+        icon: IconStore,
+      },
+      {
+        key: "steam-workshop",
+        onClick: handleInsertSteamWorkshop,
+        tooltip: "Insert Steam Workshop Link",
+        testId: "toolbar-steam-workshop",
+        icon: IconWorkshop,
+      },
+      {
+        key: "youtube",
+        onClick: handleInsertYouTube,
+        tooltip: "Insert YouTube Link",
+        testId: "toolbar-youtube",
+        icon: IconYoutube,
+      },
+    ],
+    [
+      {
+        key: "clear-formatting",
+        onClick: handleClearFormatting,
+        tooltip: "Clear Formatting",
+        testId: "toolbar-clear-formatting",
+        icon: IconClearFormatting,
+      },
+      {
+        key: "clear-all",
+        onClick: handleClearContent,
+        tooltip: "Clear All Content",
+        testId: "toolbar-clear-all",
+        icon: IconTrash,
+      },
+    ],
+  ];
 
   if (!editor || !ready) {
     return null;
   }
 
-  const handleAddImage = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: image");
-    addImage(editor, prompt);
-  }, [editor, prompt]);
-  const handleAddQuote = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: quote");
-    addQuote(editor, prompt);
-  }, [editor, prompt]);
-  const handleInsertTable = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: table");
-    insertTable(editor);
-  }, [editor]);
-  const handleClearContent = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: clear content");
-    clearContent(editor, confirm);
-  }, [editor, confirm]);
-
-  const handleToggleBold = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: bold");
-    toggleBold(editor);
-  }, [editor]);
-  const handleToggleItalic = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: italic");
-    toggleItalic(editor);
-  }, [editor]);
-  const handleToggleUnderline = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: underline");
-    toggleUnderline(editor);
-  }, [editor]);
-  const handleToggleStrike = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: strikethrough");
-    toggleStrike(editor);
-  }, [editor]);
-
-  const handleToggleH1 = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: heading 1");
-    toggleHeading1(editor);
-  }, [editor]);
-  const handleToggleH2 = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: heading 2");
-    toggleHeading2(editor);
-  }, [editor]);
-  const handleToggleH3 = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: heading 3");
-    toggleHeading3(editor);
-  }, [editor]);
-
-  const handleToggleBulletList = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: bullet list");
-    toggleBulletList(editor);
-  }, [editor]);
-  const handleToggleOrderedList = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: ordered list");
-    toggleOrderedList(editor);
-  }, [editor]);
-
-  const handleToggleCodeBlock = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: code block");
-    toggleCodeBlock(editor);
-  }, [editor]);
-  const handleToggleSpoiler = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: spoiler");
-    toggleSpoiler(editor);
-  }, [editor]);
-  const handleToggleNoParse = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: no-parse");
-    toggleNoParse(editor);
-  }, [editor]);
-
-  const handleSetHorizontalRule = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: horizontal rule");
-    setHorizontalRule(editor);
-  }, [editor]);
-  const handleClearFormatting = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: clear formatting");
-    clearFormatting(editor);
-  }, [editor]);
-  const handleInsertSteamStore = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: steam store");
-    insertSteamStore(editor, prompt);
-  }, [editor, prompt]);
-  const handleInsertSteamWorkshop = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: steam workshop");
-    insertSteamWorkshop(editor, prompt);
-  }, [editor, prompt]);
-  const handleInsertYouTube = React.useCallback(() => {
-    trackEvent("editor-toolbar-used", "Toolbar action: youtube");
-    insertYouTube(editor, prompt);
-  }, [editor, prompt]);
-
   return (
     <div className="toolbar">
-      <div className="toolbar-group">
-        <ToolbarButton onClick={handleToggleBold} active={editor.isActive("bold")} tooltip="Bold (Ctrl+B)">
-          <IconBold />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleToggleItalic} active={editor.isActive("italic")} tooltip="Italic (Ctrl+I)">
-          <IconItalic />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={handleToggleUnderline}
-          active={editor.isActive("underline")}
-          tooltip="Underline (Ctrl+U)"
-        >
-          <IconUnderline />
-        </ToolbarButton>
-        <ToolbarButton
-          onClick={handleToggleStrike}
-          active={editor.isActive("strike")}
-          tooltip="Strikethrough (Ctrl+Shift+X)"
-        >
-          <IconStrikethrough />
-        </ToolbarButton>
-      </div>
-
-      <ToolbarDivider />
-
-      <div className="toolbar-group">
-        <ToolbarButton onClick={handleToggleH1} active={editor.isActive("heading", { level: 1 })} tooltip="Heading 1">
-          <IconH1 />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleToggleH2} active={editor.isActive("heading", { level: 2 })} tooltip="Heading 2">
-          <IconH2 />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleToggleH3} active={editor.isActive("heading", { level: 3 })} tooltip="Heading 3">
-          <IconH3 />
-        </ToolbarButton>
-      </div>
-
-      <ToolbarDivider />
-
-      <div className="toolbar-group">
-        <ToolbarButton onClick={handleToggleBulletList} active={editor.isActive("bulletList")} tooltip="Bullet List">
-          <IconList />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleToggleOrderedList} active={editor.isActive("orderedList")} tooltip="Ordered List">
-          <IconListNumbers />
-        </ToolbarButton>
-      </div>
-
-      <ToolbarDivider />
-
-      <div className="toolbar-group">
-        <ToolbarButton onClick={handleAddLink} active={editor.isActive("link")} tooltip="Insert Link (Ctrl+K)">
-          <IconLink />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleAddImage} tooltip="Insert Image">
-          <IconPhoto />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleInsertTable} tooltip="Insert Table">
-          <IconTable />
-        </ToolbarButton>
-      </div>
-
-      <ToolbarDivider />
-
-      <div className="toolbar-group">
-        <ToolbarButton onClick={handleToggleCodeBlock} active={editor.isActive("codeBlock")} tooltip="Code Block">
-          <IconCode />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleAddQuote} active={editor.isActive("quote")} tooltip="Quote">
-          <IconQuote />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleToggleSpoiler} active={editor.isActive("spoiler")} tooltip="Spoiler">
-          <IconEyeOff />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleToggleNoParse} active={editor.isActive("noParse")} tooltip="No Parse">
-          <IconCircleOff />
-        </ToolbarButton>
-      </div>
-
-      <ToolbarDivider />
-
-      <div className="toolbar-group">
-        <ToolbarButton onClick={handleSetHorizontalRule} tooltip="Horizontal Rule">
-          <IconMinus />
-        </ToolbarButton>
-      </div>
-
-      <ToolbarDivider />
-
-      <div className="toolbar-group">
-        <ToolbarButton onClick={handleInsertSteamStore} tooltip="Insert Steam Store Link">
-          <IconStore />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleInsertSteamWorkshop} tooltip="Insert Steam Workshop Link">
-          <IconWorkshop />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleInsertYouTube} tooltip="Insert YouTube Link">
-          <IconYoutube />
-        </ToolbarButton>
-      </div>
-
-      <ToolbarDivider />
-
-      <div className="toolbar-group">
-        <ToolbarButton onClick={handleClearFormatting} tooltip="Clear Formatting">
-          <IconClearFormatting />
-        </ToolbarButton>
-        <ToolbarButton onClick={handleClearContent} tooltip="Clear All Content">
-          <IconTrash />
-        </ToolbarButton>
-      </div>
+      {toolbarGroups.map((group, index) => (
+        <React.Fragment key={group.map(item => item.key).join("-")}>
+          {index > 0 ? <ToolbarDivider /> : null}
+          <div className="toolbar-group">
+            {group.map(({ key, icon: Icon, ...item }) => (
+              <ToolbarButton
+                key={key}
+                onClick={item.onClick}
+                active={item.active}
+                disabled={item.disabled}
+                tooltip={item.tooltip}
+                testId={item.testId}
+              >
+                <Icon />
+              </ToolbarButton>
+            ))}
+          </div>
+        </React.Fragment>
+      ))}
     </div>
   );
 };

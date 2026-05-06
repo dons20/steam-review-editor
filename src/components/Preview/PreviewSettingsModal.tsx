@@ -38,11 +38,16 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
   };
 
   return (
-    <div className="preview-settings-overlay" data-theme={modalTheme} onClick={onClose}>
+    <div
+      className="preview-settings-overlay"
+      data-theme={modalTheme}
+      onClick={onClose}
+      data-testid="preview-settings-modal"
+    >
       <div className="preview-settings-modal" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
           <h2 className="modal-title">Preview Settings</h2>
-          <button className="modal-close-btn" onClick={onClose} aria-label="Close">
+          <button className="modal-close-btn" onClick={onClose} aria-label="Close" data-testid="preview-settings-close">
             <X size={20} />
           </button>
         </div>
@@ -58,6 +63,7 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
                 id="ps-username"
                 type="text"
                 className="field-input"
+                data-testid="preview-settings-username"
                 value={settings.username}
                 onChange={e => handleChange("username", e.target.value)}
                 placeholder="Your Username"
@@ -73,6 +79,7 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
                   id="ps-products"
                   type="number"
                   className="field-input"
+                  data-testid="preview-settings-products"
                   value={settings.productsInAccount}
                   onChange={e => handleChange("productsInAccount", parseInt(e.target.value) || 0)}
                   min={0}
@@ -86,6 +93,7 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
                   id="ps-reviews"
                   type="number"
                   className="field-input"
+                  data-testid="preview-settings-reviews"
                   value={settings.numReviews}
                   onChange={e => handleChange("numReviews", parseInt(e.target.value) || 0)}
                   min={0}
@@ -103,12 +111,14 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
                 <button
                   className={`toggle-btn ${settings.isRecommended ? "active recommended" : ""}`}
                   onClick={() => handleChange("isRecommended", true)}
+                  data-testid="preview-settings-recommended"
                 >
                   👍 Recommended
                 </button>
                 <button
                   className={`toggle-btn ${!settings.isRecommended ? "active not-recommended" : ""}`}
                   onClick={() => handleChange("isRecommended", false)}
+                  data-testid="preview-settings-not-recommended"
                 >
                   👎 Not Recommended
                 </button>
@@ -126,6 +136,7 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
                     id="ps-hours-on-record"
                     type="number"
                     className="field-input"
+                    data-testid="preview-settings-hours-on-record"
                     value={settings.hoursOnRecord}
                     step="0.1"
                     min={0}
@@ -140,6 +151,7 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
                     id="ps-hours-at-review"
                     type="number"
                     className="field-input"
+                    data-testid="preview-settings-hours-at-review"
                     value={settings.hoursAtReview}
                     step="0.1"
                     min={0}
@@ -151,6 +163,7 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
                   onClick={randomizeHours}
                   title="Randomize hours"
                   aria-label="Randomize hours"
+                  data-testid="preview-settings-randomize-hours"
                 >
                   <Shuffle size={16} />
                 </button>
@@ -165,6 +178,7 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
                 id="ps-date-posted"
                 type="date"
                 className="field-input date-input"
+                data-testid="preview-settings-date-posted"
                 value={settings.datePosted}
                 onChange={e => handleChange("datePosted", e.target.value)}
               />
@@ -173,11 +187,11 @@ export function PreviewSettingsModal({ isOpen, onClose, settings, onChange, onRa
         </div>
 
         <div className="modal-footer">
-          <button className="randomize-all-btn" onClick={onRandomize}>
+          <button className="randomize-all-btn" onClick={onRandomize} data-testid="preview-settings-randomize-all">
             <Shuffle size={16} />
             Randomize All
           </button>
-          <button className="done-btn" onClick={onClose}>
+          <button className="done-btn" onClick={onClose} data-testid="preview-settings-done">
             Done
           </button>
         </div>

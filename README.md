@@ -8,10 +8,6 @@ This tool can also be helpful outside of the review section. Anywhere that the S
 
 This means you can use it to format some aspects of your profile, guides, and even your Steam workshop descriptions.
 
-## How to Use
-
-Coming soon...
-
 ## How to test locally
 
 Be sure to have [Node v24 LTS or higher](https://nodejs.org/en/) on your development machine.
@@ -19,8 +15,19 @@ Be sure to have [Node v24 LTS or higher](https://nodejs.org/en/) on your develop
 1. Clone or download the source code in the [main branch](https://github.com/dons20/steam-review-editor)
 2. Open a terminal inside the cloned directory.
 3. Type `pnpm install` to install the dependencies.
-4. Type `pnpm run dev` to start a local development server
+4. Type `pnpm start` to start a local development server.
 5. Type `pnpm run build` to build the files for production.
+
+## E2E Testing
+
+The project includes a standalone Playwright suite for end-to-end editor coverage.
+
+1. Run `pnpm test:e2e:install` once to install the Chromium browser used by the suite.
+2. Run `pnpm test:e2e` to execute the full E2E suite.
+3. Run `pnpm test:e2e:headed` for headed browser debugging.
+4. Run `pnpm test:e2e:ui` to use the Playwright UI runner.
+
+The suite is intentionally organized so spec files only contain direct test scenarios, while shared selectors and interaction flows live in `e2e/helpers`.
 
 ## Resources
 
@@ -32,7 +39,10 @@ Be sure to have [Node v24 LTS or higher](https://nodejs.org/en/) on your develop
 
 Thank you for considering contributing to this project!
 
-_Guidelines coming soon_
+- Fork the repository and create your branch from `main`.
+- Ensure your code adheres to the existing style and conventions.
+- Write clear and concise commit messages.
+- Submit a pull request with a detailed description of your changes.
 
 ## License
 

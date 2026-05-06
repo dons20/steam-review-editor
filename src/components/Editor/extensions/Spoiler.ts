@@ -1,4 +1,4 @@
-import { Node, mergeAttributes } from "@tiptap/core";
+import { Mark, mergeAttributes } from "@tiptap/core";
 
 export interface SpoilerOptions {
   HTMLAttributes: Record<string, any>;
@@ -14,14 +14,10 @@ declare module "@tiptap/core" {
   }
 }
 
-export const Spoiler = Node.create<SpoilerOptions>({
+export const Spoiler = Mark.create<SpoilerOptions>({
   name: "spoiler",
 
-  group: "block",
-
-  content: "block+",
-
-  defining: true,
+  inclusive: false,
 
   addOptions() {
     return {
@@ -32,14 +28,14 @@ export const Spoiler = Node.create<SpoilerOptions>({
   parseHTML() {
     return [
       {
-        tag: "div[data-type='spoiler']",
+        tag: "span[data-type='spoiler']",
       },
     ];
   },
 
   renderHTML({ HTMLAttributes }) {
     return [
-      "div",
+      "span",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         "data-type": "spoiler",
         class: "spoiler",
@@ -53,17 +49,17 @@ export const Spoiler = Node.create<SpoilerOptions>({
       setSpoiler:
         () =>
         ({ commands }) => {
-          return commands.wrapIn(this.name);
+          return commands.setMark(this.name);
         },
       toggleSpoiler:
         () =>
         ({ commands }) => {
-          return commands.toggleWrap(this.name);
+          return commands.toggleMark(this.name);
         },
       unsetSpoiler:
         () =>
         ({ commands }) => {
-          return commands.lift(this.name);
+          return commands.unsetMark(this.name);
         },
     };
   },
