@@ -49,6 +49,45 @@ function applyInlineTags(text: string): string {
   return result;
 }
 
+function restoreBlockPlaceholders(text: string, blocks: string[]): string {
+  return text.replace(/%%BLOCK_(\d+)%%/g, (_match, index: string) => blocks[parseInt(index, 10)]);
+}
+
+function replaceVerbatimBlocks(text: string, addBlock: (html: string) => string): string {
+  const openTagPattern = /\[(code|noparse)\]/gi;
+  let result = "";
+  let cursor = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = openTagPattern.exec(text)) !== null) {
+    const fullMatch = match[0];
+    const tagName = match[1].toLowerCase();
+    const startIndex = match.index;
+    const contentStart = startIndex + fullMatch.length;
+    const closeTag = `[/${tagName}]`;
+    const lowerText = text.toLowerCase();
+    const closeIndex = lowerText.indexOf(closeTag, contentStart);
+
+    if (closeIndex === -1) {
+      continue;
+    }
+
+    result += text.slice(cursor, startIndex);
+
+    const content = text.slice(contentStart, closeIndex);
+    result +=
+      tagName === "noparse"
+        ? addBlock(`<pre data-type="noparse" class="noparse">${escapeHtml(content)}</pre>`)
+        : addBlock(`<pre><code>${escapeHtml(content)}</code></pre>`);
+
+    cursor = closeIndex + closeTag.length;
+    openTagPattern.lastIndex = cursor;
+  }
+
+  result += text.slice(cursor);
+  return result;
+}
+
 // ---------------------------------------------------------------------------
 // Main converter
 // ---------------------------------------------------------------------------
@@ -70,15 +109,9 @@ export function steamBBCodeToHtml(bbcode: string): string {
 
   // ── 1. Replace block-level tags with placeholders ────────────────────
 
-  // [noparse] – content displayed verbatim (no tag parsing)
-  text = text.replace(/\[noparse\]([\s\S]*?)\[\/noparse\]/gi, (_match, content: string) => {
-    return addBlock(`<pre data-type="noparse" class="noparse">${escapeHtml(content)}</pre>`);
-  });
-
-  // [code] – fixed-width font, content preserved verbatim
-  text = text.replace(/\[code\]([\s\S]*?)\[\/code\]/gi, (_match, content: string) => {
-    return addBlock(`<pre><code>${escapeHtml(content)}</code></pre>`);
-  });
+  // [code] and [noparse] are both verbatim blocks. Protect the outermost one
+  // first so nested tags stay literal instead of being parsed into placeholders.
+  text = replaceVerbatimBlocks(text, addBlock);
 
   // [table] – complex block (with optional options: noborder=1, equalcells=1)
   text = text.replace(/\[table([^\]]*)\]([\s\S]*?)\[\/table\]/gi, (_match, options: string, tableContent: string) => {
@@ -128,12 +161,15 @@ export function steamBBCodeToHtml(bbcode: string): string {
   // Quote (with optional author)
   text = text.replace(/\[quote=([^\]]+)\]([\s\S]*?)\[\/quote\]/gi, (_match, author: string, content: string) => {
     const cleanAuthor = author.replace(/^["']|["']$/g, "");
+    const processedContent = restoreBlockPlaceholders(applyInlineTags(content.trim()), blocks);
     return addBlock(
-      `<blockquote data-type="quote" class="quote" data-author="${escapeHtml(cleanAuthor)}"><p>${applyInlineTags(content.trim())}</p></blockquote>`
+      `<blockquote data-type="quote" class="quote" data-author="${escapeHtml(cleanAuthor)}"><p>${processedContent}</p></blockquote>`
     );
   });
   text = text.replace(/\[quote\]([\s\S]*?)\[\/quote\]/gi, (_m, c: string) =>
-    addBlock(`<blockquote data-type="quote" class="quote"><p>${applyInlineTags(c.trim())}</p></blockquote>`)
+    addBlock(
+      `<blockquote data-type="quote" class="quote"><p>${restoreBlockPlaceholders(applyInlineTags(c.trim()), blocks)}</p></blockquote>`
+    )
   );
 
   // Horizontal rule

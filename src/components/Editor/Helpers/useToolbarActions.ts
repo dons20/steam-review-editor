@@ -3,6 +3,7 @@ import { Editor } from "@tiptap/react";
 import { trackEvent } from "util/analytics";
 import { usePrompt } from "../PromptContext";
 import {
+  addLink,
   addImage,
   addQuote,
   insertTable,
@@ -41,13 +42,7 @@ export function useToolbarActions({ editor, prompt, confirm }: UseToolbarActions
 
     trackEvent("editor-toolbar-used", "Toolbar action: link");
 
-    const previousUrl = editor.getAttributes("link").href || "";
-    const url = await prompt({ title: "Enter Link URL:", defaultValue: previousUrl });
-    if (url) {
-      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-    } else if (url === "") {
-      editor.chain().focus().unsetLink().run();
-    }
+    await addLink(editor, prompt);
   }, [editor, prompt]);
 
   const handleAddImage = () => {

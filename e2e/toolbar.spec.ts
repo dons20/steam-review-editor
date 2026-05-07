@@ -111,6 +111,78 @@ test("applies no-parse to selected text", async ({ page }) => {
   await expectMarkupPreviewToContain(page, "[noparse][b]literal[/b]");
 });
 
+test("applies bold inside no-parse as literal markup instead of editor formatting", async ({ page }) => {
+  await gotoApp(page);
+
+  await fillMarkup(page, "[noparse]literal text[/noparse]");
+  await switchToRichText(page);
+  await selectTextInEditor(page, "literal");
+  await clickToolbar(page, "bold");
+
+  await expect(richTextEditor(page).locator("pre.noparse")).toContainText("[b]literal[/b] text");
+  await expect(richTextEditor(page).locator("pre.noparse strong")).toHaveCount(0);
+
+  await openPreview(page);
+  await expectMarkupInputToContain(page, "[noparse][b]literal[/b] text[/noparse]");
+  await expectMarkupPreviewToContain(page, "[noparse][b]literal[/b] text[/noparse]");
+});
+
+test("applies selection-based wrapper actions inside no-parse as literal bbcode", async ({ page }) => {
+  await gotoApp(page);
+
+  await fillMarkup(page, "[noparse]literal text[/noparse]");
+  await switchToRichText(page);
+  await selectTextInEditor(page, "literal");
+  await clickToolbar(page, "spoiler");
+  await expect(richTextEditor(page).locator("pre.noparse")).toContainText("[spoiler]literal[/spoiler] text");
+
+  await fillMarkup(page, "[noparse]literal text[/noparse]");
+  await switchToRichText(page);
+  await selectTextInEditor(page, "literal");
+  await clickToolbar(page, "code-block");
+  await expect(richTextEditor(page).locator("pre.noparse")).toContainText("[code]literal[/code] text");
+
+  await fillMarkup(page, "[noparse]literal text[/noparse]");
+  await switchToRichText(page);
+  await selectTextInEditor(page, "literal");
+  await clickToolbar(page, "heading-2");
+  await expect(richTextEditor(page).locator("pre.noparse")).toContainText("[h2]literal[/h2] text");
+
+  await fillMarkup(page, "[noparse]literal text[/noparse]");
+  await switchToRichText(page);
+  await selectTextInEditor(page, "literal text");
+  await clickToolbar(page, "ordered-list");
+  await expect(richTextEditor(page).locator("pre.noparse")).toContainText("[olist]\n[*]literal text\n[/olist]");
+
+  await openPreview(page);
+  await expectMarkupInputToContain(page, "[noparse][olist]\n[*]literal text\n[/olist][/noparse]");
+  await expectMarkupPreviewToContain(page, "[noparse][olist]");
+});
+
+test("applies prompt-based wrapper actions inside no-parse as literal bbcode", async ({ page }) => {
+  await gotoApp(page);
+
+  await fillMarkup(page, "[noparse]literal text[/noparse]");
+  await switchToRichText(page);
+  await selectTextInEditor(page, "literal");
+  await clickToolbar(page, "quote");
+  await submitPrompt(page, "Author QA");
+  await expect(richTextEditor(page).locator("pre.noparse")).toContainText("[quote=Author QA]literal[/quote] text");
+
+  await fillMarkup(page, "[noparse]literal text[/noparse]");
+  await switchToRichText(page);
+  await selectTextInEditor(page, "literal");
+  await clickToolbar(page, "link");
+  await submitPrompt(page, "https://example.com/review");
+  await expect(richTextEditor(page).locator("pre.noparse")).toContainText(
+    "[url=https://example.com/review]literal[/url] text"
+  );
+
+  await openPreview(page);
+  await expectMarkupInputToContain(page, "[noparse][url=https://example.com/review]literal[/url] text[/noparse]");
+  await expectMarkupPreviewToContain(page, "[noparse][url=https://example.com/review]literal[/url] text[/noparse]");
+});
+
 test("applies horizontal rule", async ({ page }) => {
   await gotoApp(page);
 
