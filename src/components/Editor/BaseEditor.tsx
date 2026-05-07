@@ -22,6 +22,7 @@ import EmbedBubbleMenu from "./EmbedBubbleMenu";
 import QuoteBubbleMenu from "./QuoteBubbleMenu";
 import { useEditorReady } from "./useEditorReady";
 import { Toolbar, TableMenu } from "./Helpers";
+import { addLink, toggleBold, toggleItalic, toggleSpoiler, toggleStrike, toggleUnderline } from "./Helpers/tools";
 import LinkBubbleMenu from "./LinkBubbleMenu";
 
 import "./editor.scss";
@@ -31,10 +32,22 @@ const CustomKeyboardShortcuts = Extension.create({
 
   addKeyboardShortcuts() {
     return {
-      "Mod-u": () => this.editor.commands.toggleUnderline(),
-      "Mod-Shift-x": () => this.editor.commands.toggleStrike(),
-      "Mod-b": () => this.editor.commands.toggleBold(),
-      "Mod-i": () => this.editor.commands.toggleItalic(),
+      "Mod-u": () => {
+        toggleUnderline(this.editor);
+        return true;
+      },
+      "Mod-Shift-x": () => {
+        toggleStrike(this.editor);
+        return true;
+      },
+      "Mod-b": () => {
+        toggleBold(this.editor);
+        return true;
+      },
+      "Mod-i": () => {
+        toggleItalic(this.editor);
+        return true;
+      },
     };
   },
 });
@@ -163,17 +176,7 @@ const BubbleMenuContent = () => {
   const handleAddLink = async () => {
     trackEvent("editor-toolbar-used", "Toolbar action: link");
 
-    const previousUrl = editor.getAttributes("link").href || "";
-    const url = await prompt({
-      title: "Enter Link URL:",
-      defaultValue: previousUrl,
-    });
-
-    if (url) {
-      editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
-    } else if (url === "") {
-      editor.chain().focus().unsetLink().run();
-    }
+    await addLink(editor, prompt);
   };
 
   return (
@@ -196,7 +199,7 @@ const BubbleMenuContent = () => {
             type="button"
             onClick={() => {
               trackEvent("editor-toolbar-used", "Toolbar action: bold");
-              editor.chain().focus().toggleBold().run();
+              toggleBold(editor);
             }}
             className={`bubble-menu-button ${editor.isActive("bold") ? "is-active" : ""}`}
             data-testid="bubble-menu-inline-bold"
@@ -211,7 +214,7 @@ const BubbleMenuContent = () => {
             type="button"
             onClick={() => {
               trackEvent("editor-toolbar-used", "Toolbar action: italic");
-              editor.chain().focus().toggleItalic().run();
+              toggleItalic(editor);
             }}
             className={`bubble-menu-button ${editor.isActive("italic") ? "is-active" : ""}`}
             data-testid="bubble-menu-inline-italic"
@@ -226,7 +229,7 @@ const BubbleMenuContent = () => {
             type="button"
             onClick={() => {
               trackEvent("editor-toolbar-used", "Toolbar action: underline");
-              editor.chain().focus().toggleUnderline().run();
+              toggleUnderline(editor);
             }}
             className={`bubble-menu-button ${editor.isActive("underline") ? "is-active" : ""}`}
             data-testid="bubble-menu-inline-underline"
@@ -241,7 +244,7 @@ const BubbleMenuContent = () => {
             type="button"
             onClick={() => {
               trackEvent("editor-toolbar-used", "Toolbar action: strikethrough");
-              editor.chain().focus().toggleStrike().run();
+              toggleStrike(editor);
             }}
             className={`bubble-menu-button ${editor.isActive("strike") ? "is-active" : ""}`}
             data-testid="bubble-menu-inline-strikethrough"
@@ -256,7 +259,7 @@ const BubbleMenuContent = () => {
             type="button"
             onClick={() => {
               trackEvent("editor-toolbar-used", "Toolbar action: spoiler");
-              editor.chain().focus().toggleSpoiler().run();
+              toggleSpoiler(editor);
             }}
             className={`bubble-menu-button ${editor.isActive("spoiler") ? "is-active" : ""}`}
             data-testid="bubble-menu-inline-spoiler"
