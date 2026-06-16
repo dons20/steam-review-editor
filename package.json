@@ -61,7 +61,7 @@
     "react-toastify": "^11.1.0",
     "sass": "^1.99.0",
     "typescript": "^6.0.3",
-    "vite": "^8.0.11"
+    "vite": "^8.0.16"
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
