@@ -132,13 +132,13 @@ function processElement(element: HTMLElement): string {
       return "\n";
 
     case "h1":
-      return `[h1]${content}[/h1]\n\n`;
+      return `[h1]${content}[/h1]\n`;
 
     case "h2":
-      return `[h2]${content}[/h2]\n\n`;
+      return `[h2]${content}[/h2]\n`;
 
     case "h3":
-      return `[h3]${content}[/h3]\n\n`;
+      return `[h3]${content}[/h3]\n`;
 
     case "ul":
       return `[list]\n${content}[/list]\n\n`;
@@ -146,8 +146,11 @@ function processElement(element: HTMLElement): string {
     case "ol":
       return `[olist]\n${content}[/olist]\n\n`;
 
-    case "li":
-      return `[*]${content.replace(/\n+$/, "")}\n`;
+    case "li": {
+      const processed = content.replace(/\n+$/, "");
+      const withNewlines = processed.replace(/([^\n])(\[\/?list\]|\[\/?olist\])/g, "$1\n$2");
+      return `[*]${withNewlines}\n`;
+    }
 
     // ── Inline elements ──────────────────────────────────────────────
 
@@ -193,15 +196,15 @@ function processElement(element: HTMLElement): string {
       }
       if (dataType === "steam-store-embed") {
         const appid = element.getAttribute("data-appid") || "";
-        return `https://store.steampowered.com/app/${appid}/\n\n`;
+        return `https://store.steampowered.com/app/${appid}/\n`;
       }
       if (dataType === "steam-workshop-embed") {
         const workshopid = element.getAttribute("data-workshopid") || "";
-        return `https://steamcommunity.com/sharedfiles/filedetails/?id=${workshopid}\n\n`;
+        return `https://steamcommunity.com/sharedfiles/filedetails/?id=${workshopid}\n`;
       }
       if (dataType === "youtube-embed") {
         const videoid = element.getAttribute("data-videoid") || "";
-        return `https://www.youtube.com/watch?v=${videoid}\n\n`;
+        return `https://www.youtube.com/watch?v=${videoid}\n`;
       }
       return content;
     }

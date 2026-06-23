@@ -53,6 +53,58 @@ function restoreBlockPlaceholders(text: string, blocks: string[]): string {
   return text.replace(/%%BLOCK_(\d+)%%/g, (_match, index: string) => blocks[parseInt(index, 10)]);
 }
 
+function replaceListBlocks(text: string, addBlock: (html: string) => string, blocks: string[]): string {
+  let result = text;
+
+  while (true) {
+    const listStart = result.lastIndexOf("[list]");
+    const olistStart = result.lastIndexOf("[olist]");
+
+    if (listStart === -1 && olistStart === -1) break;
+
+    let tag: { open: string; close: string; htmlTag: string };
+    let start: number;
+
+    if (listStart > olistStart) {
+      tag = { open: "[list]", close: "[/list]", htmlTag: "ul" };
+      start = listStart;
+    } else {
+      tag = { open: "[olist]", close: "[/olist]", htmlTag: "ol" };
+      start = olistStart;
+    }
+
+    const afterOpen = start + tag.open.length;
+    const closeStart = result.indexOf(tag.close, afterOpen);
+    if (closeStart === -1) break;
+
+    const inner = result.slice(afterOpen, closeStart);
+    const items = inner.split(/\[\*\]/gi).filter(s => s.trim());
+    const replacement = addBlock(
+      `<${tag.htmlTag}>` +
+        items
+          .map(item => {
+            const parts = item.split(/(%%BLOCK_\d+%%)/);
+            const html = parts
+              .map(part => {
+                if (/^%%BLOCK_\d+%%$/.test(part)) {
+                  return restoreBlockPlaceholders(part, blocks);
+                }
+                const trimmed = part.trim();
+                return trimmed ? `<p>${applyInlineTags(trimmed)}</p>` : "";
+              })
+              .join("");
+            return `<li>${html}</li>`;
+          })
+          .join("") +
+        `</${tag.htmlTag}>`
+    );
+
+    result = result.slice(0, start) + replacement + result.slice(closeStart + tag.close.length);
+  }
+
+  return result;
+}
+
 function replaceVerbatimBlocks(text: string, addBlock: (html: string) => string): string {
   const openTagPattern = /\[(code|noparse)\]/gi;
   let result = "";
@@ -147,16 +199,8 @@ export function steamBBCodeToHtml(bbcode: string): string {
     addBlock(`<h3>${applyInlineTags(c.trim())}</h3>`)
   );
 
-  // Lists
-  text = text.replace(/\[list\]([\s\S]*?)\[\/list\]/gi, (_match, inner: string) => {
-    const items = inner.split(/\[\*\]/gi).filter(s => s.trim());
-    return addBlock("<ul>" + items.map(item => `<li><p>${applyInlineTags(item.trim())}</p></li>`).join("") + "</ul>");
-  });
-
-  text = text.replace(/\[olist\]([\s\S]*?)\[\/olist\]/gi, (_match, inner: string) => {
-    const items = inner.split(/\[\*\]/gi).filter(s => s.trim());
-    return addBlock("<ol>" + items.map(item => `<li><p>${applyInlineTags(item.trim())}</p></li>`).join("") + "</ol>");
-  });
+  // Lists — processed inside-out via replaceListBlocks so nested lists work
+  text = replaceListBlocks(text, addBlock, blocks);
 
   // Quote (with optional author)
   text = text.replace(/\[quote=([^\]]+)\]([\s\S]*?)\[\/quote\]/gi, (_match, author: string, content: string) => {
