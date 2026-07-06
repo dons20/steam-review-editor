@@ -2,7 +2,14 @@ import { expect, type Page } from "@playwright/test";
 import { markupInput, richTextEditor } from "./app";
 
 export async function focusEditor(page: Page) {
-  await richTextEditor(page).click();
+  const isEditorFocused = await page.evaluate(() => {
+    const editor = document.querySelector('[data-testid="editor-rich-text-input"]');
+    return editor !== null && document.activeElement === editor;
+  });
+
+  if (!isEditorFocused) {
+    await richTextEditor(page).click();
+  }
 }
 
 export async function typeInEditor(page: Page, text: string) {
